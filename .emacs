@@ -17,3 +17,7 @@
 (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
 
 (setq server-use-tcp t)
+
+(iswitchb-mode)
+
+(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
