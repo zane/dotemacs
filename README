@@ -2,3 +2,5 @@ Configuration currently tested with Emacs HEAD:
 
 brew install emacs --HEAD --cocoa
 ln -s .emacs ~/.emacs
+
+test
