@@ -1,0 +1,3 @@
+Configuration currently tested with Emacs HEAD:
+
+brew install emacs --HEAD --cocoa
