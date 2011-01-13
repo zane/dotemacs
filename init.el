@@ -1,17 +1,17 @@
-;; Turn off mouse interface early in startup to avoid momentary display
-;; You really don't need these; trust me.
+;; Turn off mouse interface early in startup to avoid momentary display.
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;; Load path etc.
+
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 (add-to-list 'load-path dotfiles-dir)
 
 ;; Load up ELPA, the package manager
 
-(setq package-user-dir (concat dotfiles-dir "elpa"))
+(setq package-user-dir (concat dotfiles-dir "/elpa"))
 
 (eval-after-load 'package
   '(dolist (source '(("technomancy" . "http://repo.technomancy.us/emacs/")
@@ -21,8 +21,8 @@
 (require 'zane-elpa)
 
 ;; These should be loaded on startup rather than autoloaded on demand
-;; since they are likely to be used in every session
-
+;; since they are likely to be used in every session.
+ 
 (require 'cl)
 (require 'saveplace)
 (require 'ffap)
@@ -30,13 +30,18 @@
 (require 'ansi-color)
 (require 'recentf)
 
-;; Autoload any customizations in the customizations directory 
+;; Autoload any configuration files in the conf directory.
 
-(mapc '(lambda (file)
-	 nil) ; TODO
-      (directory-files (concat dotfiles-dir "conf") nil "^.*el$"))
+;; (mapc (function 
+;;        (lambda (file)
+;; 	 (let ((name
+;; 		(file-name-sans-extension
+;; 		 (file-name-nondirectory file))))
+;; 	   (eval-after-load name
+;; 	     `(load ,(concat dotfiles-dir (concat "conf/" file)))))))
+;;       (directory-files (concat dotfiles-dir "conf") nil "^.*el$"))
       
-;; Everything else
+;; Everything else:
 
 (enable-theme 'tango-dark)
 
