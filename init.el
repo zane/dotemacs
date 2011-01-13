@@ -33,8 +33,8 @@
 ;; Autoload any customizations in the customizations directory 
 
 (mapc '(lambda (file)
-	 (eval-after-load )
-      (directory-files (concat dotfiles-dir "conf") nil "^.*el$")
+	 nil) ; TODO
+      (directory-files (concat dotfiles-dir "conf") nil "^.*el$"))
       
 ;; Everything else
 
