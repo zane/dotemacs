@@ -11,6 +11,8 @@
 
 ;; Load up ELPA, the package manager
 
+(add-to-list 'load-path package-github-technomancy-path)
+(require 'package)
 (setq package-user-dir (concat dotfiles-dir "/elpa"))
 
 (eval-after-load 'package
@@ -40,6 +42,9 @@
 ;; 	   (eval-after-load name
 ;; 	     `(load ,(concat dotfiles-dir (concat "conf/" file)))))))
 ;;       (directory-files (concat dotfiles-dir "conf") nil "^.*el$"))
+;;;; (string-match "\\(.?\\)ar" "foobar")
+;;;; (match-string 1 "foobar")
+;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
       
 ;; Everything else:
 
@@ -64,3 +69,7 @@
 
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 
+;; Set font
+;; TODO: Make this conditional based on os
+(set-default-font "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
+;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
