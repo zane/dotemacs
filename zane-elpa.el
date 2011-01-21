@@ -5,7 +5,8 @@
 
 (require 'cl)
 
-(defvar zane-packages '(
+(defvar zane-packages '(clojure-mode
+			clojure-test-mode
 			css-mode
 			find-file-in-project
 			gist
@@ -13,7 +14,10 @@
 			js2-mode
 			magit
 			paredit
-			)
+			project-local-variables
+			slime
+			slime-repl
+			swank-clojure)
   "Libraries that should be installed by default.")
 
 (defun zane-elpa-install ()
