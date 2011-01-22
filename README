@@ -1,6 +1,4 @@
 Configuration currently tested with Emacs HEAD:
 
 brew install emacs --HEAD --cocoa
-ln -s .emacs ~/.emacs
-
-test
+echo "(load "~/Unix/src/dotemacs.github.zane/init.el")" >> ~/.emacs
