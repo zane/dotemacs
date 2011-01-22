@@ -1,17 +1,10 @@
-;; Turn off mouse interface early in startup to avoid momentary display.
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-
-(setq inhibit-startup-screen t)
-
-;; Load path etc.
-
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 (add-to-list 'load-path dotfiles-dir)
 
 ;; Load up ELPA, the package manager
+;; Tricks below here stolen from the Emacs Starter Kit:
+;; https://github.com/technomancy/emacs-starter-kit
 
 (add-to-list 'load-path package-github-technomancy-path)
 (require 'package)
@@ -24,15 +17,9 @@
 (package-initialize)
 (require 'zane-elpa)
 
-;; These should be loaded on startup rather than autoloaded on demand
-;; since they are likely to be used in every session.
- 
-(require 'cl)
-(require 'saveplace)
-(require 'ffap)
-(require 'uniquify)
-(require 'ansi-color)
-(require 'recentf)
+;; Emacs Starter Kit
+
+(remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
 
 ;; Autoload any configuration files in the conf directory.
 
@@ -57,9 +44,6 @@
 (global-set-key (kbd "C-x y") 'bury-buffer)
 (global-set-key "\C-o" 'other-window)
 
-(global-set-key "\M-r" 'isearch-backward)
-(global-set-key "\M-s" 'isearch-forward)
-
 ;; Key for fullscreen from custom build of Emacs.app:
 ;; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
@@ -67,9 +51,9 @@
 
 (setq server-use-tcp t)
 
-(iswitchb-mode)
-
-(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
+;; Clojure
+(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup) ; what it sounds like
+(setq swank-clojure-classpath (list "/usr/local/Cellar/clojure/1.2.0/clojure.jar" "/usr/local/Cellar/clojure-contrib/1.2.0/clojure-contrib.jar" "swank-clojure.jar"))
 
 ;; Set font
 ;; TODO: Make this conditional based on os
