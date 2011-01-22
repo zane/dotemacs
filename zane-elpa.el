@@ -10,7 +10,6 @@
 			find-file-in-project
 			gist
 			idle-highlight
-			js2-mode
 			magit
 			paredit
 			project-local-variables
@@ -25,6 +24,7 @@
 (defun zane-elpa-install ()
   "Install all zane packages that aren't installed."
   (interactive)
+  (unless (file-exists-p package-user-dir) (package-refresh-contents))
   (dolist (package zane-packages)
     (unless (or (member package package-activated-list)
                 (functionp package))

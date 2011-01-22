@@ -1,3 +1,13 @@
+(setq mac-command-modifier 'meta)
+
+(global-set-key (kbd "C-x y") 'bury-buffer)
+(global-set-key "\C-o" 'other-window)
+
+;; Key for fullscreen from custom build of Emacs.app:
+;; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
+(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
+(global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 (add-to-list 'load-path dotfiles-dir)
@@ -7,13 +17,12 @@
 ;; https://github.com/technomancy/emacs-starter-kit
 
 (add-to-list 'load-path package-github-technomancy-path)
-(require 'package)
 (setq package-user-dir (concat dotfiles-dir "/elpa"))
 
-(eval-after-load 'package
-  '(dolist (source '(("technomancy" . "http://repo.technomancy.us/emacs/")
-			    ("elpa" . "http://tromey.com/elpa/")))
-	    (add-to-list 'package-archives source t)))
+(require 'package)
+(dolist (source '(("technomancy" . "http://repo.technomancy.us/emacs/")
+                  ("elpa" . "http://tromey.com/elpa/")))
+  (add-to-list 'package-archives source t))
 (package-initialize)
 (require 'zane-elpa)
 
@@ -39,20 +48,11 @@
 
 (enable-theme 'tango-dark)
 
-(setq mac-command-modifier 'meta)
-
-(global-set-key (kbd "C-x y") 'bury-buffer)
-(global-set-key "\C-o" 'other-window)
-
-;; Key for fullscreen from custom build of Emacs.app:
-;; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
-(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
-(global-set-key (kbd "M-h") 'ns-do-hide-emacs)
-
 (setq server-use-tcp t)
 
 ;; Clojure
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup) ; what it sounds like
+;; TODO: Find out where swank-clojure can be installed globally
 (setq swank-clojure-classpath (list "/usr/local/Cellar/clojure/1.2.0/clojure.jar" "/usr/local/Cellar/clojure-contrib/1.2.0/clojure-contrib.jar" "swank-clojure.jar"))
 
 ;; Set font
