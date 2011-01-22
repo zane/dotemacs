@@ -53,8 +53,6 @@
 
 ;; Clojure
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup) ; what it sounds like
-;; TODO: Find out where swank-clojure can be installed globally
-(setq swank-clojure-classpath (list "/usr/local/Cellar/clojure/1.2.0/clojure.jar" "/usr/local/Cellar/clojure-contrib/1.2.0/clojure-contrib.jar" "swank-clojure.jar"))
 
 ;; Set font
 ;; TODO: Make this conditional based on os
