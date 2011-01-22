@@ -17,7 +17,6 @@
 			slime-repl
                         clojure-mode
                         starter-kit
-                        starter-kit-js
                         starter-kit-lisp)
   "Libraries that should be installed by default.")
 
