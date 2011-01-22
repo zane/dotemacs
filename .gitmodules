@@ -1,0 +1,3 @@
+[submodule "lib/package.github.technomancy"]
+	path = lib/package.github.technomancy
+	url = https://github.com/technomancy/package.el.git

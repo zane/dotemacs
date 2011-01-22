@@ -6,7 +6,7 @@
 ;; Tricks below here stolen from the Emacs Starter Kit:
 ;; https://github.com/technomancy/emacs-starter-kit
 
-(add-to-list 'load-path package-github-technomancy-path)
+(add-to-list 'load-path (concat dotfiles-dir "/lib/package.github.technomancy"))
 (require 'package)
 (setq package-user-dir (concat dotfiles-dir "/elpa"))
 
