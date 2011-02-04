@@ -30,6 +30,7 @@
 ;; Emacs Starter Kit
 
 (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+(remove-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;; Autoload any configuration files in the conf directory.
 
