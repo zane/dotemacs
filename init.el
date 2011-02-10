@@ -31,6 +31,8 @@
 
 (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
 (remove-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook (lambda () (setq truncate-lines t)))
+(add-hook 'esk-coding-hook (lambda () (setq truncate-lines t)))
 
 ;; Autoload any configuration files in the conf directory.
 
@@ -45,6 +47,14 @@
 ;;;; (string-match "\\(.?\\)ar" "foobar")
 ;;;; (match-string 1 "foobar")
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
+
+;; Auto-save
+
+(setq temporary-file-directory (concat dotfiles-dir "/backup"))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
       
 ;; Everything else:
 
@@ -59,3 +69,8 @@
 ;; TODO: Make this conditional based on os
 (set-default-font "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
 ;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
+
+(defun transparency (value)
+   "Sets the transparency of the frame window. 0=transparent/100=opaque"
+   (interactive "nTransparency Value 0 - 100 opaque:")
+   (set-frame-parameter (selected-frame) 'alpha value))
