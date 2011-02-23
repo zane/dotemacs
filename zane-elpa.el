@@ -6,6 +6,7 @@
 (require 'cl)
 
 (defvar zane-packages '(clojure-test-mode
+                        color-theme
 			css-mode
 			find-file-in-project
 			gist

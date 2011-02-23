@@ -1,3 +1,6 @@
 [submodule "lib/package.github.technomancy"]
 	path = lib/package.github.technomancy
 	url = https://github.com/technomancy/package.el.git
+[submodule "lib/color-theme-vibrant-ink.github.mig"]
+	path = lib/color-theme-vibrant-ink.github.mig
+	url = https://github.com/mig/color-theme-vibrant-ink.git
