@@ -1,3 +1,5 @@
+;; TODO: http://www.nongnu.org/geiser/
+
 (setq mac-command-modifier 'meta)
 
 (global-set-key (kbd "C-x y") 'bury-buffer)
@@ -69,7 +71,7 @@
 ;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
 
 (require 'color-theme)
-(load-file "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el")
+(load-file (concat dotfiles-dir "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el"))
 (color-theme-vibrant-ink)
 
 (setq sentence-end-double-space nil)
