@@ -4,3 +4,6 @@
 [submodule "lib/color-theme-vibrant-ink.github.mig"]
 	path = lib/color-theme-vibrant-ink.github.mig
 	url = https://github.com/mig/color-theme-vibrant-ink.git
+[submodule "lib/coffee-mode.github.defunkt"]
+	path = lib/coffee-mode.github.defunkt
+	url = https://github.com/defunkt/coffee-mode.git
