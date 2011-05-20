@@ -12,6 +12,7 @@
 			gist
 			idle-highlight
 			magit
+                        markdown-mode
 			paredit
 			project-local-variables
 			slime

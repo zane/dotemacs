@@ -29,10 +29,17 @@
 
 ;; Emacs Starter Kit
 
-(remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+(add-hook 'text-mode-hook (lambda () (speck-mode t)))
+(add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 (remove-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'text-mode-hook (lambda () (setq truncate-lines t)))
+(remove-hook 'text-mode-hook 'turn-on-flyspell)
+
 (add-hook 'esk-coding-hook (lambda () (setq truncate-lines t)))
+(remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+
+(setq-default truncate-lines t)
+
+(require 'speck)
 
 ;; Autoload any configuration files in the conf directory.
 
@@ -60,8 +67,14 @@
 
 (setq server-use-tcp t)
 
+;; dired
+(require 'image-dired)
+
 ;; Clojure
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup) ; what it sounds like
+
+;; Markdown
+(require 'markdown-mode)
 
 ;; Set font
 ;; TODO: Make this conditional based on os
@@ -69,7 +82,7 @@
 ;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
 
 (require 'color-theme)
-(load-file "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el")
+(load-file (concat dotfiles-dir "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el" ))
 (color-theme-vibrant-ink)
 
 (setq sentence-end-double-space nil)
@@ -78,3 +91,5 @@
    "Sets the transparency of the frame window. 0=transparent/100=opaque"
    (interactive "nTransparency Value 0 - 100 opaque:")
    (set-frame-parameter (selected-frame) 'alpha value))
+
+(require 'yaml-mode)
