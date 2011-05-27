@@ -1,4 +1,5 @@
 ;; TODO: http://www.nongnu.org/geiser/
+;; TODO: http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html
 
 (setq mac-command-modifier 'meta)
 
@@ -86,6 +87,19 @@
 (require 'color-theme)
 (load-file (concat dotfiles-dir "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el"))
 (color-theme-vibrant-ink)
+
+(add-to-list 'load-path (concat dotfiles-dir "/lib/coffee-mode.github.defunkt"))
+(require 'coffee-mode)
+(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
+
+;; indentation should be two spaces for coffeescript
+(defun coffee-custom ()
+  "coffee-mode-hook"
+ (set (make-local-variable 'tab-width) 2))
+
+(add-hook 'coffee-mode-hook
+  '(lambda () (coffee-custom)))
 
 (setq sentence-end-double-space nil)
 
