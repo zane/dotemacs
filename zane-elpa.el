@@ -19,7 +19,8 @@
 			slime-repl
                         clojure-mode
                         starter-kit
-                        starter-kit-lisp)
+                        starter-kit-lisp
+                        yaml-mode)
   "Libraries that should be installed by default.")
 
 (defun zane-elpa-install ()
