@@ -1,6 +1,0 @@
-Configuration currently tested with Emacs HEAD:
-
-git submodule init
-git submodule update
-brew install emacs --HEAD --cocoa
-echo "(load "~/Unix/src/dotemacs.github.zane/init.el")" >> ~/.emacs
