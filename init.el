@@ -110,3 +110,5 @@
    (set-frame-parameter (selected-frame) 'alpha value))
 
 (require 'yaml-mode)
+
+(set-cursor-color "yellow")
