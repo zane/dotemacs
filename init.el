@@ -112,3 +112,4 @@
 (require 'yaml-mode)
 
 (set-cursor-color "yellow")
+(global-auto-revert-mode t)
