@@ -2,6 +2,8 @@
 ;; TODO: http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html
 ;; TODO: https://github.com/djcb/elisp/blob/master/themes/zenburn-theme.el
 
+(set-cursor-color "yellow")
+
 (setq mac-command-modifier 'meta)
 
 (global-set-key (kbd "C-x y") 'bury-buffer)
@@ -94,6 +96,9 @@
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
 (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
 
+;; Ruby
+(require 'rinari)
+
 ;; indentation should be two spaces for coffeescript
 (defun coffee-custom ()
   "coffee-mode-hook"
@@ -111,5 +116,4 @@
 
 (require 'yaml-mode)
 
-(set-cursor-color "yellow")
 (global-auto-revert-mode t)

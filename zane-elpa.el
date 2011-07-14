@@ -11,10 +11,12 @@
 			find-file-in-project
 			gist
 			idle-highlight
+                        inf-ruby
 			magit
                         markdown-mode
 			paredit
 			project-local-variables
+                        rinari
 			slime
 			slime-repl
                         clojure-mode
