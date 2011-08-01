@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>README.mkd</title>
+</head>
+
+<body>
+
+<h1><a href="https://github.com/ofa/fundraising">fundraising</a></h1>
+
+<p>The Obama for America Fundraising app leverages <a href="http://www.squareup.com">Square</a> to enable individuals to make donations using their credit cards.</p>
+
+<h2>Installation</h2>
+
+<p>Install <a href="https://github.com/mxcl/homebrew">Homebrew</a>.</p>
+
+<p>Install the Android SDK and maven:</p>
+
+<pre><code>brew install android-sdk
+brew install maven
+</code></pre>
+
+<p>Update your Android SDK</p>
+
+<pre><code>android update sdk --no-ui
+</code></pre>
+
+<p>Install the Google Maps libraries into your Maven repository</p>
+
+<pre><code>git clone https://github.com/mosabua/maven-android-sdk-deployer.git &lt;path&gt;
+cd &lt;path&gt;
+mvn install
+</code></pre>
+
+<p>Install the latest OFA fork of Robolectric into your Maven repository</p>
+
+<pre><code>git clone git@github.com:ofa/robolectric.git &lt;path&gt;
+cd &lt;path&gt;
+git checkout ofa
+mvn install
+</code></pre>
+
+<h2>Running the Tests</h2>
+
+<pre><code>mvn test
+</code></pre>
+
+<h2>Building</h2>
+
+<pre><code>mvn install
+</code></pre>
+
+<h2>Installing</h2>
+
+<pre><code>mvn android:deploy
+</code></pre>
+
+<h2>Troubleshooting</h2>
+
+<p>if build fails to find SetupTask</p>
+
+<pre><code>android update project -p . -t &lt;target&gt;
+</code></pre>
+
+<p>to get a list of available targets</p>
+
+<pre><code>android list targets
+</code></pre>
+
+</body>
+</html>

@@ -8,6 +8,7 @@
 (defvar zane-packages '(clojure-test-mode
                         color-theme
 			css-mode
+                        dired-isearch
 			find-file-in-project
 			gist
 			idle-highlight
@@ -21,7 +22,9 @@
 			slime-repl
                         clojure-mode
                         starter-kit
+                        starter-kit-js
                         starter-kit-lisp
+                        starter-kit-ruby
                         yaml-mode)
   "Libraries that should be installed by default.")
 
@@ -38,8 +41,8 @@
 (defun esk-online? ()
   "See if we're online.
 
-  Windows does not have the network-interface-list function, so we just have to assume it's online."
-  ;; TODO how could this work on Windows?
+  Windows does not have the network-interface-list function, so
+  we just have to assume it's online."
   (if (and (functionp 'network-interface-list)
            (network-interface-list))
       (some (lambda (iface) (unless (equal "lo" (car iface))
