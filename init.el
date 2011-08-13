@@ -42,6 +42,7 @@
       
 ;; Everything else:
 (setq server-use-tcp t)
+(delete-selection-mode 1)
 
 ;; Set font
 ;; TODO: Make this conditional based on os
