@@ -4,5 +4,4 @@
 (eval-after-load "yasnippet"
   '(progn
      (yas/initialize)
-     ;(yas/load-directory (concat zane-emacs-root "..."))
-     ))
+     (yas/load-directory (concat zane-emacs-root "../yasnippet.googlecode/snippets"))))
