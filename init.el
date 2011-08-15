@@ -49,10 +49,6 @@
 (set-default-font "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
 ;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
 
-(require 'color-theme)
-(load-file (concat zane-emacs-root "lib/color-theme-vibrant-ink.github.mig/color-theme-vibrant-ink.el"))
-(color-theme-vibrant-ink)
-
 (require 'speck)
 (require 'markdown-mode)
 (require 'rinari)
