@@ -1,4 +1,7 @@
 (global-linum-mode 1)
+(fringe-mode -1)
+(add-to-list 'load-path (concat zane-emacs-root "lib"))
+(require 'linum-off)
 (setq linum-format
       (lambda (line)
         (propertize (format
