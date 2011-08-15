@@ -1,5 +1,6 @@
 (global-linum-mode 1)
-(fringe-mode -1)
+;; FIXME: This is broken... Figure out how to set this programmatically.
+(fringe-mode 'no-fringes)
 (setq linum-format
       (lambda (line)
         (propertize (format
