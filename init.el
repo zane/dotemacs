@@ -13,7 +13,7 @@
 (global-auto-revert-mode t)
 
 (setq zane-emacs-root (file-name-directory
-                    (or (buffer-file-name) load-file-name)))
+                       (or (buffer-file-name) load-file-name)))
 (add-to-list 'load-path zane-emacs-root)
 
 ;; Load up ELPA, the package manager
@@ -39,7 +39,7 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
-      
+
 ;; Everything else:
 (setq server-use-tcp t)
 (delete-selection-mode 1)
@@ -55,9 +55,9 @@
 (require 'yaml-mode)
 
 (defun transparency (value)
-   "Sets the transparency of the frame window. 0=transparent/100=opaque"
-   (interactive "nTransparency Value 0 - 100 opaque:")
-   (set-frame-parameter (selected-frame) 'alpha value))
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque:")
+  (set-frame-parameter (selected-frame) 'alpha value))
 
 (progn
   (setq zane-emacs-config-dir (concat zane-emacs-root "config/"))
