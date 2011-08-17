@@ -46,8 +46,8 @@
 
 ;; Set font
 ;; TODO: Make this conditional based on os
-(set-default-font "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
-;(set-default-font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1")
+;;(set-face-attribute 'default nil :font "Consolas-14")
+(set-face-attribute 'default nil :font "Inconsolata-13")
 
 (require 'speck)
 (require 'markdown-mode)
