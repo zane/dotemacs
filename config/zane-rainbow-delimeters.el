@@ -1,5 +1,4 @@
 (add-to-list 'load-path (concat zane-emacs-root "lib"))
-(require 'rainbow-delimiters)
 (eval-after-load "rainbow-delimiters"
   '(progn
      (setq-default frame-background-mode 'dark)
@@ -8,4 +7,9 @@
                               clojure-mode-hook
                               javascript-mode-hook)))
        (dolist (hook supported-modes)
-         (add-hook hook '(lambda () (rainbow-delimiters-mode 1)))))))
+         (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))))
+
+(defun zane-turn-on-rainbow-delimiters-mode ()
+  (rainbow-delimiters-mode 1))
+
+(require 'rainbow-delimiters)
