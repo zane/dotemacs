@@ -1,4 +1,5 @@
-(global-linum-mode 1)
+
+;; (global-linum-mode 1)
 
 ;; FIXME: This is broken... Figure out how to set this programmatically.
 ;; (fringe-mode 'no-fringes)
@@ -15,5 +16,8 @@
 
 (add-to-list 'load-path (concat zane-emacs-root "lib"))
 (eval-after-load 'linum-off
-  '(progn (add-to-list 'linum-disabled-modes-list 'fundamental-mode)))
+  '(dolist (mode '(fundamental-mode
+                   magit-mode))
+     (add-to-list 'linum-disabled-modes-list mode)))
+
 (require 'linum-off)
