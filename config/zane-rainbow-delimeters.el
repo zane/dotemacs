@@ -2,7 +2,7 @@
 (eval-after-load "rainbow-delimiters"
   '(progn
      (setq-default frame-background-mode 'dark)
-     (let ((supported-modes '(emacs-lisp-mode
+     (let ((supported-modes '(emacs-lisp-mode-hook
                               clojure-mode-hook
                               javascript-mode-hook
                               lisp-mode-hook
