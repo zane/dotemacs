@@ -5,22 +5,23 @@
 
 (require 'cl)
 
-(defvar zane-packages '(clojure-test-mode
-                        color-theme
-			css-mode
-                        dired-isearch
+(defvar zane-packages '(css-mode
 			find-file-in-project
 			gist
 			idle-highlight
-                        inf-ruby
 			magit
-                        markdown-mode
 			paredit
 			project-local-variables
-                        rinari
 			slime
 			slime-repl
                         clojure-mode
+                        clojure-test-mode
+                        color-theme
+                        dired-isearch
+                        full-ack
+                        inf-ruby
+                        markdown-mode
+                        rinari
                         starter-kit
                         starter-kit-js
                         starter-kit-lisp
