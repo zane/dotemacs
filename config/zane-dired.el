@@ -1,5 +1,7 @@
+(add-to-list 'load-path (concat zane-emacs-root "lib"))
 (eval-after-load "dired"
   '(progn
+     (require 'dired+)
      (require 'image-dired)
 
      (define-key dired-mode-map (kbd "C-s") 'dired-isearch-forward)
