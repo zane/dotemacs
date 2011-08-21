@@ -1,6 +1,5 @@
 ;; TODO: http://www.nongnu.org/geiser/
-;; TODO: http://emacs-fu.blogspot.com/2011/05/toward-balanced-and-colorful-delimiters.html
-;; TODO: https://github.com/djcb/elisp/blob/master/themes/zenburn-theme.el
+;; TODO: Look into this https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
 
 (setq mac-command-modifier 'meta)
 (global-set-key (kbd "C-x y") 'bury-buffer)
