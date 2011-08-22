@@ -8,7 +8,3 @@
 (global-set-key (kbd "C-c C-o") 'sort-lines)
 
 (provide 'zane-keys)
-
-;; foo [ bar
-;; bazqux [ bar
-;; splat [ bar
