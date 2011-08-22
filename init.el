@@ -43,7 +43,7 @@
 ;; Everything else:
 (setq server-use-tcp t)
 (delete-selection-mode 1)
-(setq font-lock-maximum-decoration '(t . t))
+(setq font-lock-maximum-decoration (list (cons t t)))
 
 ;; Set font
 ;; TODO: Make this conditional based on os
