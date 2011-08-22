@@ -29,6 +29,7 @@
 
 ;; Auto-save
 
+(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 (setq temporary-file-directory (concat zane-emacs-root "/backup"))
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -59,7 +60,7 @@
 
 (progn
   (setq zane-emacs-config-dir (concat zane-emacs-root "config/"))
-  
+
   (when (file-exists-p zane-emacs-config-dir)
     (dolist (l (directory-files zane-emacs-config-dir nil "^[^#].*el$"))
       (load (concat zane-emacs-config-dir l)))))
