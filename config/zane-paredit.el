@@ -6,5 +6,6 @@
   "Do not put spaces after inserted delimiters in the modes
   listed in paredit-no-space-list."
   (if (member major-mode paredit-no-space-list)
-      nil
+      (progn ad-do-it
+             nil)
     ad-do-it))
