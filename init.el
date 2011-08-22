@@ -1,11 +1,6 @@
 ;; TODO: http://www.nongnu.org/geiser/
 ;; TODO: Look into this https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
-
-(setq mac-command-modifier 'meta)
-(global-set-key (kbd "C-x y") 'bury-buffer)
-(global-set-key (kbd "C-o")  'other-window)
-(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen) ; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
-(global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+(require 'cl)
 
 (setq-default truncate-lines t)
 (setq sentence-end-double-space nil)
