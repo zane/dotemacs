@@ -51,6 +51,7 @@
 (require 'rinari)
 (require 'yaml-mode)
 
+(require 'zane-funcs)
 (require 'zane-keys)
 
 (defun transparency (value)
