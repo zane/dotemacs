@@ -20,20 +20,13 @@
 
 (setq el-get-sources
       '(
-	color-theme
         (:name color-theme-solarized
-               :description "Emacs highlighting using Ethan Schoonover's Solarized color scheme"
-               :type git
-               :url "https://github.com/sellout/emacs-color-theme-solarized.git"
-               :load "color-theme-solarized.el"
-               :provides solarized-dark-theme
-               :depends color-theme
+               :features solarized-dark-theme
                :after (lambda ()
                         (require 'solarized-dark-theme)
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode -1)))
-	;;color-theme-zenburn
 	full-ack
 	magit
 	markdown-mode
