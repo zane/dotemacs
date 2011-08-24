@@ -37,7 +37,25 @@
 	full-ack
 	magit
 	markdown-mode
-	paredit
+
+
+	(:name paredit
+               :type http
+               :url "http://mumble.net/~campbell/emacs/paredit.el"
+               :features "paredit"
+               (lambda ()
+                 (defvar paredit-no-space-list '(python-mode)
+                   "The list of major modes for which paredit should refrain appending a space
+   when inserting a matching delimiter.")
+
+                 (defadvice paredit-space-for-delimiter-p (around no-space-in-modes)
+                   "Do not put spaces after inserted delimiters in the modes
+  listed in paredit-no-space-list."
+                   (if (member major-mode paredit-no-space-list)
+                       (progn ad-do-it
+                              nil)
+                     ad-do-it))))
+
 	rinari
 	slime
         (:name coffee-mode
@@ -54,7 +72,7 @@
         (:name clojure-mode
                :type elpa
                :after (lambda ()
-                       (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)))
+                        (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)))
         (:name dired+
                :type emacswiki
                :after (lambda ()
