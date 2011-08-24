@@ -29,6 +29,17 @@
 	paredit
 	rinari
 	slime
+        (:name coffee-mode
+               :type git
+               :url "https://github.com/defunkt/coffee-mode.git"
+               :features coffee-mode
+               :post-init (lambda ()
+                            (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+                            (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
+                            ;; it defaults to js2-mode, which is not present in Emacs by default
+                            (setq coffee-js-mode 'javascript-mode)
+                            (add-hook 'coffee-mode-hook
+                                      '(lambda () (set (make-local-variable 'tab-width) 2)))))
         (:name clojure-mode
                :type elpa
                :after (lambda ()
@@ -47,6 +58,7 @@
                         (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
         (:name rainbow-delimiters
                :type emacswiki
+               :features rainbow-delimiters
                :after (lambda ()
                         (defun zane-turn-on-rainbow-delimiters-mode ()
                           (interactive)
@@ -59,8 +71,7 @@
                                                  lisp-mode-hook
                                                  python-mode-hook)))
                           (dolist (hook supported-modes)
-                            (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))
-                        (require 'rainbow-delimiters)))
+                            (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))))
 	(:name speck-mode :type emacswiki)
 	(:name starter-kit :type elpa
                :after (lambda ()
