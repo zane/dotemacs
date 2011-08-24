@@ -21,7 +21,18 @@
 (setq el-get-sources
       '(
 	color-theme
-	color-theme-solarized
+        (:name color-theme-solarized
+               :description "Emacs highlighting using Ethan Schoonover's Solarized color scheme"
+               :type git
+               :url "https://github.com/sellout/emacs-color-theme-solarized.git"
+               :load "color-theme-solarized.el"
+               :provides solarized-dark-theme
+               :depends color-theme
+               :after (lambda ()
+                        (require 'solarized-dark-theme)
+                        (enable-theme 'solarized-dark)
+                        (show-paren-mode -1)
+                        (fringe-mode -1)))
 	color-theme-zenburn
 	full-ack
 	magit
@@ -37,9 +48,9 @@
                             (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
                             (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
                             ;; it defaults to js2-mode, which is not present in Emacs by default
-                            (setq coffee-js-mode 'javascript-mode)
-                            (add-hook 'coffee-mode-hook
-                                      '(lambda () (set (make-local-variable 'tab-width) 2)))))
+                            (setq coffee-js-mode 'javascript-mode))
+               :after (add-hook 'coffee-mode-hook
+                                '(lambda () (set (make-local-variable 'tab-width) 2))))
         (:name clojure-mode
                :type elpa
                :after (lambda ()
@@ -72,7 +83,16 @@
                                                  python-mode-hook)))
                           (dolist (hook supported-modes)
                             (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))))
-	(:name speck-mode :type emacswiki)
+	(:name speck-mode
+               :type emacswiki
+               :features speck)
+        (:name linum-off
+               :type emacswiki
+               :features linum-off
+               :after (lambda ()
+                        (dolist (mode '(fundamental-mode
+                                        magit-mode))
+                          (add-to-list 'linum-disabled-modes-list mode))))
 	(:name starter-kit :type elpa
                :after (lambda ()
                         (add-hook 'text-mode-hook (lambda () (speck-mode t)))

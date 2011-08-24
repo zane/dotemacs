@@ -13,11 +13,3 @@
                        (concat "%" (number-to-string w) "d "))
                      line)
                     'face 'linum)))
-
-(add-to-list 'load-path (concat zane-projects-dir "lib"))
-(eval-after-load 'linum-off
-  '(dolist (mode '(fundamental-mode
-                   magit-mode))
-     (add-to-list 'linum-disabled-modes-list mode)))
-
-(require 'linum-off)

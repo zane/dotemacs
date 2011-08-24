@@ -33,7 +33,6 @@
 ;;(set-face-attribute 'default nil :font "Consolas-14")
 (set-face-attribute 'default nil :font "Inconsolata-13")
 
-(require 'speck)
 (require 'markdown-mode)
 (require 'rinari)
 
