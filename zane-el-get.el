@@ -33,7 +33,7 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode -1)))
-	color-theme-zenburn
+	;;color-theme-zenburn
 	full-ack
 	magit
 	markdown-mode
@@ -83,7 +83,7 @@
                                                  python-mode-hook)))
                           (dolist (hook supported-modes)
                             (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))))
-	(:name speck-mode
+	(:name speck
                :type emacswiki
                :features speck)
         (:name linum-off

@@ -10,7 +10,7 @@
 
 (add-to-list 'load-path user-emacs-directory)
 
-(require 'zane-el-get)
+
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
@@ -33,12 +33,6 @@
 ;;(set-face-attribute 'default nil :font "Consolas-14")
 (set-face-attribute 'default nil :font "Inconsolata-13")
 
-(require 'markdown-mode)
-(require 'rinari)
-
-(require 'zane-funcs)
-(require 'zane-keys)
-
 (defun transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
@@ -50,3 +44,8 @@
   (when (file-exists-p zane-emacs-config-dir)
     (dolist (l (directory-files zane-emacs-config-dir nil "^[^#].*el$"))
       (load (concat zane-emacs-config-dir l)))))
+
+(require 'zane-el-get)
+(require 'zane-funcs)
+(require 'zane-keys)
+
