@@ -11,11 +11,7 @@
 (require 'el-get)
 
 ;; Add custom package.el sources (mainly for starter-kit)
-(dolist (source '(
-		  ("technomancy" . "http://repo.technomancy.us/emacs/")
-                  ;; ("elpa" . "http://tromey.com/elpa/")
-		  ))
-  (add-to-list 'package-archives source t))
+(add-to-list 'package-archives '("technomancy" . "http://repo.technomancy.us/emacs/") t)
 (package-initialize)
 
 (setq el-get-sources
@@ -111,6 +107,6 @@
 	(:name starter-kit-ruby :type elpa)
 	))
 
-(el-get 'wait)
+(el-get)
 
 (provide 'zane-el-get)
