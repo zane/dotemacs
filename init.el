@@ -5,10 +5,11 @@
 (setq-default truncate-lines t)
 (setq sentence-end-double-space nil)
 (global-auto-revert-mode t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
 (add-to-list 'load-path user-emacs-directory)
 
-(require 'zane-elpa)
 (require 'zane-el-get)
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
@@ -35,7 +36,6 @@
 (require 'speck)
 (require 'markdown-mode)
 (require 'rinari)
-(require 'yaml-mode)
 
 (require 'zane-funcs)
 (require 'zane-keys)
