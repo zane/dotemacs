@@ -37,24 +37,18 @@
 	full-ack
 	magit
 	markdown-mode
-
-
 	(:name paredit
                :type http
                :url "http://mumble.net/~campbell/emacs/paredit.el"
                :features "paredit"
-               (lambda ()
-                 (defvar paredit-no-space-list '(python-mode)
-                   "The list of major modes for which paredit should refrain appending a space
+               :after (lambda ()
+                        (defvar paredit-no-space-list '(python-mode)
+                          "The list of major modes for which paredit should refrain appending a space
    when inserting a matching delimiter.")
 
-                 (defadvice paredit-space-for-delimiter-p (around no-space-in-modes)
-                   "Do not put spaces after inserted delimiters in the modes
-  listed in paredit-no-space-list."
-                   (if (member major-mode paredit-no-space-list)
-                       (progn ad-do-it
-                              nil)
-                     ad-do-it))))
+                        (add-to-list 'paredit-space-for-delimiter-predicates
+                                     (lambda (endp delimiter)
+                                       (not (member major-mode paredit-no-space-list))))))
 
 	rinari
 	slime
