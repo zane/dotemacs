@@ -10,6 +10,11 @@
 
 ;; local sources
 (setq el-get-sources
+)
+
+(require 'el-get)
+
+(setq el-get-sources
       '(
 	clojure-mode
 	color-theme
@@ -21,11 +26,9 @@
 	paredit
 	rinari
 	slime
+	(:name speck-mode :type emacswiki)
 	))
 
-(require 'el-get)
-
-(el-get 'sync el-get-sources)
 (el-get 'wait)
 
 (provide 'zane-el-get)
