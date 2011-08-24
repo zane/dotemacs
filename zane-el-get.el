@@ -23,7 +23,6 @@
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
-                        (require 'solarized-dark-theme)
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode -1)))
