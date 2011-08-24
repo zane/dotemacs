@@ -1,4 +1,4 @@
-(add-to-list 'load-path (concat zane-emacs-root "../coffee-mode.github.defunkt"))
+(add-to-list 'load-path (concat zane-projects-dir "coffee-mode.github.defunkt"))
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
 (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
 (autoload 'coffee-mode "coffee-mode")

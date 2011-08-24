@@ -1,6 +1,6 @@
 (eval-after-load 'rcirc
   '(progn
-     (add-to-list 'load-path (concat zane-emacs-root "lib"))
+     (add-to-list 'load-path (concat user-emacs-directory "lib"))
      (require 'rcirc-notify)
      (add-to-list 'rcirc-server-alist
                   '("yamato.obama.local"

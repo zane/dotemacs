@@ -1,4 +1,4 @@
-(add-to-list 'load-path (concat zane-emacs-root "../emacs-color-theme-solarized.github.sellout"))
+(add-to-list 'load-path (concat zane-projects-dir "emacs-color-theme-solarized.github.sellout"))
 
 (require 'solarized-dark-theme)
 (enable-theme 'solarized-dark)

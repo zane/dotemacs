@@ -1,11 +1,22 @@
 ;;; zane-elpa.el --- Install a base set of packages automatically.
-;; 
+;;
 ;; Based on starter-kit-elpa.el from the Emacs Starter Kit
 ;; https://github.com/technomancy/emacs-starter-kit
 
-(require 'cl)
+;; Load up ELPA, the package manager
+;; Tricks below here stolen from the Emacs Starter Kit:
+;; https://github.com/technomancy/emacs-starter-kit
 
-(defvar zane-packages '(css-mode
+(add-to-list 'load-path (concat user-emacs-directory "lib/package.github.technomancy"))
+(require 'package)
+(setq zane-elpa-dir (concat user-emacs-directory "elpa"))
+
+(dolist (source '(("technomancy" . "http://repo.technomancy.us/emacs/")
+                  ("elpa" . "http://tromey.com/elpa/")))
+  (add-to-list 'package-archives source t))
+(package-initialize)
+
+(defvar zane-packages '(
 			find-file-in-project
 			gist
 			idle-highlight
@@ -17,6 +28,7 @@
                         clojure-mode
                         clojure-test-mode
                         color-theme
+                        css-mode
                         dired-isearch
                         full-ack
                         inf-ruby
@@ -26,7 +38,8 @@
                         starter-kit-js
                         starter-kit-lisp
                         starter-kit-ruby
-                        yaml-mode)
+                        yaml-mode
+                        )
   "Libraries that should be installed by default.")
 
 (defun zane-elpa-install ()
@@ -39,7 +52,7 @@
       (message "Installing %s" (symbol-name package))
       (package-install package))))
 
-(defun esk-online? ()
+(defun zane-online? ()
   "See if we're online.
 
   Windows does not have the network-interface-list function, so
@@ -53,7 +66,7 @@
     t))
 
 ;; On your first run, this should pull in all the base packages.
-(when (esk-online?)
+(when (zane-online?)
   (unless package-archive-contents (package-refresh-contents))
   (zane-elpa-install))
 

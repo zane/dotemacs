@@ -1,4 +1,4 @@
-(add-to-list 'load-path (concat zane-emacs-root "lib"))
+(add-to-list 'load-path (concat zane-projects-dir "lib"))
 (eval-after-load "rainbow-delimiters"
   '(progn
      (setq-default frame-background-mode 'dark)

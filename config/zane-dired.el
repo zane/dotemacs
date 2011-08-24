@@ -1,4 +1,4 @@
-(add-to-list 'load-path (concat zane-emacs-root "lib"))
+(add-to-list 'load-path (concat user-emacs-directory "lib"))
 (eval-after-load "dired"
   '(progn
      (require 'dired+)

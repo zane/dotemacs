@@ -6,31 +6,17 @@
 (setq sentence-end-double-space nil)
 (global-auto-revert-mode t)
 
-(setq zane-emacs-root (file-name-directory
-                       (or (buffer-file-name) load-file-name)))
-(add-to-list 'load-path zane-emacs-root)
+(add-to-list 'load-path user-emacs-directory)
 
-
-;; Load up ELPA, the package manager
-;; Tricks below here stolen from the Emacs Starter Kit:
-;; https://github.com/technomancy/emacs-starter-kit
-
-(add-to-list 'load-path (concat zane-emacs-root "/lib/package.github.technomancy"))
-(require 'package)
-(setq zane-elpa-dir (concat zane-emacs-root "/elpa"))
-
-(dolist (source '(("technomancy" . "http://repo.technomancy.us/emacs/")
-                  ("elpa" . "http://tromey.com/elpa/")))
-  (add-to-list 'package-archives source t))
-(package-initialize)
 (require 'zane-elpa)
+(require 'zane-el-get)
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
 ;; Auto-save
 
 (add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
-(setq temporary-file-directory (concat zane-emacs-root "/backup"))
+(setq temporary-file-directory (concat user-emacs-directory "/backup"))
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -60,7 +46,7 @@
   (set-frame-parameter (selected-frame) 'alpha value))
 
 (progn
-  (setq zane-emacs-config-dir (concat zane-emacs-root "config/"))
+  (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
 
   (when (file-exists-p zane-emacs-config-dir)
     (dolist (l (directory-files zane-emacs-config-dir nil "^[^#].*el$"))

@@ -14,7 +14,7 @@
                      line)
                     'face 'linum)))
 
-(add-to-list 'load-path (concat zane-emacs-root "lib"))
+(add-to-list 'load-path (concat zane-projects-dir "lib"))
 (eval-after-load 'linum-off
   '(dolist (mode '(fundamental-mode
                    magit-mode))
