@@ -111,4 +111,6 @@
 	(:name starter-kit-ruby :type elpa)
 	))
 
+(el-get 'wait)
+
 (provide 'zane-el-get)
