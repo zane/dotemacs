@@ -11,8 +11,6 @@
 
 (add-to-list 'load-path user-emacs-directory)
 
-
-
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
 ;; Auto-save
