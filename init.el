@@ -1,5 +1,6 @@
 ;; TODO: http://www.nongnu.org/geiser/
 ;; TODO: Look into this https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
+;; TODO: http://tapoueh.org/blog/2011/07/29-emacs-ansi-colors.html
 (require 'cl)
 
 (setq-default truncate-lines t)
