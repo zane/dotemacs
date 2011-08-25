@@ -33,11 +33,6 @@
 ;;(set-face-attribute 'default nil :font "Consolas-14")
 (set-face-attribute 'default nil :font "Inconsolata-13")
 
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha value))
-
 (progn
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
 
