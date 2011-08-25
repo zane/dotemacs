@@ -8,6 +8,7 @@
 (global-auto-revert-mode t)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
+(fringe-mode 0)
 
 (add-to-list 'load-path user-emacs-directory)
 
