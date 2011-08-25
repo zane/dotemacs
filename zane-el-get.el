@@ -21,7 +21,7 @@
                :after (lambda ()
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
-                        (fringe-mode -1)))
+                        (fringe-mode 0)))
 	full-ack
 	(:name magit
                :after (lambda ()
