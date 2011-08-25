@@ -25,7 +25,7 @@
 	full-ack
 	(:name magit
                :after (lambda ()
-                        (global-set-key (kbd "C-c C-z") 'magit-status)))
+                        (global-set-key (kbd "C-c C-g") 'magit-status)))
 	markdown-mode
 	(:name paredit
                :type http
@@ -39,7 +39,6 @@
                         (add-to-list 'paredit-space-for-delimiter-predicates
                                      (lambda (endp delimiter)
                                        (not (member major-mode paredit-no-space-list))))))
-
 	rinari
 	slime
         (:name coffee-mode
@@ -115,3 +114,5 @@
                         (setq framemove-hook-into-windmove t)))))
 
 (el-get)
+
+(provide 'zane-el-get)
