@@ -1,4 +1,5 @@
-(eval-after-load 'python-mode
+(eval-after-load 'python
   '(progn
-     ;; We never watn to edit Python bytecode
+     (setq python-python-command "ipython")
+     ;; We never want to edit Python bytecode
      (add-to-list 'completion-ignored-extensions ".rbc")))
