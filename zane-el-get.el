@@ -23,7 +23,9 @@
                         (show-paren-mode -1)
                         (fringe-mode -1)))
 	full-ack
-	magit
+	(:name magit
+               :after (lambda ()
+                        (global-set-key (kbd "C-c C-z") 'magit-status)))
 	markdown-mode
 	(:name paredit
                :type http
@@ -106,8 +108,10 @@
 	(:name starter-kit-js   :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
-	))
+        (:name framemove
+               :type emacswiki
+               :features framemove
+               :after (lambda ()
+                        (setq framemove-hook-into-windmove t)))))
 
 (el-get)
-
-(provide 'zane-el-get)
