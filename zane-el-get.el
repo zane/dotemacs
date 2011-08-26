@@ -21,7 +21,16 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
-	full-ack
+        (:name ergoemacs-keybindings
+               :load "ergoemacs-mode"
+               :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
+               :after (lambda () (ergoemacs-mode 1)))
+	(:name framemove
+               :type emacswiki
+               :features framemove
+               :after (lambda ()
+                        (setq framemove-hook-into-windmove t)))
+        full-ack
 	(:name magit
                :after (lambda ()
                         (global-set-key (kbd "C-c C-g") 'magit-status)))
@@ -93,6 +102,26 @@
 	(:name speck
                :type emacswiki
                :features speck)
+        (:name undo-tree
+               :features undo-tree
+               :before (lambda ()
+                         (progn
+                           (setq undo-tree-map (make-sparse-keymap))
+                           ;; remap `undo' and `undo-only' to `undo-tree-undo'
+                           (define-key undo-tree-map [remap undo] 'undo-tree-undo)
+                           (define-key undo-tree-map [remap undo-only] 'undo-tree-undo)
+                           ;; redo doesn't exist normally, so define our own keybindings
+                           (define-key undo-tree-map (kbd "M-Z") 'undo-tree-redo)
+                           ;; just in case something has defined `redo'...
+                           (define-key undo-tree-map [remap redo] 'undo-tree-redo)
+                           ;; we use "C-x u" for the undo-tree visualizer
+                           (define-key undo-tree-map (kbd "\C-x u") 'undo-tree-visualize)
+                           ;; bind register commands
+                           (define-key undo-tree-map (kbd "C-x r u")
+                             'undo-tree-save-state-to-register)
+                           (define-key undo-tree-map (kbd "C-x r U")
+                             'undo-tree-restore-state-from-register)))
+               :after (lambda () (global-undo-tree-mode)))
         (:name linum-off
                :type emacswiki
                :features linum-off
@@ -112,11 +141,7 @@
 	(:name starter-kit-js   :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
-        (:name framemove
-               :type emacswiki
-               :features framemove
-               :after (lambda ()
-                        (setq framemove-hook-into-windmove t)))))
+        ))
 
 (el-get)
 

@@ -2,8 +2,71 @@
 ;;;
 ;;; http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html
 
+;;; http://code.google.com/p/ergoemacs/wiki/adoption
+
+;; hash table to store the old key bindings
+(setq old-key-bindings (make-hash-table :test 'equal))
+
+;; shows a hint about the change of the key binding
+(defun show-hint-old-kbind (key)
+  (let ((function-symbol (gethash key old-key-bindings)))
+    (beep)
+    (message "You typed: %s. For %s, use %s."
+             key
+             function-symbol
+             (mapcar 'key-description (where-is-internal function-symbol)))))
+
+;; turns off a key binding, leaving a hint for the unbound command
+(defmacro global-unset-key-leave-hint (key)
+  `(let ((function-symbol (global-key-binding (kbd ,key))))
+     (when function-symbol
+       (puthash ,key function-symbol old-key-bindings)
+       (global-set-key (kbd ,key) (lambda() (interactive) (show-hint-old-kbind ,key))))))
+
+;; Move down
+(global-set-key (kbd "M-k") 'next-line)
+(global-unset-key-leave-hint "<down>")
+(global-unset-key-leave-hint "C-n")
+
+;; Move up
+(global-set-key (kbd "M-i") 'previous-line)
+(global-unset-key-leave-hint "<up>")
+(global-unset-key-leave-hint "C-p")
+
+;; Move left
+(global-set-key (kbd "M-j") 'backward-char)
+(global-unset-key-leave-hint "<left>")
+(global-unset-key-leave-hint "C-b")
+
+;; Move right
+(global-set-key (kbd "M-l") 'forward-char)
+(global-unset-key-leave-hint "<right>")
+(global-unset-key-leave-hint "C-f")
+
+;; Cut
+(global-set-key (kbd "M-x") 'kill-region)
+(global-unset-key-leave-hint "C-k")
+
+;; Copy
+(global-set-key (kbd "M-c") 'kill-ring-save)
+(global-unset-key-leave-hint "C-k")
+
+;; Paste
+(global-unset-key-leave-hint "M-y")
+(global-set-key (kbd "M-v") 'yank)
+(global-unset-key-leave-hint "C-y")
+
+;; Undo
+(global-set-key (kbd "M-z") 'undo)
+(global-unset-key-leave-hint "C-_")
+
+;; Execute Extended Command
+(global-set-key (kbd "M-a") 'execute-extended-command)
+
+;; TODO: Redo
+
 (setq mac-command-modifier 'meta)
-(setq mac-function-modifier 'super)
+;; (setq mac-function-modifier 'super)
 
 ;; Navigation
 
@@ -14,29 +77,29 @@
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen) ; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
 
-(global-set-key (kbd "M-j") 'backward-char) ; was indent-new-comment-line
-(global-set-key (kbd "M-l") 'forward-char)  ; was downcase-word
-(global-set-key (kbd "M-i") 'previous-line) ; was tab-to-tab-stop
-(global-set-key (kbd "M-k") 'next-line) ; was kill-sentence
+;; (global-set-key (kbd "M-j") 'backward-char) ; was indent-new-comment-line
+;; (global-set-key (kbd "M-l") 'forward-char)  ; was downcase-word
+;; (global-set-key (kbd "M-i") 'previous-line) ; was tab-to-tab-stop
+;; (global-set-key (kbd "M-k") 'next-line) ; was kill-sentence
 
-(global-set-key (kbd "M-J") 'backward-sexp)
-(global-set-key (kbd "M-L") 'forward-sexp)
-(global-set-key (kbd "M-I") 'backward-up-list)
-(global-set-key (kbd "M-K") 'down-list)
+;; (global-set-key (kbd "M-J") 'backward-sexp)
+;; (global-set-key (kbd "M-L") 'forward-sexp)
+;; (global-set-key (kbd "M-I") 'backward-up-list)
+;; (global-set-key (kbd "M-K") 'down-list)
 
-(global-set-key (kbd "s-j") 'windmove-left)
-(global-set-key (kbd "s-l") 'windmove-right)
-(global-set-key (kbd "s-i") 'windmove-up)
-(global-set-key (kbd "s-k") 'windmove-down)
+;; (global-set-key (kbd "s-j") 'windmove-left)
+;; (global-set-key (kbd "s-l") 'windmove-right)
+;; (global-set-key (kbd "s-i") 'windmove-up)
+;; (global-set-key (kbd "s-k") 'windmove-down)
 
-(global-set-key (kbd "C-j") 'backward-word)
-(global-set-key (kbd "C-l") 'forward-word)
+;; (global-set-key (kbd "C-j") 'backward-word)
+;; (global-set-key (kbd "C-l") 'forward-word)
 
 ;; Unbinding of old navigation
 
-(global-set-key (kbd "C-n") nil)
-(global-set-key (kbd "C-n") nil)
-(global-set-key (kbd "M-f") nil)
-(global-set-key (kbd "M-b") nil)
+;; (global-set-key (kbd "C-n") nil)
+;; (global-set-key (kbd "C-n") nil)
+;; (global-set-key (kbd "M-f") nil)
+;; (global-set-key (kbd "M-b") nil)
 
 (provide 'zane-keys)
