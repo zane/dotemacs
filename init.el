@@ -10,6 +10,7 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (fringe-mode 0)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 (add-to-list 'load-path user-emacs-directory)
 
