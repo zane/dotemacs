@@ -1,3 +1,5 @@
+(add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
+
 ;; Get el-get and install it if we don't have it already.
 (unless (require 'el-get nil t)
   (url-retrieve
@@ -5,8 +7,6 @@
    (lambda (s)
      (end-of-buffer)
      (eval-print-last-sexp))))
-
-(add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
 
 (require 'el-get)
 
