@@ -1,4 +1,4 @@
-ar(add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
+(add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
 
 ;; Get el-get and install it if we don't have it already.
 (unless (require 'el-get nil t)
@@ -39,9 +39,9 @@ ar(add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
                                      (lambda (endp delimiter)
                                        (not (member major-mode paredit-no-space-list))))
                         (define-key paredit-mode-map (kbd "M-J") 'paredit-backward)
-                        (define-key paredit-mode-map (kbd "M-L") 'paredit-forward-down)
+                        (define-key paredit-mode-map (kbd "M-L") 'paredit-forward)
                         (define-key paredit-mode-map (kbd "M-I") 'paredit-backward-up)
-                        (define-key paredit-mode-map (kbd "M-K") 'paredit-forward)
+                        (define-key paredit-mode-map (kbd "M-K") 'paredit-forward-down)
 
                         (define-key paredit-mode-map (kbd "C-j") nil)))
 	rinari

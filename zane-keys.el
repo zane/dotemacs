@@ -34,6 +34,9 @@
 
 ;; Unbinding of old navigation
 
-(global-set-key (kbd))
+(global-set-key (kbd "C-n") nil)
+(global-set-key (kbd "C-n") nil)
+(global-set-key (kbd "M-f") nil)
+(global-set-key (kbd "M-b") nil)
 
 (provide 'zane-keys)
