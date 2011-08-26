@@ -34,6 +34,7 @@
 ;;(set-face-attribute 'default nil :font "Consolas-14")
 (set-face-attribute 'default nil :font "Inconsolata-13")
 
+;; Load all the files in the config dirac
 (progn
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
 
