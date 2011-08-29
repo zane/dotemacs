@@ -19,4 +19,14 @@
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
 
+(defun switch-to-next-frame ()
+  "Select the next frame on current display, and raise it."
+  (interactive)
+  (other-frame 1))
+
+(defun switch-to-previous-frame ()
+  "Select the previous frame on current display, and raise it."
+  (interactive)
+  (other-frame -1))
+
 (provide 'zane-funcs)

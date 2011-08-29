@@ -73,6 +73,11 @@
 ;; Execute Extended Command
 (global-set-key (kbd "M-a") 'execute-extended-command)
 
+;; Other
+
+(global-set-key (kbd "M-~") 'switch-to-previous-frame)
+(global-set-key (kbd "M-`") 'switch-to-next-frame)
+
 ;; TODO: Redo
 
 (setq mac-command-modifier 'meta)
