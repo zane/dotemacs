@@ -45,7 +45,7 @@
 
 ;; Cut
 (global-set-key (kbd "M-x") 'kill-region)
-(global-unset-key-leave-hint "C-k")
+(global-unset-key-leave-hint "C-w")
 
 ;; Copy
 (global-set-key (kbd "M-c") 'kill-ring-save)
