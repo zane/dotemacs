@@ -66,6 +66,10 @@
 (global-unset-key-leave-hint "M-f")
 (global-set-key (kbd "M-o") 'forward-word)
 
+;; Fast movement
+(global-set-key (kbd "M-I") 'scroll-down-command)
+(global-set-key (kbd "M-K") 'scroll-up-command)
+
 ;; Execute Extended Command
 (global-set-key (kbd "M-a") 'execute-extended-command)
 

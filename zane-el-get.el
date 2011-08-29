@@ -47,10 +47,10 @@
                         (add-to-list 'paredit-space-for-delimiter-predicates
                                      (lambda (endp delimiter)
                                        (not (member major-mode paredit-no-space-list))))
-                        (define-key paredit-mode-map (kbd "M-J") 'paredit-backward)
-                        (define-key paredit-mode-map (kbd "M-L") 'paredit-forward)
-                        (define-key paredit-mode-map (kbd "M-I") 'paredit-backward-up)
-                        (define-key paredit-mode-map (kbd "M-K") 'paredit-forward-down)
+                        (define-key paredit-mode-map (kbd "C-M-j") 'paredit-backward)
+                        (define-key paredit-mode-map (kbd "C-M-l") 'paredit-forward)
+                        (define-key paredit-mode-map (kbd "C-M-i") 'paredit-backward-up)
+                        (define-key paredit-mode-map (kbd "C-M-k") 'paredit-forward-down)
 
                         (define-key paredit-mode-map (kbd "C-j") nil)))
 	rinari
