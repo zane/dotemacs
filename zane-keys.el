@@ -60,6 +60,12 @@
 (global-set-key (kbd "M-z") 'undo)
 (global-unset-key-leave-hint "C-_")
 
+;; Move by word
+(global-unset-key-leave-hint "M-b")
+(global-set-key (kbd "M-u") 'backward-word)
+(global-unset-key-leave-hint "M-f")
+(global-set-key (kbd "M-o") 'forward-word)
+
 ;; Execute Extended Command
 (global-set-key (kbd "M-a") 'execute-extended-command)
 
