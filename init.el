@@ -47,5 +47,5 @@
 
 (require 'zane-el-get)
 (require 'zane-funcs)
-(require 'zane-keys)
+(require 'zane-keybindings)
 

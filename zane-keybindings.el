@@ -44,12 +44,12 @@
 (global-unset-key-leave-hint "C-f")
 
 ;; Cut
-(global-set-key (kbd "M-x") 'kill-region)
 (global-unset-key-leave-hint "C-w")
+(global-set-key (kbd "M-x") 'kill-region)
 
 ;; Copy
+(global-unset-key-leave-hint "M-w")
 (global-set-key (kbd "M-c") 'kill-ring-save)
-(global-unset-key-leave-hint "C-k")
 
 ;; Paste
 (global-unset-key-leave-hint "M-y")
@@ -65,6 +65,12 @@
 (global-set-key (kbd "M-u") 'backward-word)
 (global-unset-key-leave-hint "M-f")
 (global-set-key (kbd "M-o") 'forward-word)
+
+;; Move to beginning/ending of line
+(global-unset-key-leave-hint "C-a")
+(global-set-key (kbd "M-h") 'move-beginning-of-line)
+(global-unset-key-leave-hint "C-e")
+(global-set-key (kbd "M-H") 'move-end-of-line)
 
 ;; Fast movement
 (global-set-key (kbd "M-I") 'scroll-down-command)
@@ -90,7 +96,7 @@
 (global-set-key (kbd "C-o") 'other-window)
 (global-set-key (kbd "C-x y") 'bury-buffer)
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen) ; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
-(global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+;; (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
 
 ;; (global-set-key (kbd "M-j") 'backward-char) ; was indent-new-comment-line
 ;; (global-set-key (kbd "M-l") 'forward-char)  ; was downcase-word
@@ -117,4 +123,4 @@
 ;; (global-set-key (kbd "M-f") nil)
 ;; (global-set-key (kbd "M-b") nil)
 
-(provide 'zane-keys)
+(provide 'zane-keybindings)
