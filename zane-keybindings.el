@@ -117,4 +117,4 @@
 ;; (global-set-key (kbd "M-f") nil)
 ;; (global-set-key (kbd "M-b") nil)
 
-(provide 'zane-keys)
+(provide 'zane-keybindings)
