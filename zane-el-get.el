@@ -130,6 +130,7 @@
                           (add-to-list 'linum-disabled-modes-list mode))))
         (:name smex
                :after (lambda ()
+                        (setq smex-save-file (concat user-emacs-directory ".smex-items"))
                         (global-set-key (kbd "M-a") 'smex)
                         (global-set-key (kbd "M-A") 'smex-major-mode-commands)
                         (global-set-key (kbd "C-c C-c M-a") 'execute-extended-command)))
