@@ -21,10 +21,9 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
-        ;; (:name ergoemacs-keybindings
-        ;;        :load "ergoemacs-mode"
-        ;;        :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
-        ;;        :after (lambda () (ergoemacs-mode 1)))
+        (:name ergoemacs-keybindings
+               :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
+               :after (lambda () (ergoemacs-mode 1)))
 	(:name framemove
                :type emacswiki
                :features framemove
