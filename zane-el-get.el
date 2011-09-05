@@ -42,7 +42,7 @@
                :after (lambda ()
                         (defvar paredit-no-space-list '(python-mode)
                           "The list of major modes for which paredit should refrain appending a space
-   when inserting a matching delimiter.")
+                           when inserting a matching delimiter.")
 
                         (add-to-list 'paredit-space-for-delimiter-predicates
                                      (lambda (endp delimiter)
