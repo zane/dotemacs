@@ -131,6 +131,7 @@
         (:name smex
                :after (lambda ()
                         (setq smex-save-file (concat user-emacs-directory ".smex-items"))
+                        (setq smex-prompt-string "M-a ")
                         (global-set-key (kbd "M-a") 'smex)
                         (global-set-key (kbd "M-A") 'smex-major-mode-commands)
                         (global-set-key (kbd "C-c C-c M-a") 'execute-extended-command)))
