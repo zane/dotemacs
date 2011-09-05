@@ -21,10 +21,10 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
-        (:name ergoemacs-keybindings
-               :load "ergoemacs-mode"
-               :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
-               :after (lambda () (ergoemacs-mode 1)))
+        ;; (:name ergoemacs-keybindings
+        ;;        :load "ergoemacs-mode"
+        ;;        :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
+        ;;        :after (lambda () (ergoemacs-mode 1)))
 	(:name framemove
                :type emacswiki
                :features framemove
@@ -105,22 +105,21 @@
         (:name undo-tree
                :features undo-tree
                :before (lambda ()
-                         (progn
-                           (setq undo-tree-map (make-sparse-keymap))
-                           ;; remap `undo' and `undo-only' to `undo-tree-undo'
-                           (define-key undo-tree-map [remap undo] 'undo-tree-undo)
-                           (define-key undo-tree-map [remap undo-only] 'undo-tree-undo)
-                           ;; redo doesn't exist normally, so define our own keybindings
-                           (define-key undo-tree-map (kbd "M-Z") 'undo-tree-redo)
-                           ;; just in case something has defined `redo'...
-                           (define-key undo-tree-map [remap redo] 'undo-tree-redo)
-                           ;; we use "C-x u" for the undo-tree visualizer
-                           (define-key undo-tree-map (kbd "\C-x u") 'undo-tree-visualize)
-                           ;; bind register commands
-                           (define-key undo-tree-map (kbd "C-x r u")
-                             'undo-tree-save-state-to-register)
-                           (define-key undo-tree-map (kbd "C-x r U")
-                             'undo-tree-restore-state-from-register)))
+                         (setq undo-tree-map (make-sparse-keymap))
+                         ;; remap `undo' and `undo-only' to `undo-tree-undo'
+                         (define-key undo-tree-map [remap undo] 'undo-tree-undo)
+                         (define-key undo-tree-map [remap undo-only] 'undo-tree-undo)
+                         ;; redo doesn't exist normally, so define our own keybindings
+                         (define-key undo-tree-map (kbd "M-Z") 'undo-tree-redo)
+                         ;; just in case something has defined `redo'...
+                         (define-key undo-tree-map [remap redo] 'undo-tree-redo)
+                         ;; we use "C-x u" for the undo-tree visualizer
+                         (define-key undo-tree-map (kbd "\C-x u") 'undo-tree-visualize)
+                         ;; bind register commands
+                         (define-key undo-tree-map (kbd "C-x r u")
+                           'undo-tree-save-state-to-register)
+                         (define-key undo-tree-map (kbd "C-x r U")
+                           'undo-tree-restore-state-from-register))
                :after (lambda () (global-undo-tree-mode)))
         (:name linum-off
                :type emacswiki
@@ -129,6 +128,10 @@
                         (dolist (mode '(fundamental-mode
                                         magit-mode))
                           (add-to-list 'linum-disabled-modes-list mode))))
+        (:name smex
+               :after (lambda ()
+                        (global-set-key (kbd "M-a") 'smex)
+                        (global-set-key (kbd "M-A") 'smex-major-mode-commands)))
 	(:name starter-kit :type elpa
                :after (lambda ()
                         (add-hook 'text-mode-hook (lambda () (speck-mode t)))
