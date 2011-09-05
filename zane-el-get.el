@@ -131,7 +131,8 @@
         (:name smex
                :after (lambda ()
                         (global-set-key (kbd "M-a") 'smex)
-                        (global-set-key (kbd "M-A") 'smex-major-mode-commands)))
+                        (global-set-key (kbd "M-A") 'smex-major-mode-commands)
+                        (global-set-key (kbd "C-c C-c M-a") 'execute-extended-command)))
 	(:name starter-kit :type elpa
                :after (lambda ()
                         (add-hook 'text-mode-hook (lambda () (speck-mode t)))
