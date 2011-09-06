@@ -15,7 +15,8 @@
 (package-initialize)
 
 (setq el-get-sources
-      '((:name color-theme-solarized
+      '(auto-complete
+        (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
                         (enable-theme 'solarized-dark)
