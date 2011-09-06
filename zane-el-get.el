@@ -15,7 +15,9 @@
 (package-initialize)
 
 (setq el-get-sources
-      '(auto-complete
+      '((:name auto-complete
+               :after (lambda ()
+                        (setq ac-sources (append ac-sources '(ac-soure-yasnippet)))))
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
