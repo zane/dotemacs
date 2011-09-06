@@ -18,8 +18,9 @@
       '((:name auto-complete
                :after (lambda ()
                         (setq ac-sources (append ac-sources '(ac-source-yasnippet)))
-                        (define-key ac-complete-mode-map (kbd "M-i") 'ac-previous)
-                        (define-key ac-complete-mode-map (kbd "M-k") 'ac-next)))
+                        (setq ac-use-menu-map t)
+                        (define-key ac-menu-map (kbd "M-i") 'ac-previous)
+                        (define-key ac-menu-map (kbd "M-k") 'ac-next)))
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
@@ -48,6 +49,7 @@
                           "The list of major modes for which paredit should refrain appending a space
                            when inserting a matching delimiter.")
 
+                        (setq paredit-mode-map (make-sparse-keymap))
                         (add-to-list 'paredit-space-for-delimiter-predicates
                                      (lambda (endp delimiter)
                                        (not (member major-mode paredit-no-space-list))))
