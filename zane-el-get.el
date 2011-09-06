@@ -17,7 +17,9 @@
 (setq el-get-sources
       '((:name auto-complete
                :after (lambda ()
-                        (setq ac-sources (append ac-sources '(ac-soure-yasnippet)))))
+                        (setq ac-sources (append ac-sources '(ac-source-yasnippet)))
+                        (define-key ac-complete-mode-map (kbd "M-i") 'ac-previous)
+                        (define-key ac-complete-mode-map (kbd "M-k") 'ac-next)))
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
