@@ -20,7 +20,11 @@
                         (setq ac-sources (append ac-sources '(ac-source-yasnippet)))
                         (setq ac-use-menu-map t)
                         (define-key ac-menu-map (kbd "M-i") 'ac-previous)
-                        (define-key ac-menu-map (kbd "M-k") 'ac-next)))
+                        (define-key ac-menu-map (kbd "M-k") 'ac-next)
+
+                        (add-to-list 'ac-modes 'shell-mode)
+                        (add-to-list 'shell-mode-hook
+                                     (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers))))))
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
