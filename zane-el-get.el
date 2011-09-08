@@ -38,6 +38,7 @@
                :type emacswiki
                :features framemove
                :after (lambda ()
+                        ;; try moving frames if moving windows fails
                         (setq framemove-hook-into-windmove t)))
         full-ack
 	(:name magit

@@ -4,6 +4,9 @@
 
 ;;; http://code.google.com/p/ergoemacs/wiki/adoption
 
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier 'alt)
+
 ;; hash table to store the old key bindings
 (setq old-key-bindings (make-hash-table :test 'equal))
 
@@ -18,13 +21,18 @@
 
 ;; turns off a key binding, leaving a hint for the unbound command
 (defmacro global-unset-key-leave-hint (key)
-  `(let ((function-symbol (global-key-binding (kbd ,key))))
+  `(let ((function-symbol (global-key-binding ,key)))
      (when function-symbol
        (puthash ,key function-symbol old-key-bindings)
        (global-set-key (kbd ,key) (lambda() (interactive) (show-hint-old-kbind ,key))))))
 
-(setq mac-command-modifier 'meta)
-;; (setq mac-function-modifier 'super)
+(global-unset-key (kbd "C-x C-k"))
+
+;; Tab key
+;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
+(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+
+(global-set-key (kbd "C-w") 'close-current-buffer)
 
 (global-set-key (kbd "C-c C-a") 'align-regexp)
 (global-set-key (kbd "C-c C-o") 'sort-lines)
