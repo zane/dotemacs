@@ -155,7 +155,8 @@
                         (remove-hook 'text-mode-hook 'turn-on-flyspell)
 
                         (add-hook 'esk-coding-hook (lambda () (setq truncate-lines t)))
-                        (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)))
+                        (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+                        (remove-hook 'emacs-lisp-mode-hook 'esk-turn-on-paredit)))
 	(:name starter-kit-js   :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
