@@ -1,7 +1,7 @@
 ;;; zane-keys.el --- Keyboard shortcuts.
 ;;;
+;;; http://www.masteringemacs.org/articles/2011/02/08/mastering-key-bindings-emacs/
 ;;; http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html
-
 ;;; http://code.google.com/p/ergoemacs/wiki/adoption
 
 (setq mac-command-modifier 'meta)
@@ -28,10 +28,6 @@
 
 (global-unset-key (kbd "C-x C-k"))
 
-;; Tab key
-;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
-(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
-
 (global-set-key (kbd "C-w") 'close-current-buffer)
 
 (global-set-key (kbd "C-c C-a") 'align-regexp)
@@ -39,5 +35,13 @@
 (global-set-key (kbd "C-x y") 'bury-buffer)
 (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen) ; http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
 ;; (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+
+;; Tab key
+;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
+(keyboard-translate ?\C-i ?\H-i)
+(global-set-key (kbd "H-i") 'windmove-up)
+(global-set-key (kbd "C-l") 'windmove-right)
+(global-set-key (kbd "C-j") 'windmove-left)
+(global-set-key (kbd "C-k") 'windmove-down)
 
 (provide 'zane-keybindings)
