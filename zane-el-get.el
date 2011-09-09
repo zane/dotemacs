@@ -33,7 +33,21 @@
                         (fringe-mode 0)))
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
-               :after (lambda () (ergoemacs-mode 1)))
+               :after (lambda ()
+                        (defun zane-ergoemacs-ido-minibuffer-setup-hook ()
+                          (ergoemacs-ido-minibuffer-setup-hook)
+                          ;; Swap the prev/next and prev/next-dir keys
+                          ;; since we're displaying ido candidates
+                          ;; vertically instead of horizontally
+                          (define-key ergoemacs-ido-keymap ergoemacs-forward-char-key 'ido-next-match-dir) ; 'ido-prev-match-dir
+                          (define-key ergoemacs-ido-keymap ergoemacs-backward-char-key 'ido-prev-match-dir) ; 'ido-prev-match
+                          (define-key ergoemacs-ido-keymap ergoemacs-previous-line-key 'ido-prev-match) ; 'ido-next-match-dir
+                          (define-key ergoemacs-ido-keymap ergoemacs-next-line-key 'ido-next-match) ; 'ido-prev-match-dir
+                          )
+
+                        (remove-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
+                        (add-hook 'ido-minibuffer-setup-hook 'zane-ergoemacs-ido-minibuffer-setup-hook)
+                        (ergoemacs-mode 1)))
 	(:name framemove
                :type emacswiki
                :features framemove
@@ -61,7 +75,10 @@
                         ;; C-j conflicts with windmove-left
                         (define-key paredit-mode-map (kbd "C-j") nil)
                         ;; C-k conflicts with windmove-down
-                        (define-key paredit-mode-map (kbd "C-k") nil)))
+                        (define-key paredit-mode-map (kbd "C-k") nil)
+                        ;; C-; conflicts with searching
+                        (define-key paredit-mode-map (kbd "C-;") nil)
+                        ))
 	rinari
 	slime
         (:name coffee-mode
