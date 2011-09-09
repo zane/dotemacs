@@ -22,9 +22,17 @@
                         (define-key ac-menu-map (kbd "M-i") 'ac-previous)
                         (define-key ac-menu-map (kbd "M-k") 'ac-next)
 
+                        ;; Auto-complete for shell
                         (add-to-list 'ac-modes 'shell-mode)
                         (add-to-list 'shell-mode-hook
-                                     (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers))))))
+                                     (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers))))
+
+                        ;; Auto-complete for text-files
+                        (add-to-list 'ac-modes 'text-mode)
+                        (add-to-list 'text-mode-hook
+                                     (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers
+                                                              ac-source-files-in-current-dir
+                                                              ac-source-yasnippet))))))
         (:name color-theme-solarized
                :features solarized-dark-theme
                :after (lambda ()
@@ -77,7 +85,10 @@
                         ;; C-k conflicts with windmove-down
                         (define-key paredit-mode-map (kbd "C-k") nil)
                         ;; C-; conflicts with searching
-                        (define-key paredit-mode-map (kbd "C-;") nil)
+                        (define-key paredit-mode-map (kbd "M-;") nil)
+                        ;; M-J conflicts with moving to the beginning
+                        ;; of the file
+                        (define-key paredit-mode-map (kbd "M-J") nil)
                         ))
 	rinari
 	slime
