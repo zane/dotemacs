@@ -39,6 +39,9 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
+        (:name deft
+               :type git
+               :url "git://jblevins.org/git/deft.git")
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
                :after (lambda ()
