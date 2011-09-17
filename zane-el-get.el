@@ -41,7 +41,14 @@
                         (fringe-mode 0)))
         (:name deft
                :type git
-               :url "git://jblevins.org/git/deft.git")
+               :url "git://jblevins.org/git/deft.git"
+               :features deft
+               :after (lambda ()
+                        (let ((deft-dir (expand-file-name (concat user-home-directory "/.deft"))))
+                          (if (not (file-exists-p deft-dir))
+                              (make-symbolic-link (expand-file-name (concat user-dropbox-directory
+                                                                            "/Documents/deft"))
+                                                  deft-dir)))))
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
                :after (lambda ()
