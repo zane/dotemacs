@@ -14,6 +14,12 @@
 (fringe-mode 0)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(defvar user-home-directory
+  (expand-file-name (concat user-emacs-directory "/../"))
+  "The user's home directory.")
+(defvar user-dropbox-directory
+  (expand-file-name (concat user-home-directory "/Dropbox/"))
+  "The user's Dropbox root directory.")
 (add-to-list 'load-path user-emacs-directory)
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
