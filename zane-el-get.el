@@ -78,7 +78,9 @@
 	(:name magit
                :after (lambda ()
                         (global-set-key (kbd "C-c C-g") 'magit-status)))
-	markdown-mode
+	(:name markdown-mode
+               :after (lambda ()
+                        (add-to-list 'auto-mode-alist '(".mkd" . markdown-mode))))
         (:name org-mode
                :after (lambda ()
                         (setq org-default-notes-file (concat org-directory "/inbox.org"))
