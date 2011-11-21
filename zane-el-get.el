@@ -51,6 +51,7 @@
                           (if (not (file-exists-p deft-dir))
                               (make-symbolic-link org-directory
                                                   deft-dir)))))
+        (:name ensime)
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
                :after (lambda ()
@@ -182,6 +183,7 @@
                         (dolist (mode '(fundamental-mode
                                         magit-mode))
                           (add-to-list 'linum-disabled-modes-list mode))))
+        (:name scala-mode)
         (:name smex
                :after (lambda ()
                         (setq smex-save-file (concat user-emacs-directory ".smex-items"))
