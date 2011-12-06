@@ -184,6 +184,7 @@
                         (dolist (mode '(fundamental-mode
                                         magit-mode))
                           (add-to-list 'linum-disabled-modes-list mode))))
+        (:name scala-mode)
         (:name smex
                :after (lambda ()
                         (setq smex-save-file (concat user-emacs-directory ".smex-items"))
