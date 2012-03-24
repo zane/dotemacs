@@ -28,6 +28,7 @@
 
 (global-unset-key (kbd "C-x C-k"))
 
+(global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-w") 'close-current-buffer)
 
 (global-set-key (kbd "C-c C-a") 'align-regexp)
