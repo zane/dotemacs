@@ -37,6 +37,7 @@
 (setq server-use-tcp t)
 (delete-selection-mode 1)
 (setq font-lock-maximum-decoration (list (cons t t)))
+(setq ns-pop-up-frames nil)
 
 ;; Set font
 ;; TODO: Make this conditional based on os
