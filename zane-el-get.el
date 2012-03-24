@@ -100,13 +100,17 @@
                :after (add-hook 'coffee-mode-hook
                                 '(lambda () (set (make-local-variable 'tab-width) 2))))
         (:name solarized-theme
-               :type elpa)
+               :type elpa
+               :after (lambda ()
+                        (enable-theme 'solarized-dark)
+                        (show-paren-mode -1)
+                        (fringe-mode 0)))
         (:name clojure-mode
                :type elpa
                :after (lambda ()
                         (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)))
         (:name dired+
-               :type emacswiki
+               :type elpa
                :after (lambda ()
                         (add-to-list 'font-lock-maximum-decoration '(dired-mode . nil))))
         (:name dired-isearch
@@ -118,10 +122,10 @@
                         (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
                         (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
         ;; ensime ; fails with compilation error
-        (:name flymake-cursor :type emacswiki :features flymake-cursor)
+        (:name flymake :type elpa)
+        (:name flymake-cursor :type elpa)
         (:name rainbow-delimiters
-               :type emacswiki
-               :features rainbow-delimiters
+               :type elpa
                :after (lambda ()
                         (defun zane-turn-on-rainbow-delimiters-mode ()
                           (interactive)
@@ -135,9 +139,7 @@
                                                  python-mode-hook)))
                           (dolist (hook supported-modes)
                             (add-hook hook 'zane-turn-on-rainbow-delimiters-mode)))))
-	(:name speck
-               :type emacswiki
-               :features speck)
+	(:name speck :type elpa)
         (:name undo-tree
                :features undo-tree
                :before (lambda ()
