@@ -29,12 +29,6 @@
                                      (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers
                                                               ac-source-files-in-current-dir
                                                               ac-source-yasnippet))))))
-        (:name color-theme-solarized
-               :features solarized-dark-theme
-               :after (lambda ()
-                        (enable-theme 'solarized-dark)
-                        (show-paren-mode -1)
-                        (fringe-mode 0)))
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
                :after (lambda ()
@@ -105,6 +99,8 @@
                             (setq coffee-js-mode 'javascript-mode))
                :after (add-hook 'coffee-mode-hook
                                 '(lambda () (set (make-local-variable 'tab-width) 2))))
+        (:name solarized-theme
+               :type elpa)
         (:name clojure-mode
                :type elpa
                :after (lambda ()
