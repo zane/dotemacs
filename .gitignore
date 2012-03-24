@@ -1,10 +1,12 @@
 *~
 .DS_Store
+.smex-items
 ac-comphist.dat
 backup/
+bookmarks
 el-get/
 elpa/
 places
-.smex-items
+swank/
+tramp
 url/
-bookmarks
