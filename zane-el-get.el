@@ -1,12 +1,7 @@
 (add-to-list 'load-path (concat user-emacs-directory "el-get/el-get"))
 
 ;; Get el-get and install it if we don't have it already.
-(unless (require 'el-get nil t)
-  (url-retrieve
-   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
-   (lambda (s)
-     (end-of-buffer)
-     (eval-print-last-sexp))))
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get") (unless (require 'el-get nil t) (url-retrieve "https://raw.github.com/dimitri/el-get/master/el-get-install.el" (lambda (s) (end-of-buffer) (eval-print-last-sexp))))
 
 (require 'el-get)
 
@@ -16,6 +11,7 @@
 
 ;; Add custom package.el sources (mainly for starter-kit)
 (add-to-list 'package-archives '("technomancy" . "http://repo.technomancy.us/emacs/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 (setq el-get-sources
@@ -39,18 +35,6 @@
                         (enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
-        (:name deft
-               :type git
-               :url "git://jblevins.org/git/deft.git"
-               :features deft
-               :after (lambda ()
-                        (setq deft-extension "org")
-                        (setq deft-text-mode 'org-mode)
-                        (global-set-key (kbd "<f8>") 'deft)
-                        (let ((deft-dir (expand-file-name (concat user-home-directory "/.deft"))))
-                          (if (not (file-exists-p deft-dir))
-                              (make-symbolic-link org-directory
-                                                  deft-dir)))))
         (:name ergoemacs-keybindings
                :before (lambda () (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us"))
                :after (lambda ()
@@ -198,15 +182,14 @@
                         (add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
                         (remove-hook 'text-mode-hook 'turn-on-auto-fill)
                         (remove-hook 'text-mode-hook 'turn-on-flyspell)
-
-                        (add-hook 'esk-coding-hook (lambda () (setq truncate-lines t)))
-                        (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+                        (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
+                        (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
                         (remove-hook 'emacs-lisp-mode-hook 'esk-turn-on-paredit)))
 	(:name starter-kit-js   :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
         ))
 
-(el-get)
+(el-get 'sync)
 
 (provide 'zane-el-get)
