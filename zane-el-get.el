@@ -84,7 +84,19 @@
                         (define-key paredit-mode-map (kbd "M-;") nil)
                         ;; M-J conflicts with moving to the beginning
                         ;; of the file
-                        (define-key paredit-mode-map (kbd "M-J") nil)))
+                        (define-key paredit-mode-map (kbd "M-J") nil)
+
+                        (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-forward-delete
+                        (define-key paredit-mode-map (kbd "M-f") 'paredit-forward-delete)
+
+                        (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-backward-delete
+                        (define-key paredit-mode-map (kbd "M-d") 'paredit-backward-delete)
+
+                        (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-backward-kill-word
+                        (define-key paredit-mode-map (kbd "M-e") 'paredit-backward-kill-word)
+
+                        (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-forward-kill-word
+                        (define-key paredit-mode-map (kbd "M-r") 'paredit-forward-kill-word)))
 	slime
         (:name coffee-mode
                :type git
