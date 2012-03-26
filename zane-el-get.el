@@ -102,7 +102,7 @@
         (:name solarized-theme
                :type elpa
                :after (lambda ()
-                        (enable-theme 'solarized-dark)
+                        ;(enable-theme 'solarized-dark)
                         (show-paren-mode -1)
                         (fringe-mode 0)))
         (:name clojure-mode
