@@ -37,10 +37,10 @@
                           ;; Swap the prev/next and prev/next-dir keys
                           ;; since we're displaying ido candidates
                           ;; vertically instead of horizontally
-                          (define-key ergoemacs-ido-keymap ergoemacs-forward-char-key 'ido-next-match-dir) ; 'ido-prev-match-dir
-                          (define-key ergoemacs-ido-keymap ergoemacs-backward-char-key 'ido-prev-match-dir) ; 'ido-prev-match
-                          (define-key ergoemacs-ido-keymap ergoemacs-previous-line-key 'ido-prev-match) ; 'ido-next-match-dir
-                          (define-key ergoemacs-ido-keymap ergoemacs-next-line-key 'ido-next-match) ; 'ido-prev-match-dir
+                          (define-key ergoemacs-ido-keymap ergoemacs-forward-char-key 'ido-next-match-dir) ; was 'ido-prev-match-dir
+                          (define-key ergoemacs-ido-keymap ergoemacs-backward-char-key 'ido-prev-match-dir) ; was 'ido-prev-match
+                          (define-key ergoemacs-ido-keymap ergoemacs-previous-line-key 'ido-prev-match) ; was 'ido-next-match-dir
+                          (define-key ergoemacs-ido-keymap ergoemacs-next-line-key 'ido-next-match) ; was 'ido-prev-match-dir
                           )
 
                         (remove-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
@@ -84,8 +84,7 @@
                         (define-key paredit-mode-map (kbd "M-;") nil)
                         ;; M-J conflicts with moving to the beginning
                         ;; of the file
-                        (define-key paredit-mode-map (kbd "M-J") nil)
-                        ))
+                        (define-key paredit-mode-map (kbd "M-J") nil)))
 	slime
         (:name coffee-mode
                :type git
