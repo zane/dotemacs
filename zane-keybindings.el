@@ -45,4 +45,8 @@
 (global-set-key (kbd "C-j") 'windmove-left)
 (global-set-key (kbd "C-k") 'windmove-down)
 
+;; Occur
+;; http://www.masteringemacs.org/articles/2011/07/20/searching-buffers-occur-mode/
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+
 (provide 'zane-keybindings)
