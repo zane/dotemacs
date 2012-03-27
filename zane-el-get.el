@@ -96,7 +96,10 @@
                         (define-key paredit-mode-map (kbd "M-e") 'paredit-backward-kill-word)
 
                         (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-forward-kill-word
-                        (define-key paredit-mode-map (kbd "M-r") 'paredit-forward-kill-word)))
+                        (define-key paredit-mode-map (kbd "M-r") 'paredit-forward-kill-word)
+
+                        (define-key paredit-mode-map (kbd "C-k") nil) ; was paredit-kill
+                        (define-key paredit-mode-map (kbd "M-g") 'paredit-kill)))
 	slime
         (:name coffee-mode
                :type git
