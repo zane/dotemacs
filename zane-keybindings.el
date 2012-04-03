@@ -45,6 +45,22 @@
 (global-set-key (kbd "C-j") 'windmove-left)
 (global-set-key (kbd "C-k") 'windmove-down)
 
+(global-unset-key (kbd "C-x RET"))
+(add-hook 'term-exec-hook (lambda ()
+                            (set-buffer-process-coding-system 'utf-8-unix
+                                                              'utf-8-unix)))
+
+(defun clojure-mode-slime-font-lock ()
+            (require 'clojure-mode)
+            (let (font-lock-mode)
+              (clojure-mode-font-lock-setup)))
+(add-hook 'slime-repl-mode-hook 'clojure-mode-slime-font-lock)
+
+(defun turn-on-paredit-mode ()
+  (interactive)
+  (paredit-mode 1))
+(add-hook 'slime-repl-mode-hook 'turn-on-paredit-mode)
+
 ;; Occur
 ;; http://www.masteringemacs.org/articles/2011/07/20/searching-buffers-occur-mode/
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
