@@ -156,8 +156,15 @@
                         (add-to-list 'flymake-err-line-patterns
                                      '("line \\([0-9]+\\) column \\([0-9]+\\) - \\(Warning\\|Error\\): \\(.*\\)"
                                        nil 1 2 4))))
-        (:name flymake-cursor :type elpa)
-        (:name gist :type elpa)
+        (:name flymake-cursor
+               :type elpa
+               :after (lambda ()
+                        (defun turn-on-flymake-cursor ()
+                          (interactive)
+                          (flymake-cursor-mode 1))
+
+                        (add-to-list 'flymake-mode-hook 'turn-on-flymake-cursor)))
+        flymake-point
         (:name rainbow-delimiters
                :type elpa
                :after (lambda ()
