@@ -157,6 +157,7 @@
                                      '("line \\([0-9]+\\) column \\([0-9]+\\) - \\(Warning\\|Error\\): \\(.*\\)"
                                        nil 1 2 4))))
         (:name flymake-cursor :type elpa)
+        (:name gist :type elpa)
         (:name rainbow-delimiters
                :type elpa
                :after (lambda ()
