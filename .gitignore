@@ -6,6 +6,7 @@ backup/
 bookmarks
 el-get/
 elpa/
+eshell/
 places
 swank/
 tramp
