@@ -23,7 +23,7 @@
         full-ack
 	magit
 	markdown-mode
-        org-mode
+        (:name org :type elpa)
         (:name paredit
                :type http
                :url "http://mumble.net/~campbell/emacs/paredit.el"
