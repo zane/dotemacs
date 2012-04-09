@@ -1,12 +1,15 @@
-(setq ac-auto-start nil)
-(setq ac-sources (append ac-sources '(ac-source-yasnippet)))
+(require 'auto-complete)
+(require 'auto-complete-yasnippet)
+
+(setq ac-auto-start 4)
+(setq ac-show-menu-immediately-on-auto-complete t)
+(setq ac-dwim t)
+(setq ac-delay 0)
+(setq ac-expand-on-auto-complete t)
+(ac-set-trigger-key nil)
+
+(setq ac-sources '(ac-source-words-in-same-mode-buffers))
 (setq ac-use-menu-map t)
 (define-key ac-menu-map (kbd "M-i") 'ac-previous)
 (define-key ac-menu-map (kbd "M-k") 'ac-next)
-
-;; Auto-complete for text-files
-(add-to-list 'ac-modes 'text-mode)
-(add-to-list 'text-mode-hook
-             (lambda () (setq ac-sources '(ac-source-words-in-same-mode-buffers
-                                      ac-source-files-in-current-dir
-                                      ac-source-yasnippet))))
+(global-auto-complete-mode t)

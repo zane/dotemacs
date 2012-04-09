@@ -17,12 +17,14 @@
 (setq el-get-user-package-directory (expand-file-name "zane-el-get-package-init" user-emacs-directory))
 
 (setq el-get-sources
-      '(auto-complete
-        ergoemacs-keybindings
+      '(ergoemacs-keybindings
 	(:name framemove :type emacswiki :features framemove)
         full-ack
 	magit
 	markdown-mode
+        (:name auto-complete :type elpa :depends fuzzy)
+        auto-complete-yasnippet
+        (:name fuzzy :type elpa)
         (:name org :type elpa)
         (:name paredit
                :type http
@@ -70,7 +72,8 @@
 	(:name starter-kit :type elpa :depends paredit)
 	(:name starter-kit-js :type elpa)
 	(:name starter-kit-lisp :type elpa)
-	(:name starter-kit-ruby :type elpa)))
+	(:name starter-kit-ruby :type elpa)
+        (:name yasnippet :type elpa)))
 
 (setq el-get-verbose 1)
 (el-get 'sync)
