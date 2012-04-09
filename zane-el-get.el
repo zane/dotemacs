@@ -70,8 +70,7 @@
 	(:name starter-kit :type elpa :depends paredit)
 	(:name starter-kit-js :type elpa)
 	(:name starter-kit-lisp :type elpa)
-	(:name starter-kit-ruby :type elpa)
-        ))
+	(:name starter-kit-ruby :type elpa)))
 
 (setq el-get-verbose 1)
 (el-get 'sync)
