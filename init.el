@@ -4,6 +4,8 @@
 ;; TODO: http://xahlee.blogspot.com/2009/08/how-to-use-and-setup-emacss-whitespace.html
 ;; TODO: Finish filling out http://www.dr-qubit.org/undo-tree/undo-tree.el
 ;; TODO: http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
+;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
+
 (require 'cl)
 
 (setq-default truncate-lines t)
