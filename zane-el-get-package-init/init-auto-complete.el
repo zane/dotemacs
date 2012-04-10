@@ -1,12 +1,12 @@
 (require 'auto-complete)
-(require 'auto-complete-yasnippet)
+;;(require 'auto-complete-yasnippet)
 
-(setq ac-auto-start 4)
+(setq ac-auto-start nil)
 (setq ac-show-menu-immediately-on-auto-complete t)
 (setq ac-dwim t)
 (setq ac-delay 0)
 (setq ac-expand-on-auto-complete t)
-(ac-set-trigger-key nil)
+(ac-set-trigger-key "TAB")
 
 (setq ac-sources '(ac-source-words-in-same-mode-buffers))
 (setq ac-use-menu-map t)
