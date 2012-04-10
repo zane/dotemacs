@@ -23,7 +23,6 @@
 	magit
 	markdown-mode
         (:name auto-complete :type elpa :depends fuzzy)
-        auto-complete-yasnippet
         (:name fuzzy :type elpa)
         (:name org :type elpa)
         (:name paredit
