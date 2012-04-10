@@ -4,5 +4,3 @@ Configuration currently tested with Emacs HEAD:
     brew install emacs --srgb --cocoa --use-git-head --HEAD
     brew install sbt
     echo "(load \"~/.emacs.d/init.el\")" >> ~/.emacs
-    echo "(setq zane-projects-dir (expand-file-name (concat user-emacs-directory \"/../Projects\")))" >> ~/.emacs
-    svn checkout http://yasnippet.googlecode.com/svn/trunk/ ~/Projects/yasnippet.googlecode
