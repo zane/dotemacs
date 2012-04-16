@@ -10,6 +10,7 @@
                                               "/Documents/deft")))
 
 ;; Add custom package.el sources (mainly for starter-kit)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("technomancy" . "http://repo.technomancy.us/emacs/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
@@ -17,7 +18,8 @@
 (setq el-get-user-package-directory (expand-file-name "zane-el-get-package-init" user-emacs-directory))
 
 (setq el-get-sources
-      '(ergoemacs-keybindings
+      '(ace-jump-mode
+        ergoemacs-keybindings
 	(:name framemove :type emacswiki :features framemove)
         full-ack
 	magit
