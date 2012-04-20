@@ -24,13 +24,13 @@
         full-ack
 	magit
 	markdown-mode
-        (:name auto-complete :type elpa :depends fuzzy)
-        (:name fuzzy :type elpa)
+        auto-complete
         (:name org :type elpa)
         (:name paredit
                :type http
                :url "http://mumble.net/~campbell/emacs/paredit.el"
                :features "paredit")
+        pymacs ;; not necessary for now?
 	slime
         (:name coffee-mode :type elpa)
         (:name solarized-theme :type elpa)
@@ -45,7 +45,7 @@
                         (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
                         (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
         (:name flymake :type elpa)
-        (:name flymake-cursor :type elpa)
+        (:name flymake-cursor :type elpa :depends flymake)
         (:name rainbow-delimiters :type elpa)
 	(:name speck :type elpa)
         (:name undo-tree
@@ -74,7 +74,11 @@
 	(:name starter-kit-js :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
-        (:name yasnippet :type elpa)))
+        (:name yasnippet
+               :type git
+               :url "https://github.com/capitaomorte/yasnippet.git"
+               :compile nil)
+        ))
 
 (setq el-get-verbose 1)
 (el-get 'sync)

@@ -48,6 +48,7 @@
 
 ;; Load all the files in the config dir
 (progn
+
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
 
   (when (file-exists-p zane-emacs-config-dir)

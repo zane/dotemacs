@@ -1,5 +1,4 @@
 (require 'auto-complete)
-;;(require 'auto-complete-yasnippet)
 
 (setq ac-auto-start nil)
 (setq ac-show-menu-immediately-on-auto-complete t)

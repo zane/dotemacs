@@ -1,4 +1,2 @@
-;;(yas/initialize)
-
-
-
+(require 'yasnippet)
+(yas/global-mode 1)
