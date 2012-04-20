@@ -22,19 +22,56 @@
         ergoemacs-keybindings
 	(:name framemove :type emacswiki :features framemove)
         full-ack
-	magit
 	markdown-mode
-        auto-complete
         (:name org :type elpa)
+	(:name fuzzy :type elpa)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Appearance
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (:name solarized-theme :type elpa)
+        (:name linum-off :type elpa)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;; Coding
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	magit
+        (:name flymake :type elpa)
+        (:name flymake-cursor :type elpa :depends flymake)
+        (:name rainbow-delimiters :type elpa)
+        auto-complete
+        (:name yasnippet
+               :type git
+               :url "https://github.com/capitaomorte/yasnippet.git"
+               :compile nil)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;; Python
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        pymacs
+        (:name ropemacs
+               :after (lambda ()
+                        (setenv "PYTHONPATH" (concat (getenv "PYTHONPATH")
+                                                     ":" "/Users/zshelby/.emacs.d/el-get/pymacs"
+                                                     ":" "/Users/zshelby/.emacs.d/el-get/ropemacs"))
+                        (require 'pymacs)
+                        ;; (pymacs-load "ropemacs" "rope-")
+                        ))
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Lisp
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	slime
         (:name paredit
                :type http
                :url "http://mumble.net/~campbell/emacs/paredit.el"
                :features "paredit")
-        pymacs ;; not necessary for now?
-	slime
-        (:name coffee-mode :type elpa)
-        (:name solarized-theme :type elpa)
         (:name clojure-mode :type elpa)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Other
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (:name coffee-mode :type elpa)
 	dired+
         (:name dired-isearch
                :type emacswiki
@@ -44,9 +81,6 @@
                         (define-key dired-mode-map (kbd "C-r") 'dired-isearch-backward)
                         (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
                         (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
-        (:name flymake :type elpa)
-        (:name flymake-cursor :type elpa :depends flymake)
-        (:name rainbow-delimiters :type elpa)
 	(:name speck :type elpa)
         (:name undo-tree
                :features undo-tree
@@ -67,17 +101,17 @@
                          (define-key undo-tree-map (kbd "C-x r U")
                            'undo-tree-restore-state-from-register))
                :after (lambda () (global-undo-tree-mode)))
-        (:name linum-off :type elpa)
         scala-mode
         smex
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Starter Kit
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	(:name starter-kit :type elpa :depends paredit)
 	(:name starter-kit-js :type elpa)
 	(:name starter-kit-lisp :type elpa)
 	(:name starter-kit-ruby :type elpa)
-        (:name yasnippet
-               :type git
-               :url "https://github.com/capitaomorte/yasnippet.git"
-               :compile nil)
+
         ))
 
 (setq el-get-verbose 1)
