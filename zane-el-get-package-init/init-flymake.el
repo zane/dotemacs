@@ -42,10 +42,26 @@
                '("\\.rb\\'" flymake-ruby-init)))
 
 
+;; http://mnemonikk.org/2010/11/05/using-flymake-to-check-erb-templates/
+(defun flymake-erb-init ()
+  (let* ((check-buffer (current-buffer))
+         (temp-file (flymake-create-temp-inplace (buffer-file-name) "flymake"))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (with-temp-file temp-file
+          (let ((temp-buffer (current-buffer)))
+            (set-buffer check-buffer)
+            (call-process-region (point-min) (point-max) "erb" nil temp-buffer nil "-x"))))
+      (setq flymake-temp-source-file-name temp-file)
+      (list "ruby" (list "-c" local-file)))))
 
-
-
-
+(when (load "flymake" t)
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.erb\\'" flymake-erb-init)))
 
 (setq flymake-gui-warnings-enabled t)
 
