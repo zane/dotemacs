@@ -25,6 +25,9 @@
                       temp-file
                       (file-name-directory buffer-file-name))))
     (list "/Users/zshelby/.emacs.d/bin/pycheckers.sh" (list local-file))))
+(when (load "flymake" t)
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pyflakes-init)))
 
 (defun flymake-ruby-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -36,17 +39,19 @@
 
 (when (load "flymake" t)
   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)
-               '("\\.rb\\'" flymake-ruby-init))
-
-  (add-hook 'find-file-hook 'flymake-find-file-hook))
-
-(when (load "flymake" t)
-  (add-to-list 'flymake-allowed-file-name-masks
                '("\\.rb\\'" flymake-ruby-init)))
+
+
+
+
+
+
 
 (setq flymake-gui-warnings-enabled t)
 
 (custom-set-faces
  '(flymake-errline ((((class color)) (:underline "red"))))
  '(flymake-warnline ((((class color)) (:underline "yellow")))))
+
+(when (load "flymake" t)
+  (add-hook 'find-file-hook 'flymake-find-file-hook))
