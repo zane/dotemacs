@@ -44,6 +44,7 @@
                :type git
                :url "https://github.com/capitaomorte/yasnippet.git"
                :compile nil)
+        git-blame
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;;; Python
@@ -67,6 +68,7 @@
                :url "http://mumble.net/~campbell/emacs/paredit.el"
                :features "paredit")
         (:name clojure-mode :type elpa)
+        (:name slime-repl :type elpa)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Other
