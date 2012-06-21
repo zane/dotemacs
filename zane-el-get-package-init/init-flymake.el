@@ -1,3 +1,6 @@
+(when (load "flymake" t)
+  (setq flymake-allowed-file-name-masks (list)))
+
 (defun flymake-xml-init ()
   (list "xmllint"
         (list "--valid"
