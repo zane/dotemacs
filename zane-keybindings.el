@@ -45,6 +45,9 @@
 (global-set-key (kbd "C-j") 'windmove-left)
 (global-set-key (kbd "C-k") 'windmove-down)
 
+;; Unset M-SPC because it's used by Alfred.app
+(global-unset-key (kbd "M-SPC"))
+
 (global-unset-key (kbd "C-x RET"))
 (add-hook 'term-exec-hook (lambda ()
                             (set-buffer-process-coding-system 'utf-8-unix
