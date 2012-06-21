@@ -36,6 +36,7 @@
       `((".*" ,temporary-file-directory t)))
 
 ;; Everything else:
+(setq redisplay-dont-pause t)
 (setq server-use-tcp t)
 (delete-selection-mode 1)
 (setq font-lock-maximum-decoration (list (cons t t)))
