@@ -29,7 +29,6 @@
     markdown-mode
     org
     paredit
-    paredit
     rainbow-delimiters
     scala-mode
     slime
