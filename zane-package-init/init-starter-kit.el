@@ -6,3 +6,5 @@
 
 (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
 (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
+
+(cua-mode nil)
