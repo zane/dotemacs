@@ -40,10 +40,6 @@
 ;; Tab key
 ;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
 (keyboard-translate ?\C-i ?\H-i)
-(global-set-key (kbd "H-i") 'windmove-up)
-(global-set-key (kbd "C-l") 'windmove-right)
-(global-set-key (kbd "C-j") 'windmove-left)
-(global-set-key (kbd "C-k") 'windmove-down)
 
 ;; Unset M-SPC because it's used by Alfred.app
 (global-unset-key (kbd "M-SPC"))
