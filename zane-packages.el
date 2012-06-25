@@ -11,20 +11,23 @@
 
 (defvar z:my-packages
   '(
+    ;; slime-repl
+    ;;dired-isearch
+    ;;linum-off
+    ;;speck
     ace-jump-mode
     auto-complete
     clojure-mode
     coffee-mode
     dired+
-    ;;dired-isearch
     ergoemacs-keybindings
     flymake
     flymake-cursor
+    framemove
     full-ack
     git-blame
     helm
     helm-git
-    ;;linum-off
     magit
     markdown-mode
     org
@@ -32,10 +35,8 @@
     rainbow-delimiters
     scala-mode
     slime
-    ;; slime-repl
     smex
     solarized-theme
-    ;;speck
     starter-kit
     starter-kit-js
     starter-kit-lisp
@@ -46,9 +47,9 @@
     ))
 
 ;;; install missing packages
-(let ((z:not-installed (remove-if 'package-installed-p z:my-packages)))
-  (if z:not-installed
-      (if (y-or-n-p "there are packages to be installed. install them? ")
+(let ((not-installed (remove-if 'package-installed-p z:my-packages)))
+  (if not-installed
+      (if (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed)))
           (dolist (package z:my-packages)
             (when (not (package-installed-p package))
               (package-install package))))))
@@ -58,15 +59,9 @@
 (message (format "initializing packages out of %s" z:package-init-dir))
   (dolist (package z:my-packages)
     (let* ((initfile (concat z:package-init-dir (format "init-%s.el" package))))
-      (message (format "initfile: %s" initfile))
       (if (and (package-installed-p package)
                (file-exists-p initfile))
           (progn (load initfile)
-                 (message (format "zane-packages: loaded %s" initfile))))))
-
-;;; FIXME: submit this to MELPA
-(add-to-list 'load-path (concat user-emacs-directory "opt"))
-(require 'framemove)
-(load (concat z:package-init-dir "init-framemove.el"))
+                 (message (format "loaded %s" initfile))))))
 
 (provide 'zane-packages)
