@@ -41,6 +41,7 @@
     starter-kit-lisp
     starter-kit-ruby
     undo-tree
+    windmove
     yasnippet
     ))
 
