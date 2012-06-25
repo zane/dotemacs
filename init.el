@@ -41,21 +41,19 @@
 (delete-selection-mode 1)
 (setq font-lock-maximum-decoration (list (cons t t)))
 (setq ns-pop-up-frames nil)
+(setq initial-scratch-message "")
 
-;; Set font
-;; TODO: Make this conditional based on os
-;;(set-face-attribute 'default nil :font "Consolas-14")
-(set-face-attribute 'default nil :font "Inconsolata-13")
+(if (string-match "apple-darwin" system-configuration)
+    (set-face-attribute 'default nil :font "Inconsolata-13")
+  (set-face-font 'default "Monospace-10"))
 
 ;; Load all the files in the config dir
 (progn
-
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
-
   (when (file-exists-p zane-emacs-config-dir)
     (dolist (l (directory-files zane-emacs-config-dir nil "^[^#].*el$"))
       (load (concat zane-emacs-config-dir l)))))
 
-(require 'zane-el-get)
+(require 'zane-packages)
 (require 'zane-funcs)
 (require 'zane-keybindings)

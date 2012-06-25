@@ -1,3 +1,12 @@
+;;;; egroemacs keybindings
+
+;; FIX: for some reason the library isn't loading from the package?
+;;      Have to put full path to the load file, which is brittle
+(when (package-installed-p 'ergoemacs-keybindings)
+  (load-file "~/.emacs.d/elpa/ergoemacs-keybindings-20120617/ergoemacs-mode.el")
+  (ergoemacs-mode 1)
+  (cua-mode 1))
+
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us")
 (defun zane-ergoemacs-ido-minibuffer-setup-hook ()
   (ergoemacs-ido-minibuffer-setup-hook)

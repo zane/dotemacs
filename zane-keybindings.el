@@ -47,6 +47,7 @@
 
 ;; Unset M-SPC because it's used by Alfred.app
 (global-unset-key (kbd "M-SPC"))
+(global-unset-key (kbd "M-TAB"))
 
 (global-unset-key (kbd "C-x RET"))
 (add-hook 'term-exec-hook (lambda ()
