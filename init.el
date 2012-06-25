@@ -17,19 +17,20 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (defvar user-home-directory
-  (expand-file-name (concat user-emacs-directory "/../"))
+  (expand-file-name (concat user-emacs-directory "../"))
   "The user's home directory.")
+
 (defvar user-dropbox-directory
-  (expand-file-name (concat user-home-directory "/Dropbox/"))
+  (expand-file-name (concat user-home-directory "Dropbox/"))
   "The user's Dropbox root directory.")
+
 (add-to-list 'load-path user-emacs-directory)
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
-;; Auto-save
-
+;; auto-save
 (add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
-(setq temporary-file-directory (concat user-emacs-directory "/backup"))
+(setq temporary-file-directory (concat user-emacs-directory "tmp"))
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -44,7 +45,7 @@
 (setq initial-scratch-message "")
 
 (if (string-match "apple-darwin" system-configuration)
-    (set-face-attribute 'default nil :font "Inconsolata-13")
+    (set-face-font 'default "Inconsolata-13")
   (set-face-font 'default "Monospace-10"))
 
 ;; Load all the files in the config dir
