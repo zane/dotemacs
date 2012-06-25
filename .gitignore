@@ -8,6 +8,7 @@ el-get/
 elpa/
 eshell/
 places
+snippets/
 swank/
 tramp
 url/
