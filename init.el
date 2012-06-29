@@ -2,7 +2,7 @@
 ;; TODO: Look into this https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
 ;; TODO: http://tapoueh.org/blog/2011/07/29-emacs-ansi-colors.html
 ;; TODO: http://xahlee.blogspot.com/2009/08/how-to-use-and-setup-emacss-whitespace.html
-;; TODO: Finish filling out http://www.dr-qubit.org/undo-tree/undo-tree.el
+;; TODO: http://www.dr-qubit.org/undo-tree/undo-tree.el
 ;; TODO: http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
 ;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
 
@@ -54,6 +54,12 @@
   (when (file-exists-p zane-emacs-config-dir)
     (dolist (l (directory-files zane-emacs-config-dir nil "^[^#].*el$"))
       (load (concat zane-emacs-config-dir l)))))
+
+;; On Mac OS X, Emacs sessions launched from the GUI don't always
+;; respect your configured $PATH. If Emacs can't find lein, you may
+;; need to give it some help. The quickest way is probably to add this
+;; elisp to your config:
+(setenv "PATH" (shell-command-to-string "echo $PATH"))
 
 (require 'zane-packages)
 (require 'zane-funcs)
