@@ -35,6 +35,7 @@
     rainbow-delimiters
     scala-mode
     slime
+    slime-repl
     smex
     solarized-theme
     starter-kit
