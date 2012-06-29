@@ -1,32 +1,36 @@
-(defvar paredit-no-space-list '(python-mode
-                                html-mode)
-  "The list of major modes for which paredit should refrain appending a space
-                            when inserting a matching delimiter.")
+(autoload 'enable-paredit-mode "paredit")
 
-(add-to-list 'paredit-space-for-delimiter-predicates
-             (lambda (endp delimiter)
-               (not (member major-mode paredit-no-space-list))))
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'scheme-mode-hook 'enable-paredit-mode)
+(eval-after-load 'clojure-mode '(add-hook 'clojure-mode-hook 'enable-paredit-mode))
+(eval-after-load 'slime '(add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
+(add-hook 'ruby-mode-hook 'esk-paredit-nonlisp)
+(add-hook 'espresso-mode-hook 'esk-paredit-nonlisp)
 
-;; C-j conflicts with windmove-left
-(define-key paredit-mode-map (kbd "C-j") nil)
-;; C-k conflicts with windmove-down
-(define-key paredit-mode-map (kbd "C-k") nil)
-;; C-; conflicts with searching
-(define-key paredit-mode-map (kbd "M-;") nil)
-;; M-J conflicts with moving to the beginning of the file
-(define-key paredit-mode-map (kbd "M-J") nil)
+(eval-after-load "paredit"
+  '(progn
+     (eval-after-load "windmove"
+       '(progn
+          (define-key paredit-mode-map (kbd "C-j") nil) ; windmove-left
+          (define-key paredit-mode-map (kbd "C-k") nil) ; windmove-down
+          ))
 
-(define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-forward-delete
-(define-key paredit-mode-map (kbd "M-f") 'paredit-forward-delete)
+     (eval-after-load "ergoemacs-mode"
+       '(progn
+          (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-forward-delete
+          (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-backward-delete
+          (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-backward-kill-word
+          (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-forward-kill-word
+          (define-key paredit-mode-map (kbd "C-k") nil) ; was paredit-kill
 
-(define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-backward-delete
-(define-key paredit-mode-map (kbd "M-d") 'paredit-backward-delete)
+          (define-key paredit-mode-map (kbd "M-;") nil) ; searching
+          (define-key paredit-mode-map (kbd "M-J") nil) ; moving to the beginning of the file
 
-(define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-backward-kill-word
-(define-key paredit-mode-map (kbd "M-e") 'paredit-backward-kill-word)
-
-(define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-forward-kill-word
-(define-key paredit-mode-map (kbd "M-r") 'paredit-forward-kill-word)
-
-(define-key paredit-mode-map (kbd "C-k") nil) ; was paredit-kill
-(define-key paredit-mode-map (kbd "M-g") 'paredit-kill)
+          (add-hook 'paredit-mode-hook
+                    (lambda ()
+                      (ergoemacs-local-set-key (kbd "M-f") 'paredit-forward-delete)
+                      (ergoemacs-local-set-key (kbd "M-d") 'paredit-backward-delete)
+                      (ergoemacs-local-set-key (kbd "M-e") 'paredit-backward-kill-word)
+                      (ergoemacs-local-set-key (kbd "M-r") 'paredit-forward-kill-word)
+                      (ergoemacs-local-set-key (kbd "M-g") 'paredit-kill)
+                      ))))))
