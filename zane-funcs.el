@@ -1,3 +1,7 @@
+(defun z:mac-p ()
+  "Truthy if the host OS is a Mac."
+  (string-match "apple-darwin" system-configuration))
+
 (defun uniquify-all-lines-region (start end)
   "Find duplicate lines in region START to END keeping first occurrence."
   (interactive "*r")

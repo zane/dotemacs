@@ -28,6 +28,8 @@
 
 ;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
+(require 'zane-funcs)
+
 ;; auto-save
 (add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 (setq temporary-file-directory (concat user-emacs-directory "tmp"))
@@ -44,7 +46,7 @@
 (setq ns-pop-up-frames nil)
 (setq initial-scratch-message "")
 
-(if (string-match "apple-darwin" system-configuration)
+(if (z:mac-p)
     (set-face-font 'default "Inconsolata-13")
   (set-face-font 'default "Monospace-10"))
 
@@ -62,5 +64,4 @@
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
 
 (require 'zane-packages)
-(require 'zane-funcs)
 (require 'zane-keybindings)
