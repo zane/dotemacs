@@ -6,6 +6,7 @@
 (eval-after-load 'slime '(add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
 (add-hook 'ruby-mode-hook 'esk-paredit-nonlisp)
 (add-hook 'espresso-mode-hook 'esk-paredit-nonlisp)
+(add-hook 'text-mode 'esk-paredit-nonlisp)
 
 (eval-after-load "paredit"
   '(progn
