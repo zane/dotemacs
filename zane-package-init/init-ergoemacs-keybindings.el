@@ -8,7 +8,7 @@
   (cua-mode 1))
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us")
-(defun zane-ergoemacs-ido-minibuffer-setup-hook ()
+(defun z:ergoemacs-ido-minibuffer-setup-hook ()
   (ergoemacs-ido-minibuffer-setup-hook)
   ;; Swap the prev/next and prev/next-dir keys
   ;; since we're displaying ido candidates
@@ -20,6 +20,5 @@
   )
 
 (remove-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
-(add-hook 'ido-minibuffer-setup-hook 'zane-ergoemacs-ido-minibuffer-setup-hook)
+(add-hook 'ido-minibuffer-setup-hook 'z:ergoemacs-ido-minibuffer-setup-hook)
 (ergoemacs-mode 1)
-(message "***INITTING ERGOEMACS**")
