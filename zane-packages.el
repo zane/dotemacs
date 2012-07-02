@@ -20,6 +20,7 @@
     clojure-mode
     coffee-mode
     dired+
+    ediff
     ergoemacs-keybindings
     flymake
     flymake-cursor
@@ -37,6 +38,7 @@
     slime
     slime-repl
     smex
+    speck
     solarized-theme
     starter-kit
     starter-kit-js
