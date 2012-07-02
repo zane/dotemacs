@@ -1,2 +1,4 @@
-;(global-set-key (kbd "C-o") 'helm-find-files)
-;(define-key helm-map (kbd "M-k") 'helm-next-line)
+(eval-after-load "helm-mode"
+  '(progn
+     (define-key helm-map (kbd "M-k") 'helm-next-line)
+     (define-key helm-map (kbd "M-i") 'helm-previous-line)))
