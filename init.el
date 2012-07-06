@@ -45,6 +45,7 @@
 (setq font-lock-maximum-decoration (list (cons t t)))
 (setq ns-pop-up-frames nil)
 (setq initial-scratch-message "")
+(display-battery-mode 1)
 
 (if (z:mac-p)
     (set-face-font 'default "Inconsolata-13")
