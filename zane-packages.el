@@ -46,16 +46,17 @@
     starter-kit-ruby
     undo-tree
     windmove
-    yasnippet
+    ;; yasnippet
     ))
 
 ;;; install missing packages
 (let ((not-installed (remove-if 'package-installed-p z:my-packages)))
   (if not-installed
       (if (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed)))
-          (dolist (package z:my-packages)
-            (when (not (package-installed-p package))
-              (package-install package))))))
+          (progn (package-refresh-contents)
+		 (dolist (package z:my-packages)
+		   (when (not (package-installed-p package))
+		     (package-install package)))))))
 
 ;;; initialize packages
 (setq z:package-init-dir (concat user-emacs-directory "zane-package-init/"))
