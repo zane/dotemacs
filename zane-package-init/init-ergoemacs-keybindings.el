@@ -3,6 +3,7 @@
 ;; FIX: for some reason the library isn't loading from the package?
 ;;      Have to put full path to the load file, which is brittle
 (when (package-installed-p 'ergoemacs-keybindings)
+  (require 'log-edit)
   (load-file "~/.emacs.d/elpa/ergoemacs-keybindings-20120710/ergoemacs-mode.el")
   (ergoemacs-mode 1))
 
