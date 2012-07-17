@@ -75,6 +75,7 @@
 (require 'zane-packages)
 (require 'zane-keybindings)
 
+;; http://www.masteringemacs.org/articles/2010/10/18/maximizing-emacs-startup/
 (if (and (z:mac-p)
          window-system)
-    (ns-toggle-fullscreen))
+    (add-hook 'window-setup-hook 'ns-toggle-fullscreen t))
