@@ -27,6 +27,7 @@
     framemove
     full-ack
     git-blame
+    gnus
     helm
     helm-git
     magit
