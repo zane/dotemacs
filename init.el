@@ -20,6 +20,10 @@
   (expand-file-name (concat user-emacs-directory "../"))
   "The user's home directory.")
 
+(defvar zane-projects-dir
+  (expand-file-name (concat user-home-directory "Projects/"))
+  "The directory containing the user's checked out source code.")
+
 (defvar user-dropbox-directory
   (expand-file-name (concat user-home-directory "Dropbox/"))
   "The user's Dropbox root directory.")
@@ -63,6 +67,9 @@
 ;; need to give it some help. The quickest way is probably to add this
 ;; elisp to your config:
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
+
+(put 'ido-exit-minibuffer 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
 (require 'zane-packages)
 (require 'zane-keybindings)
