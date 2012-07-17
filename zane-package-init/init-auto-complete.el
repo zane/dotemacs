@@ -9,7 +9,7 @@
 
 (setq ac-sources '(ac-source-words-in-same-mode-buffers))
 (setq ac-use-menu-map t)
-(setq ac-use-fuzzy nil) (require 'fuzzy-match)
+(setq ac-use-fuzzy nil)
 (eval-after-load 'fuzzy
   '(setq ac-use-fuzzy t))
 (define-key ac-menu-map (kbd "M-i") 'ac-previous)
