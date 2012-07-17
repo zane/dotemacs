@@ -74,3 +74,7 @@
 
 (require 'zane-packages)
 (require 'zane-keybindings)
+
+(if (and (z:mac-p)
+         window-system)
+    (ns-toggle-fullscreen))
