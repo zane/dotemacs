@@ -26,6 +26,7 @@
     flymake-cursor
     framemove
     full-ack
+    fuzzy
     git-blame
     gnus
     helm

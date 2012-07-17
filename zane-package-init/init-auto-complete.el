@@ -9,6 +9,9 @@
 
 (setq ac-sources '(ac-source-words-in-same-mode-buffers))
 (setq ac-use-menu-map t)
+(setq ac-use-fuzzy nil) (require 'fuzzy-match)
+(eval-after-load 'fuzzy
+  '(setq ac-use-fuzzy t))
 (define-key ac-menu-map (kbd "M-i") 'ac-previous)
 (define-key ac-menu-map (kbd "M-k") 'ac-next)
 (global-auto-complete-mode t)
