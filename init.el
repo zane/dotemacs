@@ -51,9 +51,10 @@
 (setq initial-scratch-message "")
 (display-battery-mode 1)
 
-(if (z:mac-p)
-    (set-face-font 'default "Inconsolata-13")
-  (set-face-font 'default "Monospace-10"))
+(if window-system
+    (if (z:mac-p)
+        (set-face-font 'default "Inconsolata-13")
+      (set-face-font 'default "Monospace-10")))
 
 ;; Load all the files in the config dir
 (progn
