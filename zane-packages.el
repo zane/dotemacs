@@ -11,16 +11,18 @@
 
 (defvar z:my-packages
   '(
-    ;; slime-repl
     ;;dired-isearch
     ;;linum-off
+    ;;slime-repl
     ;;speck
+    ;;yasnippet
     ace-jump-mode
     auto-complete
     clojure-mode
     coffee-mode
     dired+
     ediff
+    edit-server
     ergoemacs-keybindings
     flymake
     flymake-cursor
@@ -40,15 +42,15 @@
     slime
     slime-repl
     smex
-    speck
     solarized-theme
+    speck
     starter-kit
     starter-kit-js
     starter-kit-lisp
     starter-kit-ruby
+    tramp
     undo-tree
     windmove
-    ;; yasnippet
     ))
 
 ;;; install missing packages
