@@ -1,14 +1,17 @@
 (when (load "flymake" t)
   (setq flymake-allowed-file-name-masks (list)))
 
+(defun z:flymake-create-temp-in-system-tempdir (filename prefix)
+  (make-temp-file (or prefix "flymake")))
+
 (defun flymake-xml-init ()
   (list "xmllint"
         (list "--valid"
-              (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))))
+              (flymake-init-create-temp-buffer-copy 'z:flymake-create-temp-in-system-tempdir))))
 
 (defun flymake-html-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
+                     'z:flymake-create-temp-in-system-tempdir))
          (local-file (file-relative-name
                       temp-file
                       (file-name-directory buffer-file-name))))
@@ -23,7 +26,7 @@
 
 (defun flymake-pyflakes-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
+                     'z:flymake-create-temp-in-system-tempdir))
          (local-file (file-relative-name
                       temp-file
                       (file-name-directory buffer-file-name))))
@@ -34,7 +37,7 @@
 
 (defun flymake-ruby-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
+                     'z:flymake-create-temp-in-system-tempdir))
 	 (local-file  (file-relative-name
                        temp-file
                        (file-name-directory buffer-file-name))))
@@ -48,7 +51,7 @@
 ;; http://mnemonikk.org/2010/11/05/using-flymake-to-check-erb-templates/
 (defun flymake-erb-init ()
   (let* ((check-buffer (current-buffer))
-         (temp-file (flymake-create-temp-inplace (buffer-file-name) "flymake"))
+         (temp-file (z:flymake-create-temp-in-system-tempdir (buffer-file-name) "flymake"))
          (local-file (file-relative-name
                       temp-file
                       (file-name-directory buffer-file-name))))
