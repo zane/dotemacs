@@ -29,6 +29,7 @@
     framemove
     full-ack
     fuzzy
+    gist
     git-blame
     gnus
     helm
