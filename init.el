@@ -8,14 +8,6 @@
 
 (require 'cl)
 
-(setq-default truncate-lines t)
-(setq sentence-end-double-space nil)
-(global-auto-revert-mode t)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(fringe-mode 0)
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 (defvar user-home-directory
   (expand-file-name (concat user-emacs-directory "../"))
   "The user's home directory.")
@@ -42,21 +34,54 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; Everything else:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; EverythingElse
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq-default truncate-lines t)
+(setq sentence-end-double-space nil)
+(global-auto-revert-mode t)
+(global-subword-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(fringe-mode 0)
+(delete-selection-mode 1)
 (setq redisplay-dont-pause t)
 (setq server-use-tcp t)
-(delete-selection-mode 1)
 (setq font-lock-maximum-decoration (list (cons t t)))
 (setq ns-pop-up-frames nil)
 (setq initial-scratch-message "")
 (display-battery-mode 1)
+(setq ido-create-new-buffer 'always)
+
+;; Enable disabled commands
+(setq enable-recursive-minibuffers t)
+(put 'ido-exit-minibuffer 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; Tooltips
+;; (http://www.masteringemacs.org/articles/2010/10/15/making-tooltips-appear-in-echo-area/)
+(tooltip-mode -1)
+(setq tooltip-use-echo-area t)
+
+;; Prompts
+;; (http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/)
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq confirm-nonexistent-file-or-buffer nil)
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+(setq kill-buffer-query-functions
+  (remq 'process-kill-buffer-query-function
+         kill-buffer-query-functions))
 
 (if window-system
     (if (z:mac-p)
         (set-face-font 'default "Inconsolata-13")
       (set-face-font 'default "Monospace-10")))
 
-;; Load all the files in the config dir
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Load files in config/
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (progn
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
   (when (file-exists-p zane-emacs-config-dir)
@@ -68,9 +93,6 @@
 ;; need to give it some help. The quickest way is probably to add this
 ;; elisp to your config:
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
-
-(put 'ido-exit-minibuffer 'disabled nil)
-(put 'downcase-region 'disabled nil)
 
 (require 'zane-packages)
 (require 'zane-keybindings)
