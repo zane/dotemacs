@@ -1,12 +1,17 @@
 (autoload 'enable-paredit-mode "paredit")
 
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'scheme-mode-hook 'enable-paredit-mode)
+(dolist (hook '(emacs-lisp-mode-hook
+                scheme-mode-hook))
+  (add-hook hook 'enable-paredit-mode))
+
 (eval-after-load 'clojure-mode '(add-hook 'clojure-mode-hook 'enable-paredit-mode))
 (eval-after-load 'slime '(add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
-(add-hook 'ruby-mode-hook 'esk-paredit-nonlisp)
-(add-hook 'espresso-mode-hook 'esk-paredit-nonlisp)
-(add-hook 'text-mode 'esk-paredit-nonlisp)
+
+(dolist (hook '(ruby-mode-hook
+                espresso-mode-hook
+                text-mode-hook
+                python-mode-hook))
+  (add-hook hook 'esk-paredit-nonlisp))
 
 (eval-after-load "paredit"
   '(progn
