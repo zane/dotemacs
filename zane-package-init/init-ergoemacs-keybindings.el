@@ -4,6 +4,8 @@
 ;;      Have to put full path to the load file, which is brittle
 (when (package-installed-p 'ergoemacs-keybindings)
   (require 'log-edit)
+  ;; FIX: for some reason this sets the scratch buffer to
+  ;; log-edit-mode
   (load-file "~/.emacs.d/elpa/ergoemacs-keybindings-20120710/ergoemacs-mode.el")
   (ergoemacs-mode 1))
 
@@ -18,6 +20,9 @@
   (define-key ergoemacs-ido-keymap ergoemacs-previous-line-key 'ido-prev-match) ; was 'ido-next-match-dir
   (define-key ergoemacs-ido-keymap ergoemacs-next-line-key 'ido-next-match) ; was 'ido-prev-match-dir
   )
+
+(eval-after-load 'ergoemacs-mode
+  '(ergoemacs-global-set-key (kbd "C-/") 'zane/toggle-identifier-case-word-at-point))
 
 (remove-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
 (add-hook 'ido-minibuffer-setup-hook 'z:ergoemacs-ido-minibuffer-setup-hook)
