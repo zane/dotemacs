@@ -24,6 +24,7 @@
     ediff
     edit-server
     ergoemacs-keybindings
+    find-dired
     flymake
     flymake-cursor
     framemove
@@ -51,6 +52,7 @@
     starter-kit-ruby
     tramp
     undo-tree
+    whitespace
     windmove
     ))
 
@@ -59,9 +61,9 @@
   (if not-installed
       (if (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed)))
           (progn (package-refresh-contents)
-		 (dolist (package z:my-packages)
-		   (when (not (package-installed-p package))
-		     (package-install package)))))))
+                 (dolist (package z:my-packages)
+                   (when (not (package-installed-p package))
+                     (package-install package)))))))
 
 ;;; initialize packages
 (setq z:package-init-dir (concat user-emacs-directory "zane-package-init/"))
