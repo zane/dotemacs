@@ -83,16 +83,20 @@ If point was already at that position, move point to beginning of line."
        (replace-regexp-in-string "\\([a-zA-Z]\\)\\([A-Z]\\)" "\\1 \\2" s))))
    "[^A-Za-z0-9]+"))
 
-(defun zane/camel-case  (s) (mapconcat 'capitalize (zane/split-name s) ""))
+(defun zane/camel-case (s) (mapconcat 'capitalize (zane/split-name s) ""))
 (defun zane/underscore-case (s) (mapconcat 'downcase (zane/split-name s) "_"))
-(defun zane/dash-case  (s) (mapconcat 'downcase (zane/split-name s) "-"))
-(defun zane/double-colon-case   (s) (mapconcat 'capitalize (zane/split-name s) "::"))
+(defun zane/dash-case (s) (mapconcat 'downcase (zane/split-name s) "-"))
+(defun zane/double-colon-case (s) (mapconcat 'capitalize (zane/split-name s) "::"))
+
+(defun zane/double-colon-case-p (s) (string-match-p "\:" s))
+(defun zane/dash-case-p (s) (string-match-p "-" s))
+(defun zane/underscore-case-p (s) (string-match-p "_" s))
 
 (defun zane/toggle-identifier-case (s)
-  (cond ((string-match-p "\:"  s) (zane/camel-case s))
-        ((string-match-p "-" s) (zane/double-colon-case s))
-        ((string-match-p "_" s) (zane/dash-case s))
-        (t (zane/underscore-case s)) ))
+  (cond ((zane/double-colon-case-p s) (zane/camel-case s))
+        ((zane/dash-case-p s) (zane/double-colon-case s))
+        ((zane/underscore-case-p s) (zane/dash-case s))
+        (t (zane/underscore-case s))))
 
 (defun zane/toggle-identifier-case-word-at-point ()
   (interactive)
