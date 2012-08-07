@@ -56,4 +56,52 @@
           (set-window-start w2 s1)
           (setq i (1+ i))))))))
 
+(defun z:smart-beginning-of-line ()
+  "Move point to first non-whitespace character or beginning-of-line.
+
+Move point to the first non-whitespace character on this line.
+If point was already at that position, move point to beginning of line."
+  (interactive) ; Use (interactive "^") in Emacs 23 to make shift-select work
+  (let ((oldpos (point)))
+    (beginning-of-line-text)
+    (and (= oldpos (point))
+         (beginning-of-line))))
+
+(defun z:vagrant-shell ()
+  (let ((default-directory "/vagrant:/home/vagrant/projects"))
+    (shell "*vagrant-root*")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Case Toggling
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun zane/split-name (s)
+  (split-string
+   (let ((case-fold-search nil))
+     (downcase
+      (replace-regexp-in-string "\\([a-z]\\)\\([A-Z]\\)" "\\1 \\2" s)))
+   "[^A-Za-z0-9]+"))
+
+(defun zane/camel-case  (s) (mapconcat 'capitalize (zane/split-name s) ""))
+(defun zane/underscore-case (s) (mapconcat 'downcase (zane/split-name s) "_"))
+(defun zane/dash-case  (s) (mapconcat 'downcase (zane/split-name s) "-"))
+(defun zane/double-colon-case   (s) (mapconcat 'capitalize (zane/split-name s) "::"))
+
+(defun zane/toggle-identifier-case (s)
+  (cond ((string-match-p "\:"  s) (zane/camel-case s))
+        ((string-match-p "-" s) (zane/double-colon-case s))
+        ((string-match-p "_" s) (zane/dash-case s))
+        (t (zane/underscore-case s)) ))
+
+(defun zane/toggle-identifier-case-word-at-point ()
+  (interactive)
+  (let* ((case-fold-search nil)
+         (beg (and (skip-chars-backward "[:alnum:]:_-") (point)))
+         (end (and (skip-chars-forward  "[:alnum:]:_-") (point)))
+         (txt (buffer-substring beg end))
+         (cml (zane/toggle-identifier-case txt)) )
+    (if cml (progn (delete-region beg end) (insert cml))) ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (provide 'zane-funcs)
