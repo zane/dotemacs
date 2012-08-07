@@ -79,7 +79,8 @@ If point was already at that position, move point to beginning of line."
   (split-string
    (let ((case-fold-search nil))
      (downcase
-      (replace-regexp-in-string "\\([a-z]\\)\\([A-Z]\\)" "\\1 \\2" s)))
+      (replace-regexp-in-string "\\([A-Z]\\)\\([A-Z]\\)" "\\1 \\2"
+       (replace-regexp-in-string "\\([a-zA-Z]\\)\\([A-Z]\\)" "\\1 \\2" s))))
    "[^A-Za-z0-9]+"))
 
 (defun zane/camel-case  (s) (mapconcat 'capitalize (zane/split-name s) ""))
