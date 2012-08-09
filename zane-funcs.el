@@ -2,6 +2,14 @@
   "Truthy if the host OS is a Mac."
   (string-match "apple-darwin" system-configuration))
 
+(defun z:deduplicate-all-lines-region (start end)
+  "Find duplicate lines in region START to END keeping first occurrence."
+  (z:uniquify-all-lines-region start end))
+
+(defun z:deduplicate-all-lines-buffer ()
+  "Delete duplicate lines in buffer and keep first occurrence."
+  (z:uniquify-all-lines-buffer))
+
 (defun z:uniquify-all-lines-region (start end)
   "Find duplicate lines in region START to END keeping first occurrence."
   (interactive "*r")
@@ -68,6 +76,7 @@ If point was already at that position, move point to beginning of line."
          (beginning-of-line))))
 
 (defun z:vagrant-shell ()
+  (interactive)
   (let ((default-directory "/vagrant:/home/vagrant/projects"))
     (shell "*vagrant-root*")))
 
