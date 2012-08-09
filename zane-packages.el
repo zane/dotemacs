@@ -16,6 +16,7 @@
     ;;slime-repl
     ;;speck
     ;;yasnippet
+    ;;http://www.nongnu.org/geiser/
     ace-jump-mode
     auto-complete
     clojure-mode
