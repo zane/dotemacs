@@ -38,6 +38,7 @@
     helm-git
     magit
     markdown-mode
+    nrepl
     org
     paredit
     rainbow-delimiters
