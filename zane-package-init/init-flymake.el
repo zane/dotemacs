@@ -30,7 +30,7 @@
          (local-file (file-relative-name
                       temp-file
                       (file-name-directory buffer-file-name))))
-    (list "/Users/zshelby/.emacs.d/bin/pycheckers.sh" (list local-file))))
+    (list (concat user-emacs-directory "bin/pycheckers.sh") (list local-file))))
 (when (load "flymake" t)
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
