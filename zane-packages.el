@@ -25,6 +25,7 @@
     ediff
     edit-server
     ergoemacs-keybindings
+    expand-region
     find-dired
     flymake
     flymake-cursor
