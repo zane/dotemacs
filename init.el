@@ -75,8 +75,9 @@
 
 (if window-system
     (if (z:mac-p)
-        (set-face-font 'default "Inconsolata-13")
-      (set-face-font 'default "Monospace-10")))
+        ;; (set-face-font 'default "Inconsolata-13")
+        (set-face-font 'default "Source Code Pro 12")
+      (set-face-font 'default "Monospace 10")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
@@ -95,6 +96,10 @@
 
 (require 'zane-packages)
 (require 'zane-keybindings)
+
+;; (set-cursor-color "#d33682")
+(add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
+
 
 ;; http://www.masteringemacs.org/articles/2010/10/18/maximizing-emacs-startup/
 (if (and (z:mac-p)
