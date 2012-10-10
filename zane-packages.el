@@ -39,6 +39,7 @@
     helm-git
     magit
     markdown-mode
+    multiple-cursors
     nrepl
     org
     paredit
