@@ -7,3 +7,13 @@
 (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
 
 (cua-mode nil)
+
+(eval-after-load 'paredit
+  ;; undo esk's rebindings -- ick!
+  '(progn
+     (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
+     (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
+     (define-key paredit-mode-map (kbd "M-]") 'paredit-close-square-and-newline)
+     (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
+     (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
+     (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)))
