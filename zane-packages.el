@@ -18,6 +18,7 @@
     ;;yasnippet
     ;;http://www.nongnu.org/geiser/
     ace-jump-mode
+    ack-and-a-half
     auto-complete
     clojure-mode
     coffee-mode
@@ -25,12 +26,12 @@
     ediff
     edit-server
     ergoemacs-keybindings
+    exec-path-from-shell
     expand-region
     find-dired
     flymake
     flymake-cursor
     framemove
-    full-ack
     fuzzy
     gist
     git-blame
@@ -78,5 +79,8 @@
                (file-exists-p initfile))
           (progn (load initfile)
                  (message (format "loaded %s" initfile))))))
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 (provide 'zane-packages)
