@@ -15,11 +15,12 @@
 ;; is active.
 
 (defun ediffingp ()
+  "True if there is currently an active ediff session. False
+   otherwise."
   (let ((ediffing nil))
     (walk-window-tree
      (lambda (window)
-       (when (equal "*Ediff Control Panel*"
-                    (buffer-name (window-buffer window)))
+       (when (string-match "Ediff Control Panel" (buffer-name (window-buffer window)))
          (setq ediffing t))))
     ediffing))
 
@@ -37,7 +38,8 @@
 (defadvice golden-ratio
   (around disable-when-ediff)
   (unless (or (ediffingp) setting-up-ediff)
-    (progn (message "Doing it!")
-      ad-do-it)))
+    ad-do-it))
+
+
 
 (ad-activate 'golden-ratio)

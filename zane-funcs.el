@@ -80,6 +80,31 @@ If point was already at that position, move point to beginning of line."
   (let ((default-directory "/vagrant:/home/vagrant/projects"))
     (shell "*vagrant-root*")))
 
+(defun zane/window-siblings-at-side-list (side &optional window)
+  (let ((window (or window (selected-window))))
+    (let ((next (cond ((eq side 'left)
+                       (window-left window))
+                      ((eq side 'right)
+                       (window-right window)))))
+      (if (eq next nil)
+          nil
+        (cons next
+              (zane/window-siblings-at-side-list side next))))))
+
+(defun zane/balance-sibling-widths (&optional window)
+  "Even widths of all provided windows other than the selected window."
+  (let* ((window (or window (selected-window)))
+         (siblings (append (reverse (zane/window-siblings-at-side-list 'left window))
+                           (reverse (zane/window-siblings-at-side-list 'right window))))
+         (total-width (apply '+ (mapcar 'window-width siblings))))
+    (dolist (sibling siblings)
+      (condition-case nil
+          (window-resize sibling
+                         (- (/ total-width (length siblings))
+                            (window-width sibling))
+                         t)
+        (error nil)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Case Toggling
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
