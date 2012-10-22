@@ -15,6 +15,7 @@
     ;;linum-off
     ;;slime-repl
     ;;speck
+    ;;starter-kit-ruby
     ;;yasnippet
     ;;http://www.nongnu.org/geiser/
     ace-jump-mode
@@ -35,6 +36,7 @@
     fuzzy
     gist
     git-blame
+    golden-ratio
     gnus
     helm
     helm-git
@@ -45,6 +47,7 @@
     org
     paredit
     rainbow-delimiters
+    ruby-mode
     scala-mode
     slime
     slime-repl
@@ -54,7 +57,6 @@
     starter-kit
     starter-kit-js
     starter-kit-lisp
-    starter-kit-ruby
     tramp
     undo-tree
     whitespace
@@ -73,7 +75,7 @@
 ;;; initialize packages
 (setq z:package-init-dir (concat user-emacs-directory "zane-package-init/"))
 (message (format "initializing packages out of %s" z:package-init-dir))
-  (dolist (package z:my-packages)
+(dolist (package (append (mapcar 'car package--builtins) package-activated-list))
     (let* ((initfile (concat z:package-init-dir (format "init-%s.el" package))))
       (if (and (package-installed-p package)
                (file-exists-p initfile))
