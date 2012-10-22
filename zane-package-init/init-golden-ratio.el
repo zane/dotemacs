@@ -1,45 +1,42 @@
 (require 'golden-ratio)
 
-(golden-ratio-enable)
-
 ;; golden-ratio seems to have issues balancing the widths of
 ;; non-active horizontal siblings. The following advice forces this
 ;; behavior.
 
 (defadvice golden-ratio
-  (after horizontally-balance-after-golden)
+  (after horizontally-balance-after-golden activate)
   (zane/balance-sibling-widths))
 
-;; golden-ratio and ediff do not play well together. The following
-;; functions and advice temporarily disable golden-ratio while ediff
-;; is active.
+;; golden-ratio and ediff do not play well together. Only use it when
+;; we're explicitly changing between windows.
 
-(defun ediffingp ()
-  "True if there is currently an active ediff session. False
-   otherwise."
-  (let ((ediffing nil))
-    (walk-window-tree
-     (lambda (window)
-       (when (string-match "Ediff Control Panel" (buffer-name (window-buffer window)))
-         (setq ediffing t))))
-    ediffing))
+(defadvice windmove-left
+  (after windmove-left-golden-ratio)
+  (golden-ratio))
 
-(defvar setting-up-ediff nil
-  "True when magit is setting up ediff.")
+(defadvice windmove-right
+  (after windmove-right-golden-ratio)
+  (golden-ratio))
 
-(defadvice magit-ediff
-  (around set-ediff-setup)
-  (setq setting-up-ediff t)
-  ad-do-it
-  (setq setting-up-ediff nil))
+(defadvice windmove-up
+  (after windmove-up-golden-ratio)
+  (golden-ratio))
 
-(ad-activate 'magit-ediff)
+(defadvice windmove-down
+  (after windmove-down-golden-ratio)
+  (golden-ratio))
 
-(defadvice golden-ratio
-  (around disable-when-ediff)
-  (unless (or (ediffingp) setting-up-ediff)
-    ad-do-it))
+(defun zane/golden-ratio-enable ()
+  (interactive)
+  (ad-enable-advice windmove-left  'after 'windmove-left-golden-ratio)
+  (ad-enable-advice windmove-right 'after 'windmove-right-golden-ratio)
+  (ad-enable-advice windmove-up    'after 'windmove-up-golden-ratio)
+  (ad-enable-advice windmove-down  'after 'windmove-down-golden-ratio))
 
-
-
-(ad-activate 'golden-ratio)
+(defun zane/golden-ratio-disable ()
+  (interactive)
+  (ad-disable-advice 'windmove-left-golden-ratio)
+  (ad-disable-advice 'windmove-right-golden-ratio)
+  (ad-disable-advice 'windmove-up-golden-ratio)
+  (ad-disable-advice 'windmove-down-golden-ratio))
