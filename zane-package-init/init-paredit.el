@@ -13,6 +13,16 @@
                 python-mode-hook))
   (add-hook hook 'esk-paredit-nonlisp))
 
+(defadvice yank
+  (after yank-indent-pp-sexp activate)
+  (save-excursion
+    (if paredit-mode
+        (condition-case ex
+            (progn
+              (paredit-backward-up)
+              (indent-pp-sexp))
+          ('error nil)))))
+
 (eval-after-load "paredit"
   '(progn
      (eval-after-load "windmove"
