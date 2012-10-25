@@ -97,9 +97,7 @@
 (require 'zane-packages)
 (require 'zane-keybindings)
 
-;; (set-cursor-color "#d33682")
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
-
 
 ;; http://www.masteringemacs.org/articles/2010/10/18/maximizing-emacs-startup/
 (if (and (z:mac-p)
