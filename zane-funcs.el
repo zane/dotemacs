@@ -6,6 +6,10 @@
   "Find duplicate lines in region START to END keeping first occurrence."
   (z:uniquify-all-lines-region start end))
 
+(defun log-edit-mode ()
+  "HACK: Ergoemacs doesn't load properly unless this function is defined."
+  nil)
+
 (defun z:deduplicate-all-lines-buffer ()
   "Delete duplicate lines in buffer and keep first occurrence."
   (z:uniquify-all-lines-buffer))
