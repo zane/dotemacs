@@ -1,4 +1,6 @@
-(global-set-key (kbd "H-i") 'windmove-up)
-(global-set-key (kbd "C-l") 'windmove-right)
-(global-set-key (kbd "C-j") 'windmove-left)
-(global-set-key (kbd "C-k") 'windmove-down)
+(eval-after-load "ergoemacs-mode"
+  '(progn
+     (ergoemacs-global-set-key (kbd "H-i") 'windmove-up)
+     (ergoemacs-global-set-key (kbd "C-l") 'windmove-right)
+     (ergoemacs-global-set-key (kbd "C-j") 'windmove-left)
+     (ergoemacs-global-set-key (kbd "C-k") 'windmove-down)))
