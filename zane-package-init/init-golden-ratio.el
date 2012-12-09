@@ -5,7 +5,7 @@
 ;; behavior.
 
 (defadvice golden-ratio
-  (after horizontally-balance-after-golden activate)
+  (after horizontally-balance-after-golden)
   (zane/balance-sibling-widths))
 
 ;; golden-ratio and ediff do not play well together. Only use it when
@@ -29,14 +29,22 @@
 
 (defun zane/golden-ratio-enable ()
   (interactive)
-  (ad-enable-advice windmove-left  'after 'windmove-left-golden-ratio)
-  (ad-enable-advice windmove-right 'after 'windmove-right-golden-ratio)
-  (ad-enable-advice windmove-up    'after 'windmove-up-golden-ratio)
-  (ad-enable-advice windmove-down  'after 'windmove-down-golden-ratio))
+  (ad-enable-advice 'windmove-left  'after 'windmove-left-golden-ratio)
+  (ad-activate 'windmove-left)
+  (ad-enable-advice 'windmove-right 'after 'windmove-right-golden-ratio)
+  (ad-activate 'windmove-right)
+  (ad-enable-advice 'windmove-up    'after 'windmove-up-golden-ratio)
+  (ad-activate 'windmove-up)
+  (ad-enable-advice 'windmove-down  'after 'windmove-down-golden-ratio)
+  (ad-activate 'windmove-down))
 
 (defun zane/golden-ratio-disable ()
   (interactive)
-  (ad-disable-advice 'windmove-left-golden-ratio)
-  (ad-disable-advice 'windmove-right-golden-ratio)
-  (ad-disable-advice 'windmove-up-golden-ratio)
-  (ad-disable-advice 'windmove-down-golden-ratio))
+  (ad-disable-advice 'windmove-left  'after 'windmove-left-golden-ratio)
+  (ad-activate 'windmove-left)
+  (ad-disable-advice 'windmove-right 'after 'windmove-right-golden-ratio)
+  (ad-activate 'windmove-right)
+  (ad-disable-advice 'windmove-up    'after 'windmove-up-golden-ratio)
+  (ad-activate 'windmove-up)
+  (ad-disable-advice 'windmove-down  'after 'windmove-down-golden-ratio)
+  (ad-activate 'windmove-down))
