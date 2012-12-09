@@ -9,6 +9,8 @@
                                       ("^[ \t]*>[ \t]*>.*$"
                                        (0 'mail-double-quoted-text-face))))))
 
+(setq edit-server-new-frame nil)
+
 (eval-after-load "ergoemacs-mode"
   '(add-hook 'edit-server-edit-mode-hook
              (lambda ()
