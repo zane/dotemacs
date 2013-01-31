@@ -40,6 +40,7 @@
     gnus
     helm
     helm-git
+    jedi
     magit
     markdown-mode
     multiple-cursors
