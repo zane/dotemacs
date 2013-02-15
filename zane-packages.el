@@ -41,6 +41,7 @@
     helm
     helm-git
     jedi
+    js2-mode
     magit
     markdown-mode
     multiple-cursors
