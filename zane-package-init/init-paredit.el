@@ -7,11 +7,11 @@
 (eval-after-load 'clojure-mode '(add-hook 'clojure-mode-hook 'enable-paredit-mode))
 (eval-after-load 'slime '(add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
 
-(dolist (hook '(ruby-mode-hook
-                espresso-mode-hook
-                text-mode-hook
+(dolist (hook '(; ruby-mode-hook
                 python-mode-hook))
   (add-hook hook 'esk-paredit-nonlisp))
+
+(eval-after-load "starter-kit" '(progn (add-hook 'js-mode-hook 'esk-paredit-nonlisp)))
 
 (defadvice yank
   (after yank-indent-pp-sexp activate)
