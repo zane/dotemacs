@@ -1,6 +1,7 @@
 (add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
 (remove-hook 'text-mode-hook 'turn-on-auto-fill)
+(remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)
 (remove-hook 'text-mode-hook 'turn-on-flyspell)
 
 (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
