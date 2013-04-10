@@ -16,7 +16,6 @@
     ;;slime-repl
     ;;speck
     ;;starter-kit-ruby
-    ;;yasnippet
     ;;http://www.nongnu.org/geiser/
     ace-jump-mode
     ack-and-a-half
@@ -56,12 +55,13 @@
     solarized-theme
     speck
     starter-kit
-    starter-kit-js
+    ;;starter-kit-js
     starter-kit-lisp
     tramp
     undo-tree
     whitespace
     windmove
+    yasnippet
     ))
 
 ;;; install missing packages
