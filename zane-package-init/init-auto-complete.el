@@ -7,7 +7,6 @@
 (setq ac-expand-on-auto-complete t)
 (ac-set-trigger-key "TAB")
 
-(setq ac-sources '(ac-source-words-in-same-mode-buffers))
 (setq ac-use-menu-map t)
 (setq ac-use-fuzzy nil)
 (eval-after-load 'fuzzy
