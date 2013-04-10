@@ -5,3 +5,4 @@
   '(add-hook 'ruby-mode-hook 'z:reset-ret))
 
 (add-to-list 'auto-mode-alist `("Gemfile" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
