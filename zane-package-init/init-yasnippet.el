@@ -4,7 +4,9 @@
   (add-to-list 'ac-sources 'ac-source-yasnippet))
 
 (eval-after-load 'auto-complete
-  '(add-to-list 'prog-mode-hook 'use-ac-yasnippet))
+  '(progn
+     (require 'auto-complete-config)
+     (add-to-list 'prog-mode-hook 'use-ac-yasnippet)))
 
 (setq yas-indent-line 'fixed)
 (setq yas/root-directory (expand-file-name (concat user-emacs-directory "zane-yasnippets")))
