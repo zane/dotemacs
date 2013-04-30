@@ -1,6 +1,7 @@
 (eval-after-load 'find-file-in-project
   '(progn
      (add-to-list 'ffip-patterns "*.erb")
+     (add-to-list 'ffip-patterns "*.yml")
      (setq ffip-find-options "-not -regex \".*cache.*\"")
 
      (defun z/ffip-or-find-file ()
