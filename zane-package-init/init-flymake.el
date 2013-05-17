@@ -47,7 +47,6 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.rb\\'" flymake-ruby-init)))
 
-
 ;; http://mnemonikk.org/2010/11/05/using-flymake-to-check-erb-templates/
 ;; (defun flymake-erb-init ()
 ;;   (let* ((check-buffer (current-buffer))

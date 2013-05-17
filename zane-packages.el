@@ -31,6 +31,7 @@
     find-dired
     flymake
     flymake-cursor
+    flymake-jshint
     framemove
     fuzzy
     gist
@@ -61,6 +62,7 @@
     undo-tree
     whitespace
     windmove
+    yaml-mode
     yasnippet
     ))
 

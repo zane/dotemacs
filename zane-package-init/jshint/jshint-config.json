@@ -1,0 +1,19 @@
+{
+  "browser": true,
+  "node": true,
+  "jquery": false,
+
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "undef": true,
+  "unused": true
+}
