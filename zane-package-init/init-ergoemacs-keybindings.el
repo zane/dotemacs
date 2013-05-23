@@ -18,7 +18,9 @@
   )
 
 (eval-after-load 'ergoemacs-mode
-  '(ergoemacs-global-set-key (kbd "C-/") 'zane/toggle-identifier-case-word-at-point))
+  '(progn (ergoemacs-global-set-key (kbd "C-/") 'zane/toggle-identifier-case-word-at-point)
+          (ergoemacs-global-set-key [remap move-beginning-of-line]
+                                    'zane/smarter-move-beginning-of-line)))
 
 (remove-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
 (add-hook 'ido-minibuffer-setup-hook 'z:ergoemacs-ido-minibuffer-setup-hook)
