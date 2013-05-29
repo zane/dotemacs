@@ -1,3 +1,4 @@
+(require 'windmove)
 (after 'windmove
   (after 'ergoemacs-mode
     (ergoemacs-global-set-key (kbd "H-i") 'windmove-up)
