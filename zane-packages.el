@@ -12,11 +12,12 @@
 (defvar z:my-packages
   '(
     ;;dired-isearch
+    ;;http://www.nongnu.org/geiser/
     ;;linum-off
     ;;slime-repl
     ;;speck
+    ;;starter-kit-js
     ;;starter-kit-ruby
-    ;;http://www.nongnu.org/geiser/
     ace-jump-mode
     ack-and-a-half
     auto-complete
@@ -36,8 +37,8 @@
     fuzzy
     gist
     git-blame
-    golden-ratio
     gnus
+    golden-ratio
     helm
     helm-git
     jedi
@@ -56,7 +57,6 @@
     solarized-theme
     speck
     starter-kit
-    ;;starter-kit-js
     starter-kit-lisp
     tramp
     undo-tree

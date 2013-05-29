@@ -1,3 +1,3 @@
-(require 'framemove)
-(eval-after-load "framemove"
-  '(setq framemove-hook-into-windmove t))
+(after 'windmove
+  (require 'framemove)
+  (after 'framemove (setq framemove-hook-into-windmove t)))

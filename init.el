@@ -5,6 +5,13 @@
 ;; TODO: http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
 ;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
 
+;; Turn off mouse interface early in startup to avoid momentary display
+(dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
+  (when (fboundp mode) (funcall mode -1)))
+
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+
 (require 'cl)
 
 (defvar user-home-directory
@@ -41,8 +48,6 @@
 (setq sentence-end-double-space nil)
 (global-auto-revert-mode t)
 (global-subword-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
 (fringe-mode 0)
 (delete-selection-mode 1)
 (setq redisplay-dont-pause t)
@@ -68,8 +73,6 @@
 ;; (http://www.masteringemacs.org/articles/2010/11/14/disabling-prompts-emacs/)
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq confirm-nonexistent-file-or-buffer nil)
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message t)
 (setq kill-buffer-query-functions
   (remq 'process-kill-buffer-query-function
          kill-buffer-query-functions))
@@ -79,6 +82,17 @@
         ;; (set-face-font 'default "Inconsolata-13")
         (set-face-font 'default "Source Code Pro 12")
       (set-face-font 'default "Monospace 10")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; macros
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; http://milkbox.net/note/single-file-master-emacs-configuration/
+(defmacro after (mode &rest body)
+  "`eval-after-load' MODE evaluate BODY."
+  (declare (indent defun))
+  `(eval-after-load ,mode
+     '(progn ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
