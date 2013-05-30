@@ -15,6 +15,4 @@
   (remove-hook 'text-mode-hook 'turn-on-auto-fill)
   (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)
   (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
-  (remove-hook 'prog-mode-hook 'idle-highlight-mode)
-
-  (cua-mode nil))
+  (remove-hook 'prog-mode-hook 'idle-highlight-mode))
