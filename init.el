@@ -97,6 +97,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (progn
   (setq zane-emacs-config-dir (concat user-emacs-directory "config/"))
   (when (file-exists-p zane-emacs-config-dir)
@@ -121,6 +122,7 @@
 (if (and (z:mac-p)
          window-system)
     (add-hook 'window-setup-hook 'ns-toggle-fullscreen t))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
