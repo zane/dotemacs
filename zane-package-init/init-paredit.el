@@ -8,7 +8,19 @@
                   scheme-mode-hook))
     (add-hook hook 'enable-paredit-mode))
 
-  (after 'ergoemacs-mode
+
+(after 'paredit
+  (defadvice yank
+    (after yank-indent-pp-sexp activate)
+    (save-excursion
+      (if paredit-mode
+          (condition-case ex
+              (progn
+                (paredit-backward-up)
+                (indent-pp-sexp))
+            ('error nil)))))
+
+    (after 'ergoemacs-mode
     (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-forward-delete
     (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-backward-delete
     (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-backward-kill-word
@@ -32,14 +44,4 @@
     (define-key paredit-mode-map (kbd "C-j") nil)
     ;; windmove-down
     (define-key paredit-mode-map (kbd "C-k") nil)))
-
-(after 'paredit
-  (defadvice yank
-    (after yank-indent-pp-sexp activate)
-    (save-excursion
-      (if paredit-mode
-          (condition-case ex
-              (progn
-                (paredit-backward-up)
-                (indent-pp-sexp))
-            ('error nil))))))
+)
