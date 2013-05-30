@@ -7,6 +7,7 @@
   ;; http://whattheemacsd.com//appearance.el-01.html
   (rename-modeline 'lisp-mode emacs-lisp-mode "ELisp")
   (rename-modeline 'js js-mode "JS")
+  (rename-modeline 'lisp-mode lisp-interaction-mode "LispI")
 
   (after 'paredit         (diminish 'paredit-mode           " Φ"))
   (after 'yasnippet       (diminish 'yas-minor-mode         " Υ"))
