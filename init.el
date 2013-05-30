@@ -98,11 +98,12 @@
   (show-paren-mode 1)
   (fringe-mode 0))
 
-(defadvice load-theme (after load-theme-advice activate)
-  (set-face-background 'show-paren-match nil)
-  (set-face-foreground 'show-paren-match nil)
-  (set-face-inverse-video-p 'show-paren-match nil)
-  (set-face-attribute 'show-paren-match nil :underline (face-background 'cursor)))
+(after 'paren
+  (defadvice load-theme (after load-theme-advice activate)
+    (set-face-background 'show-paren-match nil)
+    (set-face-foreground 'show-paren-match nil)
+    (set-face-inverse-video-p 'show-paren-match nil)
+    (set-face-attribute 'show-paren-match nil :underline (face-background 'cursor))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
