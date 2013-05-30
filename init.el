@@ -110,6 +110,9 @@
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
 
 (require 'zane-packages)
+(z:install-missing-packages)
+(z:initialize-packages)
+
 (require 'zane-keybindings)
 
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
