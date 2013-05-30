@@ -12,7 +12,23 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; macros
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; http://milkbox.net/note/single-file-master-emacs-configuration/
+(defmacro after (mode &rest body)
+  "`eval-after-load' MODE evaluate BODY."
+  (declare (indent defun))
+  `(eval-after-load ,mode
+     '(progn ,@body)))
+
+
 (require 'cl)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; variables
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar user-home-directory
   (expand-file-name (concat user-emacs-directory "../"))
@@ -33,7 +49,6 @@
 (require 'zane-funcs)
 
 ;; auto-save
-(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 (setq temporary-file-directory (concat user-emacs-directory "tmp"))
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -77,22 +92,17 @@
   (remq 'process-kill-buffer-query-function
          kill-buffer-query-functions))
 
-(if window-system
-    (if (z:mac-p)
-        ;; (set-face-font 'default "Inconsolata-13")
-        (set-face-font 'default "Source Code Pro 12")
-      (set-face-font 'default "Monospace 10")))
+(when window-system
+  (let ((default-font (if (z:mac-p) "Source Code Pro 12" "Monospace 10"))) ;; "Inconsolata-13"
+    (set-face-font 'default default-font))
+  (show-paren-mode 1)
+  (fringe-mode 0))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; macros
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; http://milkbox.net/note/single-file-master-emacs-configuration/
-(defmacro after (mode &rest body)
-  "`eval-after-load' MODE evaluate BODY."
-  (declare (indent defun))
-  `(eval-after-load ,mode
-     '(progn ,@body)))
+(defadvice load-theme (after load-theme-advice activate)
+  (set-face-background 'show-paren-match nil)
+  (set-face-foreground 'show-paren-match nil)
+  (set-face-inverse-video-p 'show-paren-match nil)
+  (set-face-attribute 'show-paren-match nil :underline (face-background 'cursor)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
@@ -115,7 +125,6 @@
 (z:initialize-packages)
 
 (require 'zane-keybindings)
-
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
 
 ;; http://www.masteringemacs.org/articles/2010/10/18/maximizing-emacs-startup/
