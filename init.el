@@ -128,11 +128,6 @@
 (require 'zane-keybindings)
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
 
-;; http://www.masteringemacs.org/articles/2010/10/18/maximizing-emacs-startup/
-(if (and (z:mac-p)
-         window-system)
-    (add-hook 'window-setup-hook 'ns-toggle-fullscreen t))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
