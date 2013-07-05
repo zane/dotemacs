@@ -4,8 +4,6 @@
 (when (package-installed-p 'ergoemacs-keybindings)
   (require 'ergoemacs-mode))
 
-
-
 (after 'ergoemacs-mode
   (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us")
   (defun z:ergoemacs-ido-minibuffer-setup-hook ()
