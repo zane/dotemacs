@@ -10,7 +10,6 @@
 
 (defvar z:my-packages
   '(
-    ;;http://www.nongnu.org/geiser/
     ace-jump-mode
     ace-jump-buffer
     ack-and-a-half

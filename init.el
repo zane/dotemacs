@@ -1,10 +1,12 @@
 ;; Inspirational initfiles:
 ;;     https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
+;;     https://github.com/bbatsov/prelude
 ;;     http://milkbox.net/note/single-file-master-emacs-configuration/
 
-;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
-;; https://github.com/bbatsov/projectile
-;; https://github.com/nex3/perspective-el
+;; TODO http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
+;; TODO http://www.nongnu.org/geiser/
+;; TODO https://github.com/bbatsov/projectile
+;; TODO https://github.com/nex3/perspective-el
 
 ;; Turn off mouse interface early in startup to avoid momentary display
 (dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
