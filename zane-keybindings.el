@@ -14,26 +14,7 @@
 ;; hash table to store the old key bindings
 (setq old-key-bindings (make-hash-table :test 'equal))
 
-;; shows a hint about the change of the key binding
-(defun show-hint-old-kbind (key)
-  (let ((function-symbol (gethash key old-key-bindings)))
-    (beep)
-    (message "You typed: %s. For %s, use %s."
-             key
-             function-symbol
-             (mapcar 'key-description (where-is-internal function-symbol)))))
-
-;; turns off a key binding, leaving a hint for the unbound command
-(defmacro global-unset-key-leave-hint (key)
-  `(let ((function-symbol (global-key-binding ,key)))
-     (when function-symbol
-       (puthash ,key function-symbol old-key-bindings)
-       (global-set-key (kbd ,key) (lambda() (interactive) (show-hint-old-kbind ,key))))))
-
 (global-unset-key (kbd "C-x C-k"))
-
-(global-set-key (kbd "C-s") 'save-buffer)
-(global-set-key (kbd "C-w") 'close-current-buffer)
 
 (global-set-key (kbd "C-c C-a") 'align-regexp)
 ;(global-set-key (kbd "C-c C-o") 'sort-lines)
@@ -54,39 +35,41 @@
 ;; http://www.masteringemacs.org/articles/2011/07/20/searching-buffers-occur-mode/
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
-(after 'expand-region-autoloads
+(after "expand-region-autoloads"
   (global-set-key (kbd "M->") 'er/expand-region)
   (global-set-key (kbd "M-<") 'er/contract-region))
 
 (after 'ergoemacs-mode
-  (after 'ace-jump-mode-autoloads
-    (ergoemacs-global-set-key (kbd "M-'") 'ace-jump-mode)
-    (ergoemacs-global-set-key (kbd "C-'") 'comment-dwim))
+  ;;(global-set-key (kbd "M-x") 'ergoemacs-cut-line-or-region)
+  
+  (after "ace-jump-mode-autoloads"
+    (global-set-key (kbd "M-'") 'ace-jump-mode)
+    (global-set-key (kbd "C-'") 'comment-dwim))
 
-  (after 'multiple-cursors-autoloads
-    (ergoemacs-global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-    (ergoemacs-global-set-key (kbd "C->") 'mc/mark-next-like-this)
-    (ergoemacs-global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-    (ergoemacs-global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+  (after "multiple-cursors-autoloads"
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
   (after 'windmove
-    (ergoemacs-global-set-key (kbd "H-i") 'windmove-up)
-    (ergoemacs-global-set-key (kbd "C-l") 'windmove-right)
-    (ergoemacs-global-set-key (kbd "C-j") 'windmove-left)
-    (ergoemacs-global-set-key (kbd "C-k") 'windmove-down))
+    (global-set-key (kbd "H-i") 'windmove-up)
+    (global-set-key (kbd "C-l") 'windmove-right)
+    (global-set-key (kbd "C-j") 'windmove-left)
+    (global-set-key (kbd "C-k") 'windmove-down))
+
+  (after "find-file-in-project-autoloads"
+    (global-set-key (kbd "C-o") 'z/ffip-or-find-file))
 
   (after 'edit-server
     (add-hook 'edit-server-edit-mode-hook
               (lambda ()
-                (ergoemacs-local-set-key (kbd "C-s" 'edit-server-done))))))
+                (local-set-key (kbd "C-s" 'edit-server-done))))))
 
 (after "magit-autoloads"
   (global-set-key (kbd "C-c C-g") 'magit-status)
   (after 'magit
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)))
-
-(after "find-file-in-project-autoloads"
-    (ergoemacs-global-set-key (kbd "C-o") 'z/ffip-or-find-file))
 
 (after "key-chord-autoloads"
   (key-chord-mode 1))
