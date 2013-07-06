@@ -2,6 +2,18 @@
   "Truthy if the host OS is a Mac."
   (string-match "apple-darwin" system-configuration))
 
+(defun z:delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
 (defun z:deduplicate-all-lines-region (start end)
   "Find duplicate lines in region START to END keeping first occurrence."
   (z:uniquify-all-lines-region start end))
