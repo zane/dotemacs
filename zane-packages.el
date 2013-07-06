@@ -34,6 +34,7 @@
     gitconfig-mode
     gitignore-mode
     gnus
+    ido-ubiquitous
     ido-vertical-mode
     jedi
     json-mode
