@@ -126,7 +126,8 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
                  (file-exists-p initfile))
         (load initfile)))))
 
-(when (z:mac-p)
-  (exec-path-from-shell-initialize))
+(after 'exec-path-from-shell
+  (when (z:mac-p)
+    (exec-path-from-shell-initialize)))
 
 (provide 'zane-packages)
