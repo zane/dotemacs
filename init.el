@@ -2,7 +2,6 @@
 ;;     https://raw.github.com/gist/304391/0f5dd9acb959bcb3a244c2ad903bec75096cab17/.emacs.el
 ;;     http://milkbox.net/note/single-file-master-emacs-configuration/
 
-;; TODO: http://www.dr-qubit.org/undo-tree/undo-tree.el
 ;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
 
 ;; Turn off mouse interface early in startup to avoid momentary display
