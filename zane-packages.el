@@ -30,6 +30,9 @@
     fuzzy
     gist
     git-blame
+    git-commit-mode
+    gitconfig-mode
+    gitignore-mode
     gnus
     ido-vertical-mode
     jedi
