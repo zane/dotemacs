@@ -28,16 +28,14 @@
                 (indent-pp-sexp))
             ('error nil)))))
 
-  
-  (define-key paredit-mode-map  nil) 
   (after 'ergoemacs-mode
-    (dolist (key '((kbd "M-;")          ; searching
-                   (kbd "C-d")          ; was paredit-forward-delete
-                   (kbd "C-d")          ; was paredit-backward-delete
-                   (kbd "M-d")          ; was paredit-backward-kill-word
-                   (kbd "M-d")          ; was paredit-forward-kill-word
-                   (kbd "C-k")          ; was paredit-kill
-                   (kbd "M-J")))        ; moving to the beginning of the file
+    (dolist (key (list (kbd "M-;")      ; searching
+                       (kbd "C-d")      ; was paredit-forward-delete
+                       (kbd "C-d")      ; was paredit-backward-delete
+                       (kbd "M-d")      ; was paredit-backward-kill-word
+                       (kbd "M-d")      ; was paredit-forward-kill-word
+                       (kbd "C-k")      ; was paredit-kill
+                       (kbd "M-J")))    ; moving to the beginning of the file
       (define-key paredit-mode-map key nil))
 
     (add-hook 'paredit-mode-hook
