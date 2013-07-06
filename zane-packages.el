@@ -45,8 +45,6 @@
     smartparens
     smex
     solarized-theme
-    starter-kit
-    starter-kit-lisp
     tramp
     undo-tree
     volatile-highlights
