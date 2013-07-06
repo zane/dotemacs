@@ -30,7 +30,6 @@
     git-commit-mode
     gitconfig-mode
     gitignore-mode
-    gnus
     iedit
     ido-ubiquitous
     ido-vertical-mode
