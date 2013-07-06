@@ -73,11 +73,17 @@
     (ergoemacs-global-set-key (kbd "H-i") 'windmove-up)
     (ergoemacs-global-set-key (kbd "C-l") 'windmove-right)
     (ergoemacs-global-set-key (kbd "C-j") 'windmove-left)
-    (ergoemacs-global-set-key (kbd "C-k") 'windmove-down)))
+    (ergoemacs-global-set-key (kbd "C-k") 'windmove-down))
+
+  (after 'edit-server
+    (add-hook 'edit-server-edit-mode-hook
+              (lambda ()
+                (ergoemacs-local-set-key (kbd "C-s" 'edit-server-done))))))
 
 (after "magit-autoloads"
   (global-set-key (kbd "C-c C-g") 'magit-status)
-  (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+  (after 'magit
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)))
 
 (after "key-chord-autoloads"
   (key-chord-mode 1))
@@ -87,7 +93,12 @@
     (key-chord-define-global "jk" 'ace-jump-buffer)))
 
 (after 'dired 
-  (define-key dired-mode-map (kbd "C-o") 'other-window))
+  (define-key dired-mode-map (kbd "C-o") 'other-window)
+  (after 'dired-search-autoloads 
+    (define-key dired-mode-map (kbd "C-s") 'dired-isearch-forward)
+    (define-key dired-mode-map (kbd "C-r") 'dired-isearch-backward)
+    (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
+    (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
 
 (after 'smex-autoloads
   (global-set-key (kbd "M-a") 'smex)

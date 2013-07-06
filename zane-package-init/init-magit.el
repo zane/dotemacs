@@ -1,5 +1,3 @@
-(global-set-key (kbd "C-c C-g") 'magit-status)
-
 (after 'magit
   (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
@@ -17,6 +15,4 @@
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
     (kill-buffer)
-    (jump-to-register :magit-fullscreen))
-
-  (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+    (jump-to-register :magit-fullscreen)))
