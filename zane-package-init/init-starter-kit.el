@@ -10,9 +10,11 @@
     (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
 (after 'starter-kit-defuns
-  (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
+  (defun turn-on-line-truncation ()
+    "Sets `truncate-lines' to true"
+    (setq truncate-lines t))
+  (add-hook 'prog-mode-hook 'turn-on-line-truncation)
 
   (remove-hook 'text-mode-hook 'turn-on-auto-fill)
   (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)
-  (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
-  (remove-hook 'prog-mode-hook 'idle-highlight-mode))
+  (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode))
