@@ -110,7 +110,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
   (interactive)
   (let ((not-installed (remove-if 'package-installed-p z:my-packages)))
     (when (and not-installed
-               (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed))))
+               (y-or-n-p (format "There are %d packages to be installed. Install them? " (length not-installed))))
       (package-refresh-contents)
       (dolist (package z:my-packages)
         (when (not (package-installed-p package))
