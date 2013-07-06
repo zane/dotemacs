@@ -1,4 +1,6 @@
 (after "smartparens-autoloads"
+  (setq sp-base-key-bindings 'paredit)
+  
   (defun turn-on-smartparens-mode ()
     "Turn on `smartparens-mode'."
     (smartparens-mode +1))
