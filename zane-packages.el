@@ -124,10 +124,9 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
   (message (format "initializing packages out of %s" z:package-init-dir))
   (dolist (package (append (mapcar 'car package--builtins) package-activated-list))
     (let* ((initfile (concat z:package-init-dir (format "init-%s.el" package))))
-      (if (and (package-installed-p package)
-               (file-exists-p initfile))
-          (progn (load initfile)
-                 (message (format "loaded %s" initfile)))))))
+      (when (and (package-installed-p package)
+                 (file-exists-p initfile))
+        (load initfile)))))
 
 (when (z:mac-p)
   (exec-path-from-shell-initialize))
