@@ -14,11 +14,10 @@
     ;;dired-isearch
     ;;http://www.nongnu.org/geiser/
     ;;linum-off
-    ;;slime-repl
-    ;;speck
     ;;starter-kit-js
     ;;starter-kit-ruby
     ace-jump-mode
+    ace-jump-buffer
     ack-and-a-half
     auto-complete
     clojure-mode
@@ -66,7 +65,6 @@
     yasnippet
     ))
 
-;;; install missing packages
 (defun z:install-missing-packages ()
   (interactive)
   (let ((not-installed (remove-if 'package-installed-p z:my-packages)))
@@ -77,7 +75,6 @@
                      (when (not (package-installed-p package))
                        (package-install package))))))))
 
-;;; initialize packages
 (defun z:initialize-packages ()
   (interactive)
   (setq z:package-init-dir (concat user-emacs-directory "zane-package-init/"))
@@ -89,7 +86,7 @@
           (progn (load initfile)
                  (message (format "loaded %s" initfile)))))))
 
-(when (memq window-system '(mac ns))
+(when (z:mac-p)
   (exec-path-from-shell-initialize))
 
 (provide 'zane-packages)
