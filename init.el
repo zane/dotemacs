@@ -96,12 +96,12 @@
          kill-buffer-query-functions))
 
 (when window-system
-  (let ((default-font (if (z:mac-p) "Source Code Pro 12" "Monospace 10"))) ;; "Inconsolata-13"
+  (let ((default-font (if (z:mac-p)
+                          "-apple-Anonymous_Pro_Minus-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"
+                        "Monospace 10"))) ;; "Inconsolata-13" "Source Code Pro 12"
     (set-face-font 'default default-font))
   (show-paren-mode 1)
   (fringe-mode 0))
-
-;; (set-face-font 'default "-apple-Anonymous_Pro_Minus-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
 
 (after 'paren
   (defadvice load-theme (after load-theme-advice activate)
