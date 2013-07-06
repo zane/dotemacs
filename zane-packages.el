@@ -37,6 +37,7 @@
     git-blame
     gnus
     golden-ratio
+    ido-vertical-mode
     jedi
     json-mode
     key-chord
