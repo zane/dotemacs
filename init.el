@@ -107,6 +107,12 @@
     (set-face-inverse-video-p 'show-paren-match nil)
     (set-face-attribute 'show-paren-match nil :underline (face-background 'cursor))))
 
+(after 'idle-highlight-mode
+  (defun turn-on-idle-highlight-mode ()
+    "Turns on `idle-highlight-mode'"
+    (idle-highlight-mode +1))
+  (add-hook 'prog-mode-hook 'turn-on-idle-highlight-mode)
+  (set-face-attribute 'idle-highlight nil :inherit 'hl-line))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
