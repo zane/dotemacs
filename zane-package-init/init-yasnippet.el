@@ -1,14 +1,13 @@
 (require 'yasnippet)
 
 (after 'yasnippet
-  (defun use-ac-yasnippet ()
-    (after 'auto-complete
-      (require 'auto-complete-config)
-      (add-to-list 'prog-mode-hook 'use-ac-yasnippet))
+  (after 'auto-complete
+    (require 'auto-complete-config)
+    (add-to-list 'ac-sources 'ac-source-yasnippet))
 
-    (add-to-list 'ac-sources 'ac-source-yasnippet)
-    (setq yas-indent-line 'fixed)
-    (setq yas/root-directory (expand-file-name (concat user-emacs-directory "zane-yasnippets")))
-    (yas/load-directory yas/root-directory)
+  ;; (setq yas-indent-line 'fixed)
+  (setq yas/root-directory (expand-file-name (concat user-emacs-directory "zane-yasnippets")))
+  (yas/load-directory yas/root-directory)
 
-    (yas/global-mode 1)))
+  (yas/global-mode 1))
+
