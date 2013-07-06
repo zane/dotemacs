@@ -14,8 +14,6 @@
     ace-jump-buffer
     ack-and-a-half
     auto-complete
-    clojure-mode
-    coffee-mode
     diminish
     dired+
     ediff
@@ -37,18 +35,14 @@
     ido-ubiquitous
     ido-vertical-mode
     jedi
-    json-mode
     key-chord
     kibit-mode
     magit
-    markdown-mode
     multiple-cursors
     nrepl
     org
     paredit
     rainbow-delimiters
-    ruby-mode
-    scala-mode
     slime
     slime-repl
     smartparens
@@ -61,19 +55,70 @@
     volatile-highlights
     whitespace
     windmove
-    yaml-mode
     yasnippet
     ))
+
+;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
+(defvar zane-auto-install-alist
+  '(("\\.clj\\'" clojure-mode clojure-mode)
+    ("\\.coffee\\'" coffee-mode coffee-mode)
+    ("\\.css\\'" css-mode css-mode)
+    ("\\.csv\\'" csv-mode csv-mode)
+    ("\\.d\\'" d-mode d-mode)
+    ("\\.dart\\'" dart-mode dart-mode)
+    ("\\.erl\\'" erlang erlang-mode)
+    ("\\.feature\\'" feature-mode feature-mode)
+    ("Gemfile" ruby-mode ruby-mode)
+    ("\\.go\\'" go-mode go-mode)
+    ("\\.groovy\\'" groovy-mode groovy-mode)
+    ("\\.haml\\'" haml-mode haml-mode)
+    ("\\.hs\\'" haskell-mode haskell-mode)
+    ("\\.json\\'" json-mode)
+    ("\\.latex\\'" auctex LaTeX-mode)
+    ("\\.less\\'" less-css-mode less-css-mode)
+    ("\\.lua\\'" lua-mode lua-mode)
+    ("\\.markdown\\'" markdown-mode markdown-mode)
+    ("\\.md\\'" markdown-mode markdown-mode)
+    ("\\.ml\\'" tuareg tuareg-mode)
+    ("\\.php\\'" php-mode php-mode)
+    ("PKGBUILD\\'" pkgbuild-mode pkgbuild-mode)
+    ("\\.rake\\'" ruby-mode ruby-mode)
+    ("\\.sass\\'" sass-mode sass-mode)
+    ("\\.scala\\'" scala-mode2 scala-mode)
+    ("\\.scss\\'" scss-mode scss-mode)
+    ("\\.slim\\'" slim-mode slim-mode)
+    ("\\.textile\\'" textile-mode textile-mode)
+    ("\\.yml\\'" yaml-mode yaml-mode))
+  "(extension, packate, mode) tuples")
+
+(defmacro zane-auto-install (extension package mode)
+  "When file with EXTENSION is opened triggers auto-install of PACKAGE.
+PACKAGE is installed only if not already present.  The file is opened in MODE."
+  `(add-to-list 'auto-mode-alist
+                `(,extension . (lambda ()
+                                 (unless (package-installed-p ',package)
+                                   (package-install ',package))
+                                 (,mode)))))
+
+;; build auto-install mappings
+(mapc
+ (lambda (entry)
+   (let ((extension (car entry))
+         (package (cadr entry))
+         (mode (cadr (cdr entry))))
+     (unless (package-installed-p package)
+       (zane-auto-install extension package mode))))
+ zane-auto-install-alist)
 
 (defun z:install-missing-packages ()
   (interactive)
   (let ((not-installed (remove-if 'package-installed-p z:my-packages)))
-    (if not-installed
-        (if (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed)))
-            (progn (package-refresh-contents)
-                   (dolist (package z:my-packages)
-                     (when (not (package-installed-p package))
-                       (package-install package))))))))
+    (when (and not-installed
+               (y-or-n-p (format "there are %d packages to be installed. install them? " (length not-installed))))
+      (package-refresh-contents)
+      (dolist (package z:my-packages)
+        (when (not (package-installed-p package))
+          (package-install package))))))
 
 (defun z:initialize-packages ()
   (interactive)
