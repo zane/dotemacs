@@ -1,4 +1,4 @@
-(after 'diminish-autoloads
+(after "diminish-autoloads"
   (defmacro rename-modeline (package-name mode new-name)
     `(eval-after-load ,package-name
        '(defadvice ,mode (after rename-modeline activate)
@@ -15,7 +15,11 @@
   (after 'simple          (diminish 'auto-fill-function     " af"))
 
   (after 'auto-complete       (diminish 'auto-complete-mode))
-  (after 'ergoemacs-mode      (diminish 'ergoemacs-mode))
+
+  (defun diminish-ergoemacs-mode ()
+    (diminish 'ergoemacs-mode))
+  (add-hook 'ergoemacs-mode-hook 'diminish-ergoemacs-mode)
+
   (after 'undo-tree           (diminish 'undo-tree-mode))
   (after 'volatile-highlights (diminish 'volatile-highlights-mode))
   (after 'whitespace          (diminish 'global-whitespace-mode))
