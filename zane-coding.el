@@ -1,6 +1,4 @@
 (after 'js
-  ;;(define-key js-mode-map "{" 'paredit-open-curly)
-  ;;(define-key js-mode-map "}" 'paredit-close-curly-and-newline)
   (setq js-indent-level 2)
   (define-key js-mode-map (kbd ",") 'self-insert-command)
   (define-key js-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
@@ -10,10 +8,11 @@
                                                                 "ƒ")
                                                 nil))))))
 
-(add-hook 'java-mode-hook
-          (lambda ()
-            (subword-mode t)
-            (setq tab-width 4)))
+(after 'cc-mode
+  (defun z:set-tab-with-to-4 ()
+    (set (make-local-variable 'tab-width) 4))
+
+  (add-hook 'java-mode-hook 'z:set-tab-with-to-4))
 
 (after 'python
   (setq python-python-command "ipython")
@@ -55,16 +54,16 @@
     (set-face-attribute 'flycheck-warning nil :underline "yellow")
     (setq flycheck-mode-line-lighter " Κ")))
 
-(dolist (mode '(ruby-mode-hook
-                js-mode-hook))
+(dolist (mode '(java-mode-hook
+                js-mode-hook
+                ruby-mode-hook))
   (add-hook mode 'subword-mode))
-
-(autoload 'enable-paredit-mode "paredit")
 
 (after "paredit-autoloads"
   (after 'clojure-mode-autoloads (add-hook 'clojure-mode-hook 'enable-paredit-mode))
   (after 'slime-autoloads (add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
 
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code.")
   (dolist (hook '(emacs-lisp-mode-hook
                   scheme-mode-hook))
     (add-hook hook 'enable-paredit-mode))
@@ -116,7 +115,6 @@
 
 (after "rainbow-delimiters-autoloads"
   (defun z:turn-on-rainbow-delimiters-mode ()
-    (interactive)
     (rainbow-delimiters-mode 1))
 
   (setq-default frame-background-mode 'dark)
