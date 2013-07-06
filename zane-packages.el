@@ -5,17 +5,12 @@
 ;; Add custom package.el sources
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("technomancy" . "http://repo.technomancy.us/emacs/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 (defvar z:my-packages
   '(
-    ;;dired-isearch
     ;;http://www.nongnu.org/geiser/
-    ;;linum-off
-    ;;starter-kit-js
-    ;;starter-kit-ruby
     ace-jump-mode
     ace-jump-buffer
     ack-and-a-half
@@ -36,7 +31,6 @@
     gist
     git-blame
     gnus
-    golden-ratio
     ido-vertical-mode
     jedi
     json-mode
@@ -56,7 +50,6 @@
     smartparens
     smex
     solarized-theme
-    speck
     starter-kit
     starter-kit-lisp
     tramp
