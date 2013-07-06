@@ -8,7 +8,4 @@
     (interactive)
     (condition-case ex
         (find-file-in-project)
-      ('error (ido-find-file))))
-
-  (after 'ergoemacs-mode
-    (ergoemacs-global-set-key (kbd "C-o") 'z/ffip-or-find-file)))
+      ('error (ido-find-file)))))

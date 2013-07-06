@@ -54,15 +54,15 @@
 ;; http://www.masteringemacs.org/articles/2011/07/20/searching-buffers-occur-mode/
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
-(after 'expand-region-autoloads 
+(after 'expand-region-autoloads
   (global-set-key (kbd "M->") 'er/expand-region)
   (global-set-key (kbd "M-<") 'er/contract-region))
 
 (after 'ergoemacs-mode
-  (after 'ace-jump-mode-autoloads 
+  (after 'ace-jump-mode-autoloads
     (ergoemacs-global-set-key (kbd "M-'") 'ace-jump-mode)
     (ergoemacs-global-set-key (kbd "C-'") 'comment-dwim))
-  
+
   (after 'multiple-cursors-autoloads
     (ergoemacs-global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
     (ergoemacs-global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -85,16 +85,19 @@
   (after 'magit
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)))
 
+(after "find-file-in-project-autoloads"
+    (ergoemacs-global-set-key (kbd "C-o") 'z/ffip-or-find-file))
+
 (after "key-chord-autoloads"
   (key-chord-mode 1))
 
-(after "ace-jump-buffer-autoloads"
-  (after "key-chord-autoloads"
+(after "key-chord-autoloads"
+  (after "ace-jump-buffer-autoloads"
     (key-chord-define-global "jk" 'ace-jump-buffer)))
 
-(after 'dired 
+(after 'dired
   (define-key dired-mode-map (kbd "C-o") 'other-window)
-  (after 'dired-search-autoloads 
+  (after 'dired-search-autoloads
     (define-key dired-mode-map (kbd "C-s") 'dired-isearch-forward)
     (define-key dired-mode-map (kbd "C-r") 'dired-isearch-backward)
     (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
