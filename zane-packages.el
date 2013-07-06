@@ -18,7 +18,7 @@
     dired+
     ediff
     edit-server
-    ergoemacs-keybindings
+    ergoemacs-mode
     exec-path-from-shell
     expand-region
     find-dired
