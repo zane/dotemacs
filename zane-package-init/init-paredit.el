@@ -6,10 +6,18 @@
 
   (dolist (hook '(emacs-lisp-mode-hook
                   scheme-mode-hook))
-    (add-hook hook 'enable-paredit-mode))
-
+    (add-hook hook 'enable-paredit-mode)))
 
 (after 'paredit
+  ;; making paredit work with delete-selection-mode
+  ;; https://github.com/malkomalko/.emacs.d/blob/master/modules/setup-paredit.el
+  (put 'paredit-forward-delete 'delete-selection 'supersede)
+  (put 'paredit-backward-delete 'delete-selection 'supersede)
+  (put 'paredit-open-round 'delete-selection t)
+  (put 'paredit-open-square 'delete-selection t)
+  (put 'paredit-doublequote 'delete-selection t)
+  (put 'paredit-newline 'delete-selection t)
+
   (defadvice yank
     (after yank-indent-pp-sexp activate)
     (save-excursion
@@ -20,15 +28,17 @@
                 (indent-pp-sexp))
             ('error nil)))))
 
-    (after 'ergoemacs-mode
-    (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-forward-delete
-    (define-key paredit-mode-map (kbd "C-d") nil) ; was paredit-backward-delete
-    (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-backward-kill-word
-    (define-key paredit-mode-map (kbd "M-d") nil) ; was paredit-forward-kill-word
-    (define-key paredit-mode-map (kbd "C-k") nil) ; was paredit-kill
-
-    (define-key paredit-mode-map (kbd "M-;") nil) ; searching
-    (define-key paredit-mode-map (kbd "M-J") nil) ; moving to the beginning of the file
+  
+  (define-key paredit-mode-map  nil) 
+  (after 'ergoemacs-mode
+    (dolist (key '((kbd "M-;")          ; searching
+                   (kbd "C-d")          ; was paredit-forward-delete
+                   (kbd "C-d")          ; was paredit-backward-delete
+                   (kbd "M-d")          ; was paredit-backward-kill-word
+                   (kbd "M-d")          ; was paredit-forward-kill-word
+                   (kbd "C-k")          ; was paredit-kill
+                   (kbd "M-J")))        ; moving to the beginning of the file
+      (define-key paredit-mode-map key nil))
 
     (add-hook 'paredit-mode-hook
               (lambda ()
@@ -44,4 +54,3 @@
     (define-key paredit-mode-map (kbd "C-j") nil)
     ;; windmove-down
     (define-key paredit-mode-map (kbd "C-k") nil)))
-)
