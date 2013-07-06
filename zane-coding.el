@@ -11,3 +11,5 @@
     (defun z:reset-ret ()
       (ergoemacs-local-set-key (kbd "RET") 'reindent-then-newline-and-indent))
     (add-hook 'ruby-mode-hook 'z:reset-ret)))
+
+(provide 'zane-coding)

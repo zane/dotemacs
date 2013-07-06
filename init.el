@@ -140,6 +140,8 @@
 (z:install-missing-packages)
 (z:initialize-packages)
 
+(require 'zane-coding)
+
 (require 'zane-keybindings)
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
 
