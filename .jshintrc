@@ -3,7 +3,7 @@
   "node": true,
   "jquery": false,
 
-  "camelcase": true,
+  "camelcase": false,
   "curly": true,
   "devel": true,
   "eqeqeq": true,
