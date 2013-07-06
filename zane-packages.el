@@ -60,6 +60,7 @@
     starter-kit-lisp
     tramp
     undo-tree
+    volatile-highlights
     whitespace
     windmove
     yaml-mode
