@@ -117,8 +117,9 @@
   (add-hook 'prog-mode-hook 'turn-on-idle-highlight-mode)
   (set-face-attribute 'idle-highlight nil :inherit 'hl-line))
 
-(after "ido-vertical-mode-autoloads" (ido-vertical-mode 1))
-(after "ido-ubiquitous-autoloads" (require 'ido-ubiquitous))
+(ido-mode 1)
+(after "ido-vertical-mode-autoloads" (ido-vertical-mode +1))
+(after "ido-ubiquitous-autoloads" (ido-ubiquitous +1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load files in config/
