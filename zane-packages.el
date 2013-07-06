@@ -52,6 +52,7 @@
     scala-mode
     slime
     slime-repl
+    smartparens
     smex
     solarized-theme
     speck
