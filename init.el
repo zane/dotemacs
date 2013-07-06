@@ -23,7 +23,6 @@
   `(eval-after-load ,mode
      '(progn ,@body)))
 
-
 (require 'cl)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -43,8 +42,6 @@
   "The user's Dropbox root directory.")
 
 (add-to-list 'load-path user-emacs-directory)
-
-;; http://www.gnu.org/software/emacs/elisp/html_node/Simple-Match-Data.html#Simple-Match-Data
 
 (require 'zane-funcs)
 
