@@ -31,18 +31,17 @@
     exec-path-from-shell
     expand-region
     find-dired
-    flymake
-    flymake-cursor
-    flymake-jshint
+    flycheck
     framemove
     fuzzy
     gist
     git-blame
     gnus
     golden-ratio
-    helm
-    helm-git
     jedi
+    json-mode
+    key-chord
+    kibit-mode
     magit
     markdown-mode
     multiple-cursors
