@@ -1,6 +1,6 @@
-(require 'image-dired)
-
 (after 'dired
+  (require 'image-dired)
+  (require 'dired-x)
   ;; Refresh the dired buffer whenever it regains focus
   (setq-default dired-auto-revert-buffer t)
 
