@@ -79,6 +79,9 @@
 (put 'ido-exit-minibuffer 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+;; run clean-buffer-list at midnight
+(require 'midnight)
+
 ;; Tooltips
 ;; (http://www.masteringemacs.org/articles/2010/10/15/making-tooltips-appear-in-echo-area/)
 (tooltip-mode -1)
