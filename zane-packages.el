@@ -73,7 +73,8 @@
     ("\\.groovy\\'" groovy-mode groovy-mode)
     ("\\.haml\\'" haml-mode haml-mode)
     ("\\.hs\\'" haskell-mode haskell-mode)
-    ("\\.json\\'" json-mode)
+    ("\\.jade\\'" jade-mode jade-mode)
+    ("\\.json\\'" json-mode json-mode)
     ("\\.latex\\'" auctex LaTeX-mode)
     ("\\.less\\'" less-css-mode less-css-mode)
     ("\\.lua\\'" lua-mode lua-mode)
@@ -89,7 +90,7 @@
     ("\\.slim\\'" slim-mode slim-mode)
     ("\\.textile\\'" textile-mode textile-mode)
     ("\\.yml\\'" yaml-mode yaml-mode))
-  "(extension, packate, mode) tuples")
+  "(extension, package, mode) tuples")
 
 (defmacro zane-auto-install (extension package mode)
   "When file with EXTENSION is opened triggers auto-install of PACKAGE.

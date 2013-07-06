@@ -20,6 +20,16 @@
                                                                 "ƒ")
                                                 nil))))))
 
+(add-hook 'java-mode-hook
+          (lambda ()
+            (subword-mode t)
+            (setq tab-width 4)))
+
+(after 'python
+  (setq python-python-command "ipython")
+  ;; We never want to edit Python bytecode
+  (add-to-list 'completion-ignored-extensions ".rbc"))
+
 (after 'coffee-mode
   (defun z:set-tab-with-to-2 ()
     (set (make-local-variable 'tab-width) 2))
