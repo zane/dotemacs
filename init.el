@@ -3,6 +3,8 @@
 ;;     http://milkbox.net/note/single-file-master-emacs-configuration/
 
 ;; TODO: http://jesselegg.com/archives/2010/03/14/emacs-python-programmers-2-virtualenv-ipython-daemon-mode/
+;; https://github.com/bbatsov/projectile
+;; https://github.com/nex3/perspective-el
 
 ;; Turn off mouse interface early in startup to avoid momentary display
 (dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
