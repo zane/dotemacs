@@ -43,8 +43,6 @@
     org
     paredit
     rainbow-delimiters
-    slime
-    slime-repl
     smartparens
     smex
     solarized-theme

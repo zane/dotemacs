@@ -1,13 +1,3 @@
-(after "clojure-mode-autoloads"
-  (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup))
-
-(after "slime-repl-autoloads"
-  (add-hook 'slime-repl-mode-hook
-            (defun clojure-mode-slime-font-lock ()
-              (require 'clojure-mode)
-              (let (font-lock-mode)
-                (clojure-mode-font-lock-setup)))))
-
 (after 'js
   ;;(define-key js-mode-map "{" 'paredit-open-curly)
   ;;(define-key js-mode-map "}" 'paredit-close-curly-and-newline)
