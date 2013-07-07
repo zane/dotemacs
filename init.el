@@ -100,9 +100,9 @@
                           "-apple-Anonymous_Pro_Minus-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"
                         "Monospace 10"))) ;; "Inconsolata-13" "Source Code Pro 12"
     (set-face-font 'default default-font))
-  (show-paren-mode 1)
   (fringe-mode 0))
 
+(show-paren-mode 1)
 (after 'paren
   (defadvice load-theme (after load-theme-advice activate)
     (set-face-background 'show-paren-match nil)
@@ -145,6 +145,7 @@
 
 (require 'zane-keybindings)
 (add-to-list 'default-frame-alist '(cursor-color . "#d33682"))
+(blink-cursor-mode -1)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
