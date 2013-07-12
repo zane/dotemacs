@@ -39,6 +39,18 @@
 
   (add-hook 'prog-mode-hook 'turn-on-smartparens-mode))
 
+(progn (require 'electric)
+       (defun turn-on-electric-indent-mode ()
+	 "Turn on `electric-indent-mode'."
+	 (electric-indent-mode +1))
+
+       (defun turn-off-electric-indent-mode ()
+	 "Turn on `electric-indent-mode'."
+	 (electric-indent-mode -1))
+
+       (add-hook 'prog-mode-hook 'turn-on-electric-indent-mode)
+       (add-hook 'python-mode-hook 'turn-off-electric-indent-mode))
+
 (after "flycheck-autoloads"
   ;; Use flycheck for all modes that aren't emacs-lisp-mode
   (defun z:maybe-turn-on-flycheck-mode ()
