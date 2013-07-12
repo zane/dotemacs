@@ -53,6 +53,7 @@
     (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
   (after 'windmove
+    (define-key lisp-interaction-mode-map (kbd "C-j") nil)
     (global-set-key (kbd "H-i") 'windmove-up)
     (global-set-key (kbd "C-l") 'windmove-right)
     (global-set-key (kbd "C-j") 'windmove-left)
@@ -70,6 +71,9 @@
   (global-set-key (kbd "C-c C-g") 'magit-status)
   (after 'magit
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)))
+
+(after 'smartparens
+  (define-key smartparens-mode-map (kbd "M-r") nil))
 
 (after "key-chord-autoloads"
   (key-chord-mode 1))
