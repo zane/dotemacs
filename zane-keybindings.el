@@ -86,6 +86,9 @@
     (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
     (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)))
 
+(after 'nrepl
+  (define-key nrepl-mode-map (kbd "C-j") nil))
+
 (after 'smex-autoloads
   (global-set-key (kbd "M-a") 'smex)
   (global-set-key (kbd "M-A") 'smex-major-mode-commands)
