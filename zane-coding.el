@@ -37,10 +37,7 @@
     "Turn on `smartparens-mode'."
     (smartparens-mode +1))
 
-  (dolist (mode-hook '(ruby-mode-hook
-                       python-mode-hook
-                       js-mode-hook))
-    (add-hook mode-hook 'turn-on-smartparens-mode)))
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-mode))
 
 (after "flycheck-autoloads"
   ;; Use flycheck for all modes that aren't emacs-lisp-mode
