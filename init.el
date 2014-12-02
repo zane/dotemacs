@@ -9,46 +9,16 @@
 
 ;;; Code:
 (require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(package-initialize)
 
-(prelude-ensure-module-deps
- '(ac-nrepl
-   ack-and-a-half
-   better-defaults
-   clojure-snippets
-   diminish
-   evil
-   f
-   framemove
-   git-timemachine
-   haskell-mode
-   htmlize
-   idle-highlight-mode
-   iedit
-   ido-vertical-mode
-   json-mode
-   jsx-mode
-   golden-ratio
-   midje-mode
-   multiple-cursors
-   pos-tip
-   rainbow-delimiters
-   rainbow-identifiers
-   refheap
-   slamhound
-   smart-mode-line
-   sql-indent
-   use-package
-   vlf
-   visual-regexp-steroids
-   windmove
-   yasnippet))
-
-(setq prelude-flyspell nil)
-(setq prelude-guru nil)
-
-(require 'f)
+(package-install 'use-package)
 (require 'use-package)
+
+(use-package f
+  :ensure f
+  :init (require 'f))
 
 (defvar user-home-directory
   (f-expand ".." user-emacs-directory)
@@ -62,16 +32,396 @@
   (f-join "Dropbox" user-home-directory)
   "The user's Dropbox directory.")
 
-(defun increment-number-at-point ()
-  "Increments the number at point."
-  (interactive)
-  (skip-chars-backward "0123456789")
-  (or (looking-at "[0123456789]+")
-      (error "No number at point"))
-  (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+(defvar savefile-dir
+  (f-join user-emacs-directory "savefile"))
+(unless (file-exists-p savefile-dir) (make-directory savefile-dir))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Previously Migrated
+;; Yanked from prelude
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; reduce the frequency of garbage collection by making it happen on
+;; each 50MB of allocated data (the default is on every 0.76MB)
+(setq gc-cons-threshold 50000000)
+
+;; warn when opening files bigger than 100MB
+(setq large-file-warning-threshold 100000000)
+
+;; .............................................................................
+;; Editor
+
+;; Death to the tabs!  However, tabs historically indent to the next
+;; 8-character offset; specifying anything else will cause *mass*
+;; confusion, as it will change the appearance of every existing file.
+;; In some cases (python), even worse -- it will change the semantics
+;; (meaning) of the program.
+;;
+;; Emacs modes typically provide a standard means to change the
+;; indentation width -- eg. c-basic-offset: use that to adjust your
+;; personal indentation width, while maintaining the style (and
+;; meaning) of any files you load.
+(setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
+(setq-default tab-width 8)            ;; but maintain correct appearance
+
+;; Newline at end of file
+(setq require-final-newline t)
+
+;; delete the selection with a keypress
+(delete-selection-mode t)
+
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;; revert buffers automatically when underlying files are changed externally
+(global-auto-revert-mode t)
+
+;; hippie expand is dabbrev expand on steroids
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev
+                                         try-expand-dabbrev-all-buffers
+                                         try-expand-dabbrev-from-kill
+                                         try-complete-file-name-partially
+                                         try-complete-file-name
+                                         try-expand-all-abbrevs
+                                         try-expand-list
+                                         try-expand-line
+                                         try-complete-lisp-symbol-partially
+                                         try-complete-lisp-symbol))
+
+;; smart tab behavior - indent or complete
+(setq tab-always-indent 'complete)
+
+;; disable annoying blink-matching-paren
+(setq blink-matching-paren nil)
+
+;; diminish keeps the modeline tidy
+(require 'diminish)
+
+;; meaningful names for buffers with the same name
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+;; saveplace remembers your location in a file when saving files
+(require 'saveplace)
+(setq save-place-file (expand-file-name "saveplace" savefile-dir))
+;; activate it for all buffers
+(setq-default save-place t)
+
+;; savehist keeps track of some history
+(require 'savehist)
+(setq savehist-additional-variables
+      ;; search entries
+      '(search-ring regexp-search-ring)
+      ;; save every minute
+      savehist-autosave-interval 60
+      ;; keep the home clean
+      savehist-file (expand-file-name "savehist" savefile-dir))
+(savehist-mode +1)
+
+;; save recent files
+(require 'recentf)
+(setq recentf-save-file (expand-file-name "recentf" savefile-dir)
+      recentf-max-saved-items 500
+      recentf-max-menu-items 15
+      ;; disable recentf-cleanup on Emacs start, because it can cause
+      ;; problems with remote files
+      recentf-auto-cleanup 'never)
+
+(defun prelude-recentf-exclude-p (file)
+  "A predicate to decide whether to exclude FILE from recentf."
+  (let ((file-dir (file-truename (file-name-directory file))))
+    (-any-p (lambda (dir)
+              (string-prefix-p dir file-dir))
+            (mapcar 'file-truename (list savefile-dir package-user-dir)))))
+
+(add-to-list 'recentf-exclude 'prelude-recentf-exclude-p)
+;; ignore magit's commit message files
+(add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
+
+(recentf-mode +1)
+
+;; use shift + arrow keys to switch between visible buffers
+(require 'windmove)
+(windmove-default-keybindings)
+
+;; automatically save buffers associated with files on buffer switch
+;; and on windows switch
+(defvar should-auto-save t)
+(defun auto-save-command ()
+  "Save the current buffer if `prelude-auto-save' is not nil."
+  (when (and should-auto-save
+             buffer-file-name
+             (buffer-modified-p (current-buffer))
+             (file-writable-p buffer-file-name))
+    (save-buffer)))
+(defmacro advise-commands (advice-name commands class &rest body)
+  "Apply advice named ADVICE-NAME to multiple COMMANDS.
+The body of the advice is in BODY."
+  `(progn
+     ,@(mapcar (lambda (command)
+                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+                    ,@body))
+               commands)))
+;; advise all window switching functions
+(advise-commands
+ "auto-save"
+ (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+ before
+ (auto-save-command))
+(add-hook 'mouse-leave-buffer-hook 'prelude-auto-save-command)
+(when (version<= "24.4" emacs-version) (add-hook 'focus-out-hook 'auto-save-command))
+
+(defadvice set-buffer-major-mode (after set-major-mode activate compile)
+  "Set buffer major mode according to `auto-mode-alist'."
+  (let* ((name (buffer-name buffer))
+         (mode (assoc-default name auto-mode-alist 'string-match)))
+    (with-current-buffer buffer (if mode (funcall mode)))))
+
+(use-package hl-line
+  :config (add-hook 'prog-mode-hook 'hl-line-mode))
+
+(global-hl-line-mode +1)
+
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+(diminish 'volatile-highlights-mode)
+
+;; tramp, for sudo access
+(require 'tramp)
+;; keep in mind known issues with zsh - see emacs wiki
+(setq tramp-default-method "ssh")
+
+(set-default 'imenu-auto-rescan t)
+
+;; flyspell-mode does spell-checking on the fly as you type
+(require 'flyspell)
+(setq ispell-program-name "aspell" ; use aspell instead of ispell
+      ispell-extra-args '("--sug-mode=ultra"))
+
+(defun prelude-enable-flyspell ()
+  "Enable command `flyspell-mode' if `prelude-flyspell' is not nil."
+  (when (and prelude-flyspell (executable-find ispell-program-name))
+    (flyspell-mode +1)))
+
+(defun prelude-cleanup-maybe ()
+  "Invoke `whitespace-cleanup' if `prelude-clean-whitespace-on-save' is not nil."
+  (when prelude-clean-whitespace-on-save
+    (whitespace-cleanup)))
+
+(defun prelude-enable-whitespace ()
+  "Enable `whitespace-mode' if `prelude-whitespace' is not nil."
+  (when prelude-whitespace
+    ;; keep the whitespace decent all the time (in this buffer)
+    (add-hook 'before-save-hook 'prelude-cleanup-maybe nil t)
+    (whitespace-mode +1)))
+
+(add-hook 'text-mode-hook 'prelude-enable-flyspell)
+(add-hook 'text-mode-hook 'prelude-enable-whitespace)
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enabled change region case commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
+
+(use-package bookmark
+  :config
+  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
+      bookmark-save-flag 1))
+
+;; anzu-mode enhances isearch & query-replace by showing total matches and current match position
+(use-package anzu
+  :ensure anzu
+  :diminish anzu 
+  :idle (global-anzu-mode))
+
+;; shorter aliases for ack-and-a-half commands
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+;; dired - reuse current buffer by pressing 'a'
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; always delete and copy recursively
+(setq dired-recursive-deletes 'always)
+(setq dired-recursive-copies 'always)
+
+;; if there is a dired buffer displayed in the next window, use its
+;; current subdir, instead of the current subdir of this dired buffer
+(setq dired-dwim-target t)
+
+;; enable some really cool extensions like C-x C-j(dired-jump)
+(require 'dired-x)
+
+;; ediff - don't start another frame
+(require 'ediff)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; clean up obsolete buffers automatically
+(require 'midnight)
+
+;; smarter kill-ring navigation
+(require 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
+(global-set-key (kbd "s-y") 'browse-kill-ring)
+
+;; (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
+;;   "When called with no active region, do not activate mark."
+;;   (interactive
+;;    (list (not (region-active-p)))))
+
+;; (defmacro with-region-or-buffer (func)
+;;   "When called with no active region, call FUNC on current buffer."
+;;   `(defadvice ,func (before with-region-or-buffer activate compile)
+;;      (interactive
+;;       (if mark-active
+;;           (list (region-beginning) (region-end))
+;;         (list (point-min) (point-max))))))
+
+;; (with-region-or-buffer indent-region)
+;; (with-region-or-buffer untabify)
+
+;; automatically indenting yanked text if in programming-modes
+(defun yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) prelude-yank-indent-threshold)
+      (indent-region beg end nil)))
+
+(advise-commands "indent" (yank yank-pop) after
+  "If current mode is one of `prelude-yank-indent-modes',
+indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (not (member major-mode prelude-indent-sensitive-modes))
+           (or (derived-mode-p 'prog-mode)
+               (member major-mode prelude-yank-indent-modes)))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
+
+;; abbrev config
+(add-hook 'text-mode-hook 'abbrev-mode)
+
+;; make a shell script executable automatically on save
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; .zsh file is shell script too
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
+
+;; whitespace-mode config
+(require 'whitespace)
+(setq whitespace-line-column 80) ;; limit line length
+(setq whitespace-style '(face tabs empty trailing lines-tail))
+
+;; saner regex syntax
+(use-package re-builder
+  :config (setq reb-re-syntax 'string))
+
+
+(require 'eshell)
+(setq eshell-directory-name (expand-file-name "eshell" savefile-dir))
+
+(setq semanticdb-default-save-directory
+      (expand-file-name "semanticdb" savefile-dir))
+
+;; Compilation from Emacs
+(defun prelude-colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'compile)
+(setq compilation-ask-about-save nil  ; Just save before compiling
+      compilation-always-kill t       ; Just kill old compile processes before
+                                        ; starting the new one
+      compilation-scroll-output 'first-error ; Automatically scroll to first
+                                        ; error
+      )
+
+;; Colorize output of Compilation Mode, see
+;; http://stackoverflow.com/a/3072831/355252
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'prelude-colorize-compilation-buffer)
+
+(use-package winner
+  :ensure winner
+  :idle (winner-mode +1))
+
+(use-package diff-hl
+  :ensure diff-hl
+  :commands diff-hl-dired-mode
+  :idle (global-diff-hl-mode +1)
+  :init (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+
+;; easy-kill
+(use-package easy-kill
+  :ensure easy-kill
+  :commands (easy-kill easy-mark)
+  
+  :init
+  (progn
+    (global-set-key [remap kill-ring-save] 'easy-kill)
+    (global-set-key [remap mark-sexp] 'easy-mark)))
+
+;; .............................................................................
+;; UI
+
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+(menu-bar-mode -1)
+(blink-cursor-mode -1) ;; the blinking cursor is nothing, but an annoyance
+(setq inhibit-startup-screen t) ;; disable startup screen
+
+;; nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
+
+;; mode line settings
+(line-number-mode t)
+(column-number-mode t)
+(size-indication-mode t)
+
+;; make the fringe (gutter) smaller the argument is a width in pixels (the default is 8)
+(when (fboundp 'fringe-mode) (fringe-mode 4))
+
+(fset 'yes-or-no-p 'y-or-n-p) ;; enable y/n answers
+
+;; more useful frame title, that show either a file or a
+;; buffer name (if the buffer isn't visiting a file)
+(setq frame-title-format
+      '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
+						  (abbreviate-file-name (buffer-file-name))
+						"%b"))))
+
+(use-package ov :ensure ov)
+(use-package volatile-highlights :ensure volatile-highlights)
+(use-package anzu :ensure anzu)
+(use-package browse-kill-ring :ensure browse-kill-ring)
+
+(use-package prelude
+  :config
+  (progn
+    (setq pcache-directory (f-expand "pcache" savefile-dir))
+    (unbind-key "M-o" prelude-mode-map)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Functions and Macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; http://milkbox.net/note/single-file-master-emacs-configuration/
@@ -90,7 +440,8 @@
   (setq mac-command-modifier 'meta))
 
 (use-package solarized-theme
-  :init (when window-system (load-theme 'solarized-dark t))
+  :if window-system
+  :init (load-theme 'solarized-dark t)
   :config (progn (setq solarized-use-variable-pitch nil)
                  (setq solarized-height-plus-1 1)
                  (setq solarized-height-plus-2 1)
@@ -147,6 +498,14 @@
   "Truthy if the host OS is a Mac."
   (string-match "apple-darwin" system-configuration))
 
+(defun increment-number-at-point ()
+  "Increments the number at point."
+  (interactive)
+  (skip-chars-backward "0123456789")
+  (or (looking-at "[0123456789]+")
+      (error "No number at point"))
+  (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
 (defun key-binding-at-point (key)
   (mapcar (lambda (keymap) (lookup-key keymap key))
           (cl-remove-if-not
@@ -160,7 +519,7 @@
 
 (defun locate-key-binding (key)
   "Determine in which keymap KEY is defined."
-  (interactive "kPress key: ")
+  (interactive "Press key: ")
   (let ((ret
          (list
           (key-binding-at-point key)
@@ -176,10 +535,6 @@
                (or (nth 2 ret) "")
                (or (nth 3 ret) "")))
     ret))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TEXT
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun z/visual-line-mode-on ()
   "Turn on visual line mode."
@@ -200,12 +555,15 @@
 
 (use-package smart-mode-line
   :if window-system
-  :init (require 'smart-mode-line)
+  :commands sml/setup
+  
+  :init
+  (progn 
+    (setq sml/no-confirm-load-theme t)
+    (sml/setup))
   
   :config
-  (progn
-    (add-to-list 'sml/replacer-regexp-list '("^~/Projects/" ":P:"))
-    (sml/setup)))
+  (add-to-list 'sml/replacer-regexp-list '("^~/Projects/" ":P:")))
 
 (when window-system
   (let ((default-font (if (z:mac-p)
@@ -256,14 +614,8 @@
   ;; http://whattheemacsd.com//appearance.el-01.html
   (rename-modeline 'lisp-mode emacs-lisp-mode "EL")
   (rename-modeline 'lisp-mode lisp-interaction-mode "LI")
-  (rename-modeline 'js js-mode "JS")
+  (rename-modeline 'js js-mode "JS"))
 
-  (after 'flycheck
-    (setq flycheck-mode-line-lighter " fl")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Coding
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun turn-on-electric-indent-mode ()
   "Enables electric indent mode."
   (electric-indent-mode +1))
@@ -271,11 +623,37 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-electric-indent-mode)
 (add-hook 'prog-mode-hook 'turn-on-electric-indent-mode)
 
+(bind-key "C-o"
+          (lambda () (interactive)
+            (let ((case-fold-search isearch-case-fold-search))
+              (occur (if isearch-regexp
+                         isearch-string
+                       (regexp-quote isearch-string)))))
+          isearch-mode-map)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package flycheck
-  :config (progn (set-face-attribute 'flycheck-error nil :underline "red")
-                 (set-face-attribute 'flycheck-warning nil :underline "yellow")))
+  :config
+  (progn
+    (setq flycheck-mode-line-lighter " fl")
+    (set-face-attribute 'flycheck-error nil :underline "red")
+    (set-face-attribute 'flycheck-warning nil :underline "yellow")))
+
+;; smart pairing for all
+(require 'smartparens-config)
+(setq sp-base-key-bindings 'paredit)
+(setq sp-autoskip-closing-pair 'always)
+(setq sp-hybrid-kill-entire-symbol nil)
+(sp-use-paredit-bindings)
+
+(show-smartparens-global-mode +1)
 
 (use-package smartparens
+  :init (smartparens-global-mode)
+  
   :config
   (progn
     (setq sp-base-key-bindings 'paredit)
@@ -286,7 +664,16 @@
     ;; https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens#random-differences
     (bind-key ")"   'sp-up-sexp            smartparens-mode-map)
     (bind-key "M-F" 'sp-kill-sexp          smartparens-mode-map)
-    (bind-key "M-D" 'sp-backward-kill-sexp smartparens-mode-map)))
+    (bind-key "M-D" 'sp-backward-kill-sexp smartparens-mode-map)
+
+    (defun wrap-with (s)
+      "Create a wrapper function for smartparens using S."
+      `(lambda (&optional arg)
+         (interactive "P")
+         (sp-wrap-with-pair ,s)))
+
+    (bind-key "M-(" (wrap-with "(") prog-mode-map)
+    (bind-key "M-\"" (wrap-with "\"") prog-mode-map)))
 
 (use-package paxedit
   :diminish "pax"
@@ -299,29 +686,21 @@
                  (bind-key "M-<backspace>" 'paxedit-kill              paxedit-mode-map)))
 
 (use-package clojure-mode
-  :config (define-clojure-indent
-            (defroutes 'defun)
-            (fnk 'defun)
-            (defnk 'defun)
-            (GET 2)
-            (POST 2)
-            (PUT 2)
-            (DELETE 2)
-            (HEAD 2)
-            (ANY 2)
-            (context 2)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Packages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package prelude
   :config
-  (progn
-    (setq pcache-directory (f-expand "pcache" prelude-savefile-dir))
-    (unbind-key "M-o" prelude-mode-map)))
+  (define-clojure-indent
+    (defroutes 'defun)
+    (fnk 'defun)
+    (defnk 'defun)
+    (GET 2)
+    (POST 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2)))
 
 (use-package magit
+  :bind ("C-x g" . magit-status)
   :config
   (progn
     (mapc (apply-partially 'add-to-list 'magit-repo-dirs)
@@ -398,13 +777,14 @@
     (setq js2-include-browser-externs t)))
 
 (use-package cider
-  :bind (("C-j" . nil)
-         ("S-<return>" . cider-repl-newline-and-indent)
+  :bind (("S-<return>" . cider-repl-newline-and-indent)
          ("C-c M-r" . cider-refresh))
   
   :config
   (progn
-    (setq cider-repl-history-file (f-expand "cider-repl-history" prelude-savefile-dir))
+    (unbind-key "C-j" cider-repl-mode-map)
+    
+    (setq cider-repl-history-file (f-expand "cider-repl-history" savefile-dir))
     (setq cider-repl-use-clojure-font-lock t)
     (setq cider-repl-use-pretty-printing t)
     (setq cider-repl-popup-stacktraces t)
@@ -461,6 +841,7 @@
                (fancy-narrow-mode t)))
 
 (use-package undo-tree
+  :init (global-undo-tree-mode)
   :bind (("M-z" . undo-tree-undo)
          ("M-Z" . undo-tree-redo)))
 
@@ -470,7 +851,7 @@
          ("C-<"         . mc/mark-previous-like-this)
          ("C-c C-<"     . mc/mark-all-like-this)
          ("C-;"         . mc/mark-all-dwim))
-  :config (progn (setq mc/list-file (f-expand ".mc-lists.el" prelude-savefile-dir))
+  :config (progn (setq mc/list-file (f-expand ".mc-lists.el" savefile-dir))
                  (bind-key "C-;" 'mc/mark-all-symbols-like-this-in-defun prog-mode-map)))
 
 (use-package expand-region
@@ -487,24 +868,26 @@
 
 (use-package ido-vertical-mode
   :commands ido-vertical-mode
-  :init (ido-vertical-mode +1)
+  :init (after 'ido (ido-vertical-mode +1))
   
   :config
-  (progn
-    (bind-key "M-k" 'ido-next-match     ido-completion-map)
-    (bind-key "M-i" 'ido-prev-match     ido-completion-map)
-    (bind-key "M-j" 'ido-prev-match-dir ido-completion-map)
-    (bind-key "M-l" 'ido-next-match-dir ido-completion-map)))
+  (add-hook
+   ido-setup-hook
+   (lambda ()
+     (bind-key "M-k" 'ido-next-match     ido-completion-map)
+     (bind-key "M-i" 'ido-prev-match     ido-completion-map)
+     (bind-key "M-j" 'ido-prev-match-dir ido-completion-map)
+     (bind-key "M-l" 'ido-next-match-dir ido-completion-map))))
 
 (use-package vlf
   :idle (require 'vlf-integrate))
 
-(when window-system
-  (global-hl-line-mode -1)
-  (add-hook 'prog-mode-hook 'hl-line-mode))
-
-(use-package projectile
-  :diminish projectile-mode)
+ (use-package projectile
+   :commands projectile-global-mode
+   :init (projectile-global-mode t)
+   :config
+   (setq projectile-cache-file (expand-file-name  "projectile.cache" savefile-dir))
+   :diminish projectile-kmode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keybindings
@@ -517,6 +900,8 @@
 (bind-key "M-j" 'backward-char)
 (bind-key "M-k" 'next-line)
 (bind-key "M-l" 'forward-char)
+
+(bind-key "M-e" 'backward-kill-word)
 
 (bind-key "M-u" 'backward-word)
 (bind-key "M-o" 'forward-word)
@@ -567,3 +952,18 @@
 
 (provide 'personal)
 ;;; personal.el ends here
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
