@@ -946,9 +946,14 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package projectile :ensure t
    :commands projectile-global-mode
+
    :init (projectile-global-mode t)
+   
    :config
-   (setq projectile-cache-file (f-join savefile-dir "projectile.cache"))
+   (progn
+     (setq projectile-known-projects-file (f-join savefile-dir "projectile-bookmarks.eld")
+           projectile-cache-file          (f-join savefile-dir "projectile.cache")))
+   
    :diminish projectile-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
