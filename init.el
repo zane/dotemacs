@@ -167,7 +167,7 @@ The body of the advice is in BODY."
  (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
  before
  (auto-save-command))
-(add-hook 'mouse-leave-buffer-hook 'prelude-auto-save-command)
+(add-hook 'mouse-leave-buffer-hook 'auto-save-command)
 (when (version<= "24.4" emacs-version) (add-hook 'focus-out-hook 'auto-save-command))
 
 (defadvice set-buffer-major-mode (after set-major-mode activate compile)
@@ -402,18 +402,30 @@ indent yanked text (with prefix arg don't indent)."
 ;; .............................................................................
 ;; Mac
 
-(when (z:mac-p)
-  (use-package exec-path-from-shell :ensure t
-    :init (exec-path-from-shell-initialize))
+(defun z:mac-p ()
+  "Truthy if the host OS is a Mac."
+  (string-match "apple-darwin" system-configuration))
 
-  (use-package vkill ; proced-mode doesn't work on OS X
+(defvar mac-system
+  (z:mac-p)
+  "Truthy if the host OS is a Mac.")
+
+(when (z:mac-p)
+  (menu-bar-mode +1)
+  
+  (setq mac-option-modifier 'super)
+  (setq mac-command-modifier 'meta)
+  (setq ns-function-modifier 'hyper))
+
+(use-package exec-path-from-shell :ensure t
+  :if mac-system
+  :init (exec-path-from-shell-initialize))
+
+(use-package vkill                ; proced-mode doesn't work on OS X
+    :if mac-system
     :disabled t
     :commands vkill
     :bind ("C-x p" . vkill))
-  
-  (setq ns-function-modifier 'hyper) ; It's all in the Meta
-
-  (menu-bar-mode +1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions and Macros
@@ -426,14 +438,6 @@ indent yanked text (with prefix arg don't indent)."
   `(eval-after-load ,mode
      '(progn ,@body)))
 
-(defun z:mac-p ()
-  "Truthy if the host OS is a Mac."
-  (string-match "apple-darwin" system-configuration))
-
-(when (z:mac-p)
-  (setq mac-option-modifier 'super)
-  (setq mac-command-modifier 'meta))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions and Macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -444,10 +448,6 @@ indent yanked text (with prefix arg don't indent)."
   (declare (indent defun))
   `(eval-after-load ,mode
      '(progn ,@body)))
-
-(defun z:mac-p ()
-  "Truthy if the host OS is a Mac."
-  (string-match "apple-darwin" system-configuration))
 
 (defun increment-number-at-point ()
   "Increments the number at point."
@@ -595,10 +595,19 @@ indent yanked text (with prefix arg don't indent)."
     (setq sp-navigate-close-if-unbalanced t)
     
     ;; https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens#random-differences
+    (unbind-key "M-r" smartparens-mode-map)
     (bind-keys :map smartparens-mode-map
                (")"   . sp-up-sexp)
-               ("M-F" . sp-kill-sexp)
+
+               ("M-d" . sp-backward-delete-char)
+               ("M-f" . sp-delete-char)
+               
+               ("M-e" . sp-backward-kill-word)
+               ("M-r" . sp-kill-word)
+               
                ("M-D" . sp-backward-kill-sexp)
+               ("M-F" . sp-kill-sexp)
+               
                ("M-g" . sp-kill-hybrid-sexp))
 
     (defun wrap-with (s)
@@ -863,10 +872,62 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package key-chord)
 
+(use-package ido :ensure t
+  :init (ido-mode +1)
+  :config
+  (progn
+    (setq ido-case-fold t
+          ido-enable-prefix nil
+          ido-enable-flex-matching t
+          ido-create-new-buffer 'always
+          ido-use-filename-at-point 'guess
+          ido-max-prospects 10
+          ido-save-directory-list-file (expand-file-name "ido.hist" savefile-dir)
+          ido-default-file-method 'selected-window
+          ido-auto-merge-work-directories-length -1)
+
+    (setq ido-ignore-buffers
+          '("\\` "
+            "^\*"))
+    
+    (setq ido-file-extensions-order
+          '(".org"
+            ".txt"
+            ".clj"
+            ".py"
+            ".emacs"
+            ".xml"
+            ".el"
+            ".ini"
+            ".cfg"
+            ".cnf"
+            ".gz"))))
+
+(use-package ido-ubiquitous :ensure t
+  :init
+  (progn
+    (ido-mode +1)
+    (ido-ubiquitous-mode +1)))
+
+(use-package flx-ido :ensure t        ; smarter fuzzy matching for ido
+  :init (flx-ido-mode +1)
+
+  ;; disable ido faces to see flx highlights
+  :config (setq ido-use-faces nil))
+
+(use-package ido-sort-mtime :ensure t
+  :init (ido-sort-mtime-mode 1)
+  :config (setq ido-sort-mtime-tramp-files-at-end t))
+
 (use-package smex :ensure t
   :bind (("M-a" . smex)
          ("M-A" . smex-major-mode-commands)
-         ("C-c C-c M-a" . execute-extended-command)))
+         ("C-c C-c M-a" . execute-extended-command))
+  :init (smex-initialize)
+  
+  :config
+  (progn
+    (setq smex-save-file (f-join savefile-dir ".smex-items"))))
 
 (use-package ido-vertical-mode :ensure t
   :commands ido-vertical-mode
@@ -925,6 +986,8 @@ indent yanked text (with prefix arg don't indent)."
 (bind-key "M-d" 'delete-backward-char)
 (bind-key "M-g" 'kill-line)
 (bind-key "M-G" 'backward-kill-line)
+(bind-key "M-e" 'backward-kill-word)
+(bind-key "M-r" 'kill-word)
 
 (defun new-empty-buffer ()
   (interactive)
@@ -960,6 +1023,52 @@ indent yanked text (with prefix arg don't indent)."
 
 (when (not window-system)
   (bind-key "C-@" 'set-mark-command))
+
+(use-package helm :ensure t
+  :config
+  (progn
+    ;; http://tuhdo.github.io/helm-intro.html
+    
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    (bind-key (kbd "C-c h") 'helm-command-prefix)
+    (unbind-key (kbd "C-x c"))
+    
+    (when (executable-find "ack-grep")
+      (setq helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
+            helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f"))
+
+    (setq helm-split-window-in-side-p       t ; open helm buffer inside current window, not occupy whole other window
+          helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
+          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+          helm-ff-file-name-history-use-recentf t)
+    (bind-keys :map helm-map
+               ("M-i" . helm-previous-line)
+               ("M-k" . helm-next-line)
+                    
+               ("M-I" . helm-previous-line)
+               ("M-K" . helm-next-page)
+
+               ("M-n" . helm-beginning-of-buffer)
+               ("M-N" . helm-end-of-buffer)
+
+               ("M-O" . helm-next-source)
+               ("M-U" . helm-previous-source))))
+
+(use-package helm-misc :ensure helm
+  :bind ("C-x b" . helm-mini))
+
+(use-package helm-command :ensure helm
+  :bind ("M-a" . helm-M-x))
+
+(use-package helm-files :ensure helm
+  :bind ("C-o" . helm-find-files)
+  :config (bind-key "M-i" 'helm-previous-line helm-find-files-map))
+
+(use-package helm-projectile :ensure t
+  :init (helm-projectile-toggle +1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bell
