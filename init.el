@@ -219,7 +219,7 @@ The body of the advice is in BODY."
 (use-package bookmark
   :config
   (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
-      bookmark-save-flag 1))
+        bookmark-save-flag 1))
 
 (use-package anzu :ensure t ; enhances isearch & query-replace by showing total matches and current match position
   :ensure anzu
@@ -683,7 +683,8 @@ indent yanked text (with prefix arg don't indent)."
       (kill-buffer)
       (jump-to-register :magit-fullscreen))
            
-    (bind-key "q" 'magit-quit-session magit-status-mode-map)))
+    (bind-key "q" 'magit-quit-session magit-status-mode-map)
+    (unbind-key "M-p" magit-status-mode-map)))
 
 (use-package org :ensure t
   :config
@@ -771,7 +772,7 @@ indent yanked text (with prefix arg don't indent)."
   (progn
     ;; http://xahlee.blogspot.com/2009/08/how-to-use-and-setup-emacss-whitespace.html
     (setq whitespace-trailing-regexp "^.*[^\r\n\t \xA0\x8A0\x920\xE20\xF20]+\\([\t \xA0\x8A0\x920\xE20\xF20]+\\)$")
-    ;; (setq whitespace-line-column 80)
+    (setq whitespace-line-column 100)
     (setq whitespace-action '(auto-cleanup warn-if-read-only))
     (setq whitespace-style '(face tabs empty trailing lines-tail))
 
@@ -800,8 +801,10 @@ indent yanked text (with prefix arg don't indent)."
                    python-mode-hook)))
       (dolist (hook hooks)
         (add-hook hook 'rainbow-delimiters-mode-enable)))
+    (after 'elisp-mode (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode-enable))
+    (after 'clojure (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode-enable))
     (after 'nrepl (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode-enable))
-    (after 'cider (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))))
+    (after 'cider (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode-enable))))
 
 (use-package rainbow-identifiers :ensure t
   :commands rainbow-identifiers-mode
@@ -886,9 +889,7 @@ indent yanked text (with prefix arg don't indent)."
           ido-default-file-method 'selected-window
           ido-auto-merge-work-directories-length -1)
 
-    (setq ido-ignore-buffers
-          '("\\` "
-            "^\*"))
+    (setq ido-ignore-buffers '("\\` "))
     
     (setq ido-file-extensions-order
           '(".org"
@@ -947,12 +948,10 @@ indent yanked text (with prefix arg don't indent)."
 (use-package projectile :ensure t
    :commands projectile-global-mode
 
-   :init (projectile-global-mode t)
-   
-   :config
-   (progn
-     (setq projectile-known-projects-file (f-join savefile-dir "projectile-bookmarks.eld")
-           projectile-cache-file          (f-join savefile-dir "projectile.cache")))
+   :init
+   (setq projectile-known-projects-file (f-join savefile-dir "projectile-bookmarks.eld")
+         projectile-cache-file          (f-join savefile-dir "projectile.cache"))
+   (projectile-global-mode t)
    
    :diminish projectile-mode)
 
@@ -963,6 +962,8 @@ indent yanked text (with prefix arg don't indent)."
 ;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
 (keyboard-translate ?\C-i ?\H-i)
 
+(unbind-key "M-`")
+
 (bind-key "M-i" 'previous-line)
 (bind-key "M-j" 'backward-char)
 (bind-key "M-k" 'next-line)
@@ -972,6 +973,8 @@ indent yanked text (with prefix arg don't indent)."
 
 (bind-key "M-u" 'backward-word)
 (bind-key "M-o" 'forward-word)
+(bind-key "M-U" 'backward-paragraph)
+(bind-key "M-O" 'forward-paragraph)
 
 (bind-key "M-n" 'beginning-of-buffer)
 (bind-key "M-N" 'end-of-buffer)
@@ -1044,7 +1047,7 @@ indent yanked text (with prefix arg don't indent)."
       (setq helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
             helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f"))
 
-    (setq helm-split-window-in-side-p       t ; open helm buffer inside current window, not occupy whole other window
+    (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
           helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
           helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
