@@ -415,7 +415,9 @@ indent yanked text (with prefix arg don't indent)."
   
   (setq mac-option-modifier 'super)
   (setq mac-command-modifier 'meta)
-  (setq ns-function-modifier 'hyper))
+  (setq ns-function-modifier 'hyper)
+
+  (bind-key* "M-`" 'ns-next-frame))
 
 (use-package exec-path-from-shell :ensure t
   :if mac-system
@@ -755,15 +757,23 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package solarized-theme
   :if window-system
-  :init (load-theme 'solarized-dark t)
-  :config (progn (setq solarized-use-variable-pitch nil)
-                 (setq solarized-height-plus-1 1)
-                 (setq solarized-height-plus-2 1)
-                 (setq solarized-height-plus-3 1)
-                 (setq solarized-height-plus-4 1)
-                 (setq solarized-height-minus-1 1)
-                 (setq solarized-distinct-fringe-background t)
-                 (setq solarized-high-contrast-mode-line nil)))
+  :pre-load
+  (progn
+    (setq solarized-use-variable-pitch nil)
+
+    (setq solarized-scale-org-headlines nil)
+
+    ;; Avoid all font-size changes
+    (setq solarized-height-minus-1 1)
+    (setq solarized-height-plus-1 1)
+    (setq solarized-height-plus-2 1)
+    (setq solarized-height-plus-3 1)
+    (setq solarized-height-plus-4 1)
+    
+    (setq solarized-distinct-fringe-background t)
+    (setq solarized-high-contrast-mode-line nil))
+  :init
+  (load-theme 'solarized-dark t))
 
 (use-package whitespace
   :if window-system
@@ -774,7 +784,7 @@ indent yanked text (with prefix arg don't indent)."
     (setq whitespace-trailing-regexp "^.*[^\r\n\t \xA0\x8A0\x920\xE20\xF20]+\\([\t \xA0\x8A0\x920\xE20\xF20]+\\)$")
     (setq whitespace-line-column 100)
     (setq whitespace-action '(auto-cleanup warn-if-read-only))
-    (setq whitespace-style '(face tabs empty trailing lines-tail))
+    (setq whitespace-style '(face tabs empty trailing))
 
     (defun prelude-cleanup-maybe ()
       "Invoke `whitespace-cleanup' if `prelude-clean-whitespace-on-save' is not nil."
@@ -801,20 +811,26 @@ indent yanked text (with prefix arg don't indent)."
                    python-mode-hook)))
       (dolist (hook hooks)
         (add-hook hook 'rainbow-delimiters-mode-enable)))
-    (after 'elisp-mode (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode-enable))
-    (after 'clojure (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode-enable))
-    (after 'nrepl (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode-enable))
-    (after 'cider (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode-enable))))
+    (after 'elisp-mode (add-hook 'emacs-lisp-mode-hook  'rainbow-delimiters-mode-enable))
+    (after 'clojure    (add-hook 'clojure-mode-hook     'rainbow-delimiters-mode-enable))
+    (after 'nrepl      (add-hook 'nrepl-mode-hook       'rainbow-delimiters-mode-enable))
+    (after 'cider      (add-hook 'cider-repl-mode-hook  'rainbow-delimiters-mode-enable))))
 
 (use-package rainbow-identifiers :ensure t
   :commands rainbow-identifiers-mode
   :init (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
 
 (use-package windmove :ensure t
-  :bind (("H-i" . windmove-up)
-         ("C-j" . windmove-left)
-         ("C-k" . windmove-down)
-         ("C-l" . windmove-right)))
+  :config
+  (progn
+    (bind-key* "H-i" 'windmove-up)
+    (bind-key* "C-j" 'windmove-left)
+    (bind-key* "C-k" 'windmove-down)
+    (bind-key* "C-l" 'windmove-right)))
+
+(use-package framemove :ensure t
+  :config
+  (setq framemove-hook-into-windmove t))
 
 (use-package company :ensure t
   :diminish company-mode
@@ -924,10 +940,12 @@ indent yanked text (with prefix arg don't indent)."
   :bind (("M-a" . smex)
          ("M-A" . smex-major-mode-commands)
          ("C-c C-c M-a" . execute-extended-command))
-  :init (smex-initialize)
+  :init
+  (smex-initialize)
   
   :config
   (progn
+    (bind-key* "M-a" 'smex)
     (setq smex-save-file (f-join savefile-dir ".smex-items"))))
 
 (use-package ido-vertical-mode :ensure t
@@ -982,7 +1000,7 @@ indent yanked text (with prefix arg don't indent)."
 (bind-key "M-I" 'scroll-down)
 (bind-key "M-K" 'scroll-up)
 
-(bind-key "M-h" 'beginning-of-line)
+(bind-key* "M-h" 'beginning-of-line)
 (bind-key "M-H" 'end-of-line)
 
 (defun backward-kill-line (arg)
@@ -1001,7 +1019,7 @@ indent yanked text (with prefix arg don't indent)."
   (interactive)
   (switch-to-buffer (generate-new-buffer "Untitled")))
 
-(bind-key "C-a" 'mark-whole-buffer)
+(bind-key* "C-a" 'mark-whole-buffer)
 (bind-key "C-n" 'new-empty-buffer)
 (bind-key "C-w" 'kill-this-buffer)
 (bind-key "C-s" 'save-buffer)
@@ -1116,3 +1134,17 @@ indent yanked text (with prefix arg don't indent)."
 
 (provide 'personal)
 ;;; personal.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
