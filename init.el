@@ -10,13 +10,14 @@
 ;;; Code:
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
 (package-install 'use-package)
 (require 'use-package)
 
-(use-package f :ensure f)
+(use-package f :ensure t)
 
 (defvar user-home-directory
   (f-expand ".." user-emacs-directory)
@@ -33,6 +34,8 @@
 (defvar savefile-dir
   (f-join user-emacs-directory "savefile"))
 (unless (file-exists-p savefile-dir) (make-directory savefile-dir))
+
+(push (f-join user-emacs-directory "lisp") load-path)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Yanked from prelude
@@ -529,7 +532,12 @@ indent yanked text (with prefix arg don't indent)."
     (set-face-font 'default default-font)
     (if (z:mac-p)
         (set-face-font 'variable-pitch "Avenir 13")))
-  (scroll-bar-mode -1))
+  (scroll-bar-mode -1)
+  
+  (defun text-scale-default () (interactive) (text-scale-set 0))
+  (bind-key "M-+" 'text-scale-increase)
+  (bind-key "M--" 'text-scale-decrease)
+  (bind-key "M-0" 'text-scale-default))
 
 (use-package paren
   :config
@@ -1095,6 +1103,13 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package helm-projectile :ensure t
   :init (helm-projectile-toggle +1))
+
+(use-package zoom-frm ; vendored in the `lisp' subdirectory
+  :pre-load (use-package frame-cmds)
+  :if window-system
+  :bind (("M-+" . zoom-frm-in)
+         ("M--" . zoom-frm-out)
+         ("M-0" . zoom-frm-unzoom)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bell
