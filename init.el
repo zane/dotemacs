@@ -347,6 +347,7 @@ indent yanked text (with prefix arg don't indent)."
   :idle (global-diff-hl-mode +1))
 
 (use-package diff-hl-dired :ensure diff-hl
+  :disabled t
   :commands diff-hl-dired-mode
   :init (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
@@ -397,6 +398,7 @@ indent yanked text (with prefix arg don't indent)."
 (use-package browse-kill-ring :ensure browse-kill-ring)
 
 (use-package prelude
+  :disabled t
   :config
   (progn
     (setq pcache-directory (f-expand "pcache" savefile-dir))
@@ -897,7 +899,8 @@ indent yanked text (with prefix arg don't indent)."
   :bind (("M->" . er/expand-region)
          ("M-<" . er/contract-region)))
 
-(use-package key-chord)
+(use-package key-chord
+  :disabled t)
 
 (use-package ido :ensure t
   :init (ido-mode +1)
@@ -967,9 +970,6 @@ indent yanked text (with prefix arg don't indent)."
       (define-key ido-completion-map (kbd "M-i") 'ido-prev-match))
     (setq ido-setup-hook '(ido-vertical-define-my-keys))
     (add-hook 'ido-minibuffer-setup-hook 'ido-vertical-define-my-keys)))
-
-(use-package vlf
-  :idle (require 'vlf-integrate))
 
 (use-package projectile :ensure t
    :commands projectile-global-mode
