@@ -1111,6 +1111,25 @@ indent yanked text (with prefix arg don't indent)."
          ("M--" . zoom-frm-out)
          ("M-0" . zoom-frm-unzoom)))
 
+(use-package swiper :ensure t
+  :init (progn (bind-key "M-y" 'swiper)
+               (bind-key "M-Y" 'swiper)))
+
+(use-package ivy
+  :config
+  (progn
+    (bind-key "C-m" 'ivy-done ivy-minibuffer-map)
+    (bind-key "C-j" 'ivy-alt-done ivy-minibuffer-map)
+    (bind-key "M-k" 'ivy-next-line ivy-minibuffer-map)
+    (bind-key "M-i" 'ivy-previous-line ivy-minibuffer-map)
+    (bind-key "M-d" 'ivy-backward-delete-char ivy-minibuffer-map)
+    (bind-key "M-n" 'ivy-beginning-of-buffer ivy-minibuffer-map)
+    (bind-key "M-N" 'ivy-end-of-buffer ivy-minibuffer-map)
+    (bind-key "M-K" 'ivy-scroll-up-command ivy-minibuffer-map)
+    (bind-key "M-I" 'ivy-scroll-down-command ivy-minibuffer-map)
+    ;; See `ivy-minibuffer-map' for more bindable keys.
+    ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
