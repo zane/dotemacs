@@ -6,6 +6,9 @@
 ;; https://github.com/magnars/js2-refactor.el
 ;; TODO: http://www.wisdomandwonder.com/article/8105/a-reminder-for-a-library-config
 ;; TODO: https://github.com/bartman/git-wip
+;;
+;; http://seancribbs.com/emacs.d/
+;; http://www.aaronbedra.com/emacs.d/
 
 ;;; Code:
 (require 'package)
@@ -24,18 +27,18 @@
   "The user's home directory.")
 
 (defvar user-projects-directory
-  (f-join user-home-directory "Projects")
+  (f-full (f-join user-home-directory "Projects"))
   "The user's projects directory.")
 
 (defvar user-dropbox-directory
-  (f-join "Dropbox" user-home-directory)
+  (f-full (f-join "Dropbox" user-home-directory "Dropbox"))
   "The user's Dropbox directory.")
 
 (defvar savefile-dir
-  (f-join user-emacs-directory "savefile"))
+  (f-full (f-join user-emacs-directory "savefile")))
 (unless (file-exists-p savefile-dir) (make-directory savefile-dir))
 
-(push (f-join user-emacs-directory "lisp") load-path)
+(push (f-full (f-join user-emacs-directory "lisp")) load-path)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Yanked from prelude
@@ -97,315 +100,90 @@
 ;; disable annoying blink-matching-paren
 (setq blink-matching-paren nil)
 
-;; meaningful names for buffers with the same name
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(transient-mark-mode +1)
 
-(use-package saveplace :ensure t ; remembers your location in a file when saving files
-  :idle (progn
-          (require 'saveplace)
-          (setq-default save-place t))
-  :config (setq save-place-file (expand-file-name "saveplace" savefile-dir)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Keybindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package savehist                   ; keeps track of some history
-  :commands savehist-mode
-  :idle (progn (savehist-mode +1))
-  :config
-  (setq savehist-additional-variables
-        ;; search entries
-        '(search-ring regexp-search-ring)
-        ;; save every minute
-        savehist-autosave-interval 60
-        ;; keep the home clean
-        savehist-file (expand-file-name "savehist" savefile-dir)))
+;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
+(keyboard-translate ?\C-i ?\H-i)
 
+(unbind-key "M-`")
 
-(use-package recentf                    ; save recent files
-  :commands recentf-mode
-  :idle (recentf-mode +1)
-  :config
-  (progn
-    (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
-          recentf-max-saved-items 500
-          recentf-max-menu-items 15
-          ;; disable recentf-cleanup on Emacs start, because it can cause
-          ;; problems with remote files
-          recentf-auto-cleanup 'never)
-    
-    (defun recentf-exclude-p (file)
-      "A predicate to decide whether to exclude FILE from recentf."
-      (let ((file-dir (file-truename (file-name-directory file))))
-        (-any-p (lambda (dir)
-                  (string-prefix-p dir file-dir))
-                (mapcar 'file-truename (list savefile-dir package-user-dir)))))
+(bind-key "M-a" 'execute-extended-command)
 
-    (add-to-list 'recentf-exclude 'recentf-exclude-p)
-    ;; ignore magit's commit message files
-    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")))
+(bind-key "M-i" 'previous-line)
+(bind-key "M-j" 'backward-char)
+(bind-key "M-k" 'next-line)
+(bind-key "M-l" 'forward-char)
 
-;; automatically save buffers associated with files on buffer switch
-;; and on windows switch
-(defvar should-auto-save t)
-(defun auto-save-command ()
-  "Save the current buffer if `should-auto-save' is not nil."
-  (when (and should-auto-save
-             buffer-file-name
-             (buffer-modified-p (current-buffer))
-             (file-writable-p buffer-file-name))
-    (save-buffer)))
-(defmacro advise-commands (advice-name commands class &rest body)
-  "Apply advice named ADVICE-NAME to multiple COMMANDS.
-The body of the advice is in BODY."
-  `(progn
-     ,@(mapcar (lambda (command)
-                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-                    ,@body))
-               commands)))
-;; advise all window switching functions
-(advise-commands
- "auto-save"
- (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
- before
- (auto-save-command))
-(add-hook 'mouse-leave-buffer-hook 'auto-save-command)
-(when (version<= "24.4" emacs-version) (add-hook 'focus-out-hook 'auto-save-command))
+(bind-key* "M-e" 'backward-kill-word)
 
-(defadvice set-buffer-major-mode (after set-major-mode activate compile)
-  "Set buffer major mode according to `auto-mode-alist'."
-  (let* ((name (buffer-name buffer))
-         (mode (assoc-default name auto-mode-alist 'string-match)))
-    (with-current-buffer buffer (if mode (funcall mode)))))
+(bind-key "M-u" 'backward-word)
+(bind-key "M-o" 'forward-word)
+(bind-key "M-U" 'backward-paragraph)
+(bind-key "M-O" 'forward-paragraph)
 
-(use-package hl-line
-  :config (add-hook 'prog-mode-hook 'hl-line-mode))
+(bind-key "M-n" 'beginning-of-buffer)
+(bind-key "M-N" 'end-of-buffer)
 
-(global-hl-line-mode +1)
+(bind-key "M-I" 'scroll-down)
+(bind-key "M-K" 'scroll-up)
 
-(use-package volatile-highlights
-  :commands volatile-highlights-mode
-  :idle (volatile-highlights-mode t)
-  :diminish volatile-highlights-mode)
+(bind-key* "M-h" 'beginning-of-line)
+(bind-key* "M-H" 'end-of-line)
 
-(use-package tramp
-  ;; keep in mind known issues with zsh - see emacs wiki
-  :config (setq tramp-default-method "ssh"))
+(defun backward-kill-line (arg)
+  "Kill ARG lines backward."
+  (interactive "p")
+  (kill-line (- 1 arg)))
 
-(set-default 'imenu-auto-rescan t)
+(bind-key "M-f" 'delete-char)
+(bind-key "M-d" 'delete-backward-char)
+(bind-key "M-g" 'kill-line)
+(bind-key "M-G" 'backward-kill-line)
+(bind-key "M-e" 'backward-kill-word)
+(bind-key "M-r" 'kill-word)
 
-;; flyspell-mode does spell-checking on the fly as you type
-(require 'flyspell)
-(setq ispell-program-name "aspell" ; use aspell instead of ispell
-      ispell-extra-args '("--sug-mode=ultra"))
-
-(defun prelude-enable-flyspell ()
-  "Enable command `flyspell-mode' if `prelude-flyspell' is not nil."
-  (when (and prelude-flyspell (executable-find ispell-program-name))
-    (flyspell-mode +1)))
-
-(add-hook 'text-mode-hook 'prelude-enable-flyspell)
-
-;; enable narrowing commands
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-defun 'disabled nil)
-
-;; enabled change region case commands
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
-;; enable erase-buffer command
-(put 'erase-buffer 'disabled nil)
-
-(use-package bookmark
-  :config
-  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
-        bookmark-save-flag 1))
-
-(use-package anzu :ensure t ; enhances isearch & query-replace by showing total matches and current match position
-  :ensure anzu
-  :diminish anzu-mode
-  :idle (global-anzu-mode))
-
-;; shorter aliases for ack-and-a-half commands
-(defalias 'ack 'ack-and-a-half)
-(defalias 'ack-same 'ack-and-a-half-same)
-(defalias 'ack-find-file 'ack-and-a-half-find-file)
-(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-
-(use-package dired
-  :commands dired
-  :config
-  (progn
-    ;; dired - reuse current buffer by pressing 'a'
-    (put 'dired-find-alternate-file 'disabled nil)
-    
-    ;; always delete and copy recursively
-    (setq dired-recursive-deletes 'always)
-    (setq dired-recursive-copies 'always)
-
-    ;; enable some really cool extensions like C-x C-j(dired-jump)
-    (use-package dired-x)))
-
-;; if there is a dired buffer displayed in the next window, use its
-;; current subdir, instead of the current subdir of this dired buffer
-(setq dired-dwim-target t)
-
-(use-package ediff
-  :commands ediff
-  :config (setq ediff-window-setup-function 'ediff-setup-windows-plain)) ; ediff - don't start another frame
-
-(use-package midnight) ; clean up obsolete buffers automatically
-
-(use-package browse-kill-ring ; smarter kill-ring navigation
-  :bind ("s-y" . browse-kill-ring)
-  :config (browse-kill-ring-default-keybindings))
-
-;; (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
-;;   "When called with no active region, do not activate mark."
-;;   (interactive
-;;    (list (not (region-active-p)))))
-
-;; (defmacro with-region-or-buffer (func)
-;;   "When called with no active region, call FUNC on current buffer."
-;;   `(defadvice ,func (before with-region-or-buffer activate compile)
-;;      (interactive
-;;       (if mark-active
-;;           (list (region-beginning) (region-end))
-;;         (list (point-min) (point-max))))))
-
-;; (with-region-or-buffer indent-region)
-;; (with-region-or-buffer untabify)
-
-;; automatically indenting yanked text if in programming-modes
-(defun yank-advised-indent-function (beg end)
-  "Do indentation, as long as the region isn't too large."
-  (if (<= (- end beg) prelude-yank-indent-threshold)
-      (indent-region beg end nil)))
-
-(advise-commands "indent" (yank yank-pop) after
-  "If current mode is one of `prelude-yank-indent-modes',
-indent yanked text (with prefix arg don't indent)."
-  (if (and (not (ad-get-arg 0))
-           (not (member major-mode prelude-indent-sensitive-modes))
-           (or (derived-mode-p 'prog-mode)
-               (member major-mode prelude-yank-indent-modes)))
-      (let ((transient-mark-mode nil))
-        (yank-advised-indent-function (region-beginning) (region-end)))))
-
-;; abbrev config
-(add-hook 'text-mode-hook 'abbrev-mode)
-
-;; make a shell script executable automatically on save
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
-
-;; .zsh file is shell script too
-(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
-
-;; saner regex syntax
-(use-package re-builder
-  :config (setq reb-re-syntax 'string))
-
-
-(require 'eshell)
-(setq eshell-directory-name (expand-file-name "eshell" savefile-dir))
-
-(setq semanticdb-default-save-directory
-      (expand-file-name "semanticdb" savefile-dir))
-
-;; Compilation from Emacs
-(defun prelude-colorize-compilation-buffer ()
-  "Colorize a compilation mode buffer."
+(defun new-empty-buffer ()
   (interactive)
-  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-  (when (eq major-mode 'compilation-mode)
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max)))))
+  (switch-to-buffer (generate-new-buffer "Untitled")))
 
-(require 'compile)
-(setq compilation-ask-about-save nil  ; Just save before compiling
-      compilation-always-kill t       ; Just kill old compile processes before
-                                        ; starting the new one
-      compilation-scroll-output 'first-error ; Automatically scroll to first
-                                        ; error
-      )
+(bind-key* "C-a" 'mark-whole-buffer)
+(bind-key "C-n" 'new-empty-buffer)
+(bind-key "C-w" 'kill-this-buffer)
+(bind-key "C-s" 'save-buffer)
+(bind-key "C-o" 'find-file)
 
-;; Colorize output of Compilation Mode, see
-;; http://stackoverflow.com/a/3072831/355252
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook #'prelude-colorize-compilation-buffer)
+(bind-key "M-y" 'isearch-forward)
+(bind-key "M-Y" 'isearch-backward)
+(bind-key "M-y" 'isearch-repeat-forward isearch-mode-map)
+(bind-key "M-Y" 'isearch-repeat-backward isearch-mode-map)
 
-(use-package winner
-  :ensure winner
-  :idle (winner-mode +1))
+(bind-key* "M-2" 'delete-window)
+(bind-key* "M-3" 'delete-other-windows)
+(bind-key* "M-4" 'split-window-vertically)
+(bind-key* "M-$" 'split-window-horizontally)
 
-(use-package diff-hl :ensure diff-hl
-  :commands global-diff-hl-mode
-  :idle (global-diff-hl-mode +1))
+(bind-key "M-c" 'clipboard-kill-ring-save)
+(bind-key "M-x" 'clipboard-kill-region)
+(bind-key* "M-v" 'clipboard-yank)
+(bind-key "M-z" 'undo)
 
-(use-package diff-hl-dired :ensure diff-hl
-  :disabled t
-  :commands diff-hl-dired-mode
-  :init (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+(bind-key* "M-p" 'recenter-top-bottom)
 
-;; easy-kill
-(use-package easy-kill
-  :ensure easy-kill
-  :commands (easy-kill easy-mark)
-  
-  :init
-  (progn
-    (global-set-key [remap kill-ring-save] 'easy-kill)
-    (global-set-key [remap mark-sexp] 'easy-mark)))
+(bind-key "C-s" 'save-buffer)
 
-;; .............................................................................
-;; UI
+(bind-key "C-x y" 'bury-buffer)
+(bind-key "C-x b" 'switch-to-buffer)
 
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (not window-system)
+  (bind-key "C-@" 'set-mark-command))
 
-(menu-bar-mode -1)
-(blink-cursor-mode -1) ;; the blinking cursor is nothing, but an annoyance
-(setq inhibit-startup-screen t) ;; disable startup screen
-
-;; nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
-
-;; mode line settings
-(line-number-mode t)
-(column-number-mode t)
-(size-indication-mode t)
-
-;; make the fringe (gutter) smaller the argument is a width in pixels (the default is 8)
-(when (fboundp 'fringe-mode) (fringe-mode 4))
-
-(fset 'yes-or-no-p 'y-or-n-p) ;; enable y/n answers
-
-;; more useful frame title, that show either a file or a
-;; buffer name (if the buffer isn't visiting a file)
-(setq frame-title-format
-      '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
-						  (abbreviate-file-name (buffer-file-name))
-						"%b"))))
-
-(use-package ov :ensure ov)
-(use-package volatile-highlights :ensure volatile-highlights)
-(use-package anzu :ensure anzu)
-(use-package browse-kill-ring :ensure browse-kill-ring)
-
-(use-package prelude
-  :disabled t
-  :config
-  (progn
-    (setq pcache-directory (f-expand "pcache" savefile-dir))
-    (unbind-key "M-o" prelude-mode-map)))
-
-;; .............................................................................
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Mac
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun z:mac-p ()
   "Truthy if the host OS is a Mac."
@@ -429,21 +207,10 @@ indent yanked text (with prefix arg don't indent)."
   :init (exec-path-from-shell-initialize))
 
 (use-package vkill                ; proced-mode doesn't work on OS X
-    :if mac-system
-    :disabled t
-    :commands vkill
-    :bind ("C-x p" . vkill))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Functions and Macros
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; http://milkbox.net/note/single-file-master-emacs-configuration/
-(defmacro after (mode &rest body)
-  "`eval-after-load' MODE evaluate BODY."
-  (declare (indent defun))
-  `(eval-after-load ,mode
-     '(progn ,@body)))
+  :if mac-system
+  :disabled t
+  :commands vkill
+  :bind ("C-x p" . vkill))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions and Macros
@@ -507,18 +274,57 @@ indent yanked text (with prefix arg don't indent)."
 ;; UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+(menu-bar-mode -1)
+(blink-cursor-mode -1) ;; the blinking cursor is nothing, but an annoyance
+(setq inhibit-startup-screen t) ;; disable startup screen
+
+;; nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position t)
+
+;; mode line settings
+(line-number-mode t)
+(column-number-mode t)
+(size-indication-mode t)
+
+;; make the fringe (gutter) smaller the argument is a width in pixels (the default is 8)
+(when (fboundp 'fringe-mode) (fringe-mode 4))
+
+(fset 'yes-or-no-p 'y-or-n-p) ;; enable y/n answers
+
+;; more useful frame title, that show either a file or a
+;; buffer name (if the buffer isn't visiting a file)
+(setq frame-title-format
+      '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
+						  (abbreviate-file-name (buffer-file-name))
+						"%b"))))
+
+(use-package ov :ensure ov)
+(use-package volatile-highlights :ensure volatile-highlights)
+(use-package browse-kill-ring :ensure browse-kill-ring)
+
+(use-package prelude
+  :disabled t
+  :config
+  (progn
+    (setq pcache-directory (f-expand "pcache" savefile-dir))
+    (unbind-key "M-o" prelude-mode-map)))
+
 (setq initial-scratch-message "")
 (setq-default truncate-lines t)
 (tooltip-mode -1)
 
-(use-package smart-mode-line :ensure t
+(use-package smart-mode-line
   :if window-system
   :commands (sml/setup sml/apply-theme)
   
   :init
   (progn
     (setq sml/no-confirm-load-theme t)
-    (sml/apply-theme 'dark)
+    (sml/apply-theme 'respectful)
     (sml/setup))
   
   :config
@@ -527,10 +333,10 @@ indent yanked text (with prefix arg don't indent)."
 (when window-system
   (let ((default-font (if (z:mac-p)
                           "-*-Anonymous Pro Minus-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
-                          ;; "DejaVu Sans Mono 11"
-                          ;; "Source Code Pro 12"
-                          ;; "Inconsolata-13"
-                          "Monospace 10")))
+                        ;; "DejaVu Sans Mono 11"
+                        ;; "Source Code Pro 12"
+                        ;; "Inconsolata-13"
+                        "Monospace 10")))
     (set-face-font 'default default-font)
     (if (z:mac-p)
         (set-face-font 'variable-pitch "Avenir 13")))
@@ -579,6 +385,336 @@ indent yanked text (with prefix arg don't indent)."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package smex :disabled t
+  :bind (("M-a" . smex)
+         ("M-A" . smex-major-mode-commands)
+         ("C-c C-c M-a" . execute-extended-command))
+  :init
+  (smex-initialize)
+   
+  :config
+  (progn
+    (bind-key* "M-a" 'smex)
+    (setq smex-save-file (f-join savefile-dir ".smex-items"))))
+
+(use-package swiper :ensure t
+   :init (progn (bind-key "M-y" 'swiper)
+                (bind-key "M-Y" 'swiper))
+   :config
+   (bind-key "C-o"
+             (lambda () (interactive)
+               (let ((input (ivy--input)))
+                 (top-level)
+                 (occur (regexp-quote input))))
+             swiper-map))
+
+(use-package ivy
+  :init (ivy-mode)
+  :config
+  (progn
+    ;; See `ivy-minibuffer-map' for more bindable keys.
+
+    (bind-key "C-m" 'ivy-done ivy-minibuffer-map)
+    (bind-key "TAB" 'ivy-alt-done ivy-minibuffer-map)
+    (bind-key "M-k" 'ivy-next-line ivy-minibuffer-map)
+    (bind-key "M-i" 'ivy-previous-line ivy-minibuffer-map)
+    (bind-key "M-d" 'ivy-backward-delete-char ivy-minibuffer-map)
+    (bind-key "M-n" 'ivy-beginning-of-buffer ivy-minibuffer-map)
+    (bind-key "M-N" 'ivy-end-of-buffer ivy-minibuffer-map)
+    (bind-key "M-K" 'ivy-scroll-up-command ivy-minibuffer-map)
+    (bind-key "M-I" 'ivy-scroll-down-command ivy-minibuffer-map)))
+
+;; meaningful names for buffers with the same name
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+(use-package paradox :ensure t
+  :defer 60)
+
+(use-package saveplace :ensure t ; remembers your location in a file when saving files
+  :defer (progn
+           (require 'saveplace)
+           (setq-default save-place t))
+  :config (setq save-place-file (expand-file-name "saveplace" savefile-dir)))
+
+(use-package savehist                   ; keeps track of some history
+  :idle (savehist-mode +1)
+  :config
+  (setq savehist-additional-variables
+        ;; search entries
+        '(search-ring regexp-search-ring)
+        ;; save every minute
+        savehist-autosave-interval 60
+        ;; keep the home clean
+        savehist-file (expand-file-name "savehist" savefile-dir)))
+
+
+(use-package recentf                    ; save recent files
+  :commands recentf-mode
+  :defer t
+  :config
+  (progn
+    (recentf-mode +1)
+    (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
+          recentf-max-saved-items 500
+          recentf-max-menu-items 15
+          ;; disable recentf-cleanup on Emacs start, because it can cause
+          ;; problems with remote files
+          recentf-auto-cleanup 'never)
+    
+    (defun recentf-exclude-p (file)
+      "A predicate to decide whether to exclude FILE from recentf."
+      (let ((file-dir (file-truename (file-name-directory file))))
+        (-any-p (lambda (dir)
+                  (string-prefix-p dir file-dir))
+                (mapcar 'file-truename (list savefile-dir package-user-dir)))))
+
+    (add-to-list 'recentf-exclude 'recentf-exclude-p)
+    ;; ignore magit's commit message files
+    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")))
+
+;; automatically save buffers associated with files on buffer switch
+;; and on windows switch
+(defvar should-auto-save t)
+(defun auto-save-command ()
+  "Save the current buffer if `should-auto-save' is not nil."
+  (when (and should-auto-save
+             buffer-file-name
+             (buffer-modified-p (current-buffer))
+             (file-writable-p buffer-file-name))
+    (save-buffer)))
+
+(defmacro advise-commands (advice-name commands class &rest body)
+  "Apply advice named ADVICE-NAME to multiple COMMANDS.
+The body of the advice is in BODY."
+  `(progn
+     ,@(mapcar (lambda (command)
+                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
+                    ,@body))
+               commands)))
+
+;; advise all window switching functions
+(advise-commands
+ "auto-save"
+ (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+ before
+ (auto-save-command))
+
+(add-hook 'mouse-leave-buffer-hook 'auto-save-command)
+
+(when (version<= "24.4" emacs-version) (add-hook 'focus-out-hook 'auto-save-command))
+
+(defadvice set-buffer-major-mode (after set-major-mode activate compile)
+  "Set buffer major mode according to `auto-mode-alist'."
+  (let* ((name (buffer-name buffer))
+         (mode (assoc-default name auto-mode-alist 'string-match)))
+    (with-current-buffer buffer (if mode (funcall mode)))))
+
+(use-package hl-line
+  :config (if window-system (add-hook 'prog-mode-hook 'hl-line-mode)))
+
+(global-hl-line-mode +1)
+
+(use-package volatile-highlights
+  :commands volatile-highlights-mode
+  :config (volatile-highlights-mode t)
+  :diminish volatile-highlights-mode)
+
+(use-package tramp
+  ;; keep in mind known issues with zsh - see emacs wiki
+  :config (setq tramp-default-method "ssh"))
+
+(set-default 'imenu-auto-rescan t)
+
+;; flyspell-mode does spell-checking on the fly as you type
+(require 'flyspell)
+(setq ispell-program-name "aspell" ; use aspell instead of ispell
+      ispell-extra-args '("--sug-mode=ultra"))
+
+(defun enable-flyspell ()
+  (when (executable-find ispell-program-name)
+    (flyspell-mode +1)))
+
+(add-hook 'text-mode-hook 'enable-flyspell)
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enabled change region case commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
+
+(use-package bookmark
+  :config
+  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
+        bookmark-save-flag 1))
+
+(use-package anzu :disabled t ; enhances isearch & query-replace by showing total matches and current match position
+  :ensure anzu
+  :diminish anzu-mode
+  :defer t
+  :config (global-anzu-mode))
+
+;; shorter aliases for ack-and-a-half commands
+
+(use-package ack-and-a-half
+  :commands ack
+  :config
+  (defalias 'ack 'ack-and-a-half)
+  (defalias 'ack-same 'ack-and-a-half-same)
+  (defalias 'ack-find-file 'ack-and-a-half-find-file)
+  (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same))
+
+(use-package dired
+  :commands dired
+  :config
+  (progn
+    ;; dired - reuse current buffer by pressing 'a'
+    (put 'dired-find-alternate-file 'disabled nil)
+    
+    ;; always delete and copy recursively
+    (setq dired-recursive-deletes 'always)
+    (setq dired-recursive-copies 'always)
+
+    ;; enable some really cool extensions like C-x C-j(dired-jump)
+    (use-package dired-x)))
+
+;; if there is a dired buffer displayed in the next window, use its
+;; current subdir, instead of the current subdir of this dired buffer
+(setq dired-dwim-target t)
+
+(use-package ediff
+  :commands ediff
+  :config (setq ediff-window-setup-function 'ediff-setup-windows-plain)) ; ediff - don't start another frame
+
+(use-package midnight) ; clean up obsolete buffers automatically
+
+(use-package browse-kill-ring ; smarter kill-ring navigation
+  :bind ("s-y" . browse-kill-ring)
+  :config (browse-kill-ring-default-keybindings))
+
+;; (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
+;;   "When called with no active region, do not activate mark."
+;;   (interactive
+;;    (list (not (region-active-p)))))
+
+;; (defmacro with-region-or-buffer (func)
+;;   "When called with no active region, call FUNC on current buffer."
+;;   `(defadvice ,func (before with-region-or-buffer activate compile)
+;;      (interactive
+;;       (if mark-active
+;;           (list (region-beginning) (region-end))
+;;         (list (point-min) (point-max))))))
+
+;; (with-region-or-buffer indent-region)
+;; (with-region-or-buffer untabify)
+
+(defvar zane/yank-indent-threshold
+  10000
+  "Threshold beyond which auto-indentation should not happen.")
+
+;; automatically indenting yanked text if in programming-modes
+(defun yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) zane/yank-indent-threshold)
+      (indent-region beg end nil)))
+
+(defvar zane/indent-sensitive-modes
+  "Modes where we don't want to auto-indent after yanking."
+  nil)
+
+(defvar zane/yank-indent-modes
+  "Modes where we do want to auto-indent after yanking."
+  nil)
+
+(advise-commands "indent" (yank yank-pop) after
+                 "If current mode is one of `zane/yank-indent-modes',
+indent yanked text (with prefix arg don't indent)."
+                 (if (and (not (ad-get-arg 0))
+                          (not (member major-mode zane/indent-sensitive-modes))
+                          (or (derived-mode-p 'prog-mode)
+                              (member major-mode zane/yank-indent-modes)))
+                     (let ((transient-mark-mode nil))
+                       (yank-advised-indent-function (region-beginning) (region-end)))))
+
+;; abbrev config
+(add-hook 'text-mode-hook 'abbrev-mode)
+
+;; make a shell script executable automatically on save
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; .zsh file is shell script too
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
+
+;; saner regex syntax
+(use-package re-builder
+  :commands re-builder
+  :config (setq reb-re-syntax 'string))
+
+(use-package eshell
+  :commands eshell
+  :config (setq eshell-directory-name
+                (expand-file-name "eshell" savefile-dir)))
+
+(use-package semantic
+  :config (setq semanticdb-default-save-directory
+                (expand-file-name "semanticdb" savefile-dir)))
+
+;; Compilation from Emacs
+(defun zane/colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'compile)
+(setq compilation-ask-about-save nil  ; Just save before compiling
+      compilation-always-kill t       ; Just kill old compile processes before
+                                        ; starting the new one
+      compilation-scroll-output 'first-error ; Automatically scroll to first
+                                        ; error
+      )
+
+;; Colorize output of Compilation Mode, see
+;; http://stackoverflow.com/a/3072831/355252
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'zane/colorize-compilation-buffer)
+
+(use-package winner
+  :ensure winner
+  :defer t
+  :config (winner-mode +1))
+
+(use-package diff-hl :ensure diff-hl
+  :commands global-diff-hl-mode
+  :defer t
+  :config (global-diff-hl-mode +1))
+
+(use-package diff-hl-dired :ensure diff-hl
+  :disabled t
+  :commands diff-hl-dired-mode
+  :init (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+
+(use-package easy-kill
+  :ensure easy-kill
+  :commands (easy-kill easy-mark)
+  
+  :init
+  (progn
+    (bind-key [remap kill-ring-save] 'easy-kill)
+    (bind-key [remap mark-sexp] 'easy-mark)))
 
 (use-package flycheck
   :config
@@ -631,8 +767,6 @@ indent yanked text (with prefix arg don't indent)."
     (bind-key "M-(" (wrap-with "(") prog-mode-map)
     (bind-key "M-\"" (wrap-with "\"") prog-mode-map)))
 
-(use-package paredit :ensure t)
-
 (use-package paxedit :ensure t
   :diminish "pax"
   :commands paxedit-mode
@@ -658,13 +792,16 @@ indent yanked text (with prefix arg don't indent)."
     (defroutes 'defun)
     (fnk 'defun)
     (defnk 'defun)
+    (go-try-loop 'defun)
     (GET 2)
     (POST 2)
     (PUT 2)
     (DELETE 2)
     (HEAD 2)
     (ANY 2)
-    (context 2)))
+    (context 2)
+    (match 'defun)
+    (for-all 'defun)))
 
 (use-package magit :ensure t
   :bind ("C-x g" . magit-status)
@@ -672,12 +809,13 @@ indent yanked text (with prefix arg don't indent)."
   (progn
     (mapc (apply-partially 'add-to-list 'magit-repo-dirs)
           (f-directories user-projects-directory))
-            
+    
     (setq magit-status-buffer-switch-function 'switch-to-buffer)
-    (setq magit-completing-read-function 'ido-completing-read)
     (setq magit-repo-dirs (list user-projects-directory))
     (setq magit-set-upstream-on-push 'dontask)
     (setq magit-save-some-buffers 'dontask)
+    (after 'ido (setq magit-completing-read-function 'ido-completing-read))
+    (after 'ivy (setq magit-completing-read-function 'ivy-completing-read))
 
     ;; Make magit restore the original window configuration when you leave the
     ;; magit buffer.
@@ -694,11 +832,12 @@ indent yanked text (with prefix arg don't indent)."
       (interactive)
       (kill-buffer)
       (jump-to-register :magit-fullscreen))
-           
+    
     (bind-key "q" 'magit-quit-session magit-status-mode-map)
     (unbind-key "M-p" magit-status-mode-map)))
 
 (use-package org :ensure t
+  :defer t
   :config
   (progn
     (setq org-src-fontify-natively t)
@@ -714,7 +853,7 @@ indent yanked text (with prefix arg don't indent)."
       (f-join user-dropbox-directory "Documents" "org")
       "The user's org-mode capture directory.")
     (setq org-default-notes-file (f-join user-org-capture-directory "capture.org"))
-            
+    
     ;; http://orgmode.org/manual/Template-elements.html
     (setq org-capture-templates
           '(("l" "Life Log" entry (file+datetree+prompt (f-join user-org-capture-directory "log.org"))
@@ -725,10 +864,12 @@ indent yanked text (with prefix arg don't indent)."
              "* TODO %?\n")))))
 
 (use-package markdown-mode
+  :mode "\\.md\\'"
   :config (when (executable-find "gfm") (setq markdown-command "gfm")))
 
 (use-package golden-ratio
   ;; https://github.com/roman/golden-ratio.el/issues/25
+  :disabled t
   :config (setq window-combination-resize t))
 
 (use-package js
@@ -746,6 +887,7 @@ indent yanked text (with prefix arg don't indent)."
     (setq js2-include-browser-externs t)))
 
 (use-package cider :ensure t
+  :pin melpa-stable
   :commands cider-jack-in
   :bind (("S-<return>" . cider-repl-newline-and-indent)
          ("C-c M-r" . cider-refresh))
@@ -767,7 +909,7 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package solarized-theme
   :if window-system
-  :pre-load
+  :init
   (progn
     (setq solarized-use-variable-pitch nil)
 
@@ -782,12 +924,14 @@ indent yanked text (with prefix arg don't indent)."
     
     (setq solarized-distinct-fringe-background t)
     (setq solarized-high-contrast-mode-line nil))
-  :init
+  :config
   (load-theme 'solarized-dark t))
-
 (use-package whitespace
   :if window-system
-  :idle (global-whitespace-mode)
+  
+  :init
+  (global-whitespace-mode)
+
   :config
   (progn
     ;; http://xahlee.blogspot.com/2009/08/how-to-use-and-setup-emacss-whitespace.html
@@ -796,35 +940,25 @@ indent yanked text (with prefix arg don't indent)."
     (setq whitespace-action '(auto-cleanup warn-if-read-only))
     (setq whitespace-style '(face tabs empty trailing))
 
-    (defun prelude-cleanup-maybe ()
-      "Invoke `whitespace-cleanup' if `prelude-clean-whitespace-on-save' is not nil."
-      (when prelude-clean-whitespace-on-save
-        (whitespace-cleanup)))
+    (defun zane-enable-whitespace ()
+      (add-hook 'before-save-hook 'whitespace-cleanup nil t)
+      (whitespace-mode +1))
+    (add-hook 'text-mode-hook 'zane-enable-whitespace)))
 
-    (defun prelude-enable-whitespace ()
-      "Enable `whitespace-mode' if `prelude-whitespace' is not nil."
-      (when prelude-whitespace
-        ;; keep the whitespace decent all the time (in this buffer)
-        (add-hook 'before-save-hook 'prelude-cleanup-maybe nil t)
-        (whitespace-mode +1)))
-    (add-hook 'text-mode-hook 'prelude-enable-whitespace)))
+(after 'nrepl-mode 'ok)
 
 (use-package rainbow-delimiters :ensure t
   :commands rainbow-delimiters-mode-enable
+  
+  :init
+  (progn
+    (after 'lisp-mode    (add-hook 'emacs-lisp-mode-hook  'rainbow-delimiters-mode-enable))
+    (after 'clojure-mode (add-hook 'clojure-mode-hook     'rainbow-delimiters-mode-enable))
+    (after 'cider-repl   (add-hook 'cider-repl-mode-hook  'rainbow-delimiters-mode-enable)))
+  
   :config
   (progn
-    (setq-default frame-background-mode 'dark)
-    (let ((hooks '(emacs-lisp-mode-hook
-                   clojure-mode-hook
-                   js-mode-hook
-                   lisp-mode-hook
-                   python-mode-hook)))
-      (dolist (hook hooks)
-        (add-hook hook 'rainbow-delimiters-mode-enable)))
-    (after 'elisp-mode (add-hook 'emacs-lisp-mode-hook  'rainbow-delimiters-mode-enable))
-    (after 'clojure    (add-hook 'clojure-mode-hook     'rainbow-delimiters-mode-enable))
-    (after 'nrepl      (add-hook 'nrepl-mode-hook       'rainbow-delimiters-mode-enable))
-    (after 'cider      (add-hook 'cider-repl-mode-hook  'rainbow-delimiters-mode-enable))))
+    (setq-default frame-background-mode 'dark)))
 
 (use-package rainbow-identifiers :ensure t
   :commands rainbow-identifiers-mode
@@ -845,6 +979,13 @@ indent yanked text (with prefix arg don't indent)."
 (use-package company :ensure t
   :diminish company-mode
   :commands company-mode-on
+
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'company-mode-on)
+    (after 'lisp-mode    (add-hook 'emacs-lisp-mode-hook  'company-mode-on))
+    (after 'clojure-mode (add-hook 'clojure-mode-hook     'company-mode-on))
+    (after 'cider-repl   (add-hook 'cider-repl-mode-hook  'company-mode-on)))
   
   :config
   (progn
@@ -856,16 +997,20 @@ indent yanked text (with prefix arg don't indent)."
 
     (setq company-idle-delay 0.2)
 
-    (add-hook 'prog-mode-hook 'company-mode-on)
-    (add-hook 'cider-repl-mode-hook 'company-mode-on)
-
     (setq company-show-numbers t)))
 
-(use-package web-mode :ensure t)
+(use-package web-mode :ensure t
+  :mode "\\.html\\'")
+
+(use-package jsx-mode :ensure t
+  :mode "\\.jsx\\'"
+  :config
+  (setq jsx-indent-level 2))
 
 (use-package sql-indent :ensure t
-  :idle (load-library "sql-indent")
+  :mode "\\.sql\\'"
   :config
+  (load-library "sql-indent")
   (setq sql-indent-first-column-regexp
         (concat "^\\s-*" (regexp-opt '("select" "update" "insert" "delete"
                                        "union" "intersect"
@@ -877,8 +1022,9 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package fancy-narrow
   :disabled t
-  :idle (progn (require 'fancy-narrow)
-               (fancy-narrow-mode t)))
+  :defer t
+  :config (progn (require 'fancy-narrow)
+                 (fancy-narrow-mode t)))
 
 (use-package undo-tree :ensure t
   :diminish undo-tree-mode
@@ -891,21 +1037,37 @@ indent yanked text (with prefix arg don't indent)."
          ("C->"         . mc/mark-next-like-this)
          ("C-<"         . mc/mark-previous-like-this)
          ("C-c C-<"     . mc/mark-all-like-this)
-         ("C-;"         . mc/mark-all-dwim))
+         ("C-;"         . mc/mark-all-symbols-like-this-in-defun))
   :config (progn (setq mc/list-file (f-expand ".mc-lists.el" savefile-dir))
                  (bind-key "C-;" 'mc/mark-all-symbols-like-this-in-defun prog-mode-map)))
 
 (use-package expand-region :ensure t
   :bind (("M->" . er/expand-region)
-         ("M-<" . er/contract-region)))
+         ("M-<" . er/contract-region))
+  :config
+  (setq expand-region-contract-fast-key "<"))
 
 (use-package key-chord
   :disabled t)
 
-(use-package ido :ensure t
+(use-package projectile
+  :ensure t
+  ;; :pin melpa-stable
+  :commands projectile-global-mode
+
+  :init
+  (setq projectile-known-projects-file (f-join savefile-dir "projectile-bookmarks.eld")
+        projectile-cache-file          (f-join savefile-dir "projectile.cache"))
+  (after 'ivy (setq projectile-completion-system 'ivy))
+  (projectile-global-mode t))
+
+(use-package ido :disabled t
   :init (ido-mode +1)
   :config
   (progn
+    (bind-key "C-o" 'ido-find-file)
+    (bind-key "C-x b" 'ido-switch-buffer)
+    
     (setq ido-case-fold t
           ido-enable-prefix nil
           ido-enable-flex-matching t
@@ -931,35 +1093,25 @@ indent yanked text (with prefix arg don't indent)."
             ".cnf"
             ".gz"))))
 
-(use-package ido-ubiquitous :ensure t
+(use-package anzu :ensure anzu :disabled t)
+
+(use-package ido-ubiquitous :disabled t
   :init
   (progn
     (ido-mode +1)
     (ido-ubiquitous-mode +1)))
 
-(use-package flx-ido :ensure t        ; smarter fuzzy matching for ido
+(use-package flx-ido :disabled t        ; smarter fuzzy matching for ido
   :init (flx-ido-mode +1)
 
   ;; disable ido faces to see flx highlights
   :config (setq ido-use-faces nil))
 
-(use-package ido-sort-mtime :ensure t
+(use-package ido-sort-mtime :disabled t
   :init (ido-sort-mtime-mode 1)
   :config (setq ido-sort-mtime-tramp-files-at-end t))
-
-(use-package smex :ensure t
-  :bind (("M-a" . smex)
-         ("M-A" . smex-major-mode-commands)
-         ("C-c C-c M-a" . execute-extended-command))
-  :init
-  (smex-initialize)
   
-  :config
-  (progn
-    (bind-key* "M-a" 'smex)
-    (setq smex-save-file (f-join savefile-dir ".smex-items"))))
-
-(use-package ido-vertical-mode :ensure t
+(use-package ido-vertical-mode :disabled t
   :commands ido-vertical-mode
   :init (after 'ido (ido-vertical-mode +1))
   
@@ -971,94 +1123,7 @@ indent yanked text (with prefix arg don't indent)."
     (setq ido-setup-hook '(ido-vertical-define-my-keys))
     (add-hook 'ido-minibuffer-setup-hook 'ido-vertical-define-my-keys)))
 
-(use-package projectile :ensure t
-   :commands projectile-global-mode
-
-   :init
-   (setq projectile-known-projects-file (f-join savefile-dir "projectile-bookmarks.eld")
-         projectile-cache-file          (f-join savefile-dir "projectile.cache"))
-   (projectile-global-mode t)
-   
-   :diminish projectile-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Keybindings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
-(keyboard-translate ?\C-i ?\H-i)
-
-(unbind-key "M-`")
-
-(bind-key "M-i" 'previous-line)
-(bind-key "M-j" 'backward-char)
-(bind-key "M-k" 'next-line)
-(bind-key "M-l" 'forward-char)
-
-(bind-key "M-e" 'backward-kill-word)
-
-(bind-key "M-u" 'backward-word)
-(bind-key "M-o" 'forward-word)
-(bind-key "M-U" 'backward-paragraph)
-(bind-key "M-O" 'forward-paragraph)
-
-(bind-key "M-n" 'beginning-of-buffer)
-(bind-key "M-N" 'end-of-buffer)
-
-(bind-key "M-I" 'scroll-down)
-(bind-key "M-K" 'scroll-up)
-
-(bind-key* "M-h" 'beginning-of-line)
-(bind-key "M-H" 'end-of-line)
-
-(defun backward-kill-line (arg)
-  "Kill ARG lines backward."
-  (interactive "p")
-  (kill-line (- 1 arg)))
-
-(bind-key "M-f" 'delete-char)
-(bind-key "M-d" 'delete-backward-char)
-(bind-key "M-g" 'kill-line)
-(bind-key "M-G" 'backward-kill-line)
-(bind-key "M-e" 'backward-kill-word)
-(bind-key "M-r" 'kill-word)
-
-(defun new-empty-buffer ()
-  (interactive)
-  (switch-to-buffer (generate-new-buffer "Untitled")))
-
-(bind-key* "C-a" 'mark-whole-buffer)
-(bind-key "C-n" 'new-empty-buffer)
-(bind-key "C-w" 'kill-this-buffer)
-(bind-key "C-s" 'save-buffer)
-(bind-key "C-o" 'ido-find-file)
-
-(bind-key "M-y" 'isearch-forward)
-(bind-key "M-Y" 'isearch-backward)
-(bind-key "M-y" 'isearch-repeat-forward isearch-mode-map)
-(bind-key "M-Y" 'isearch-repeat-backward isearch-mode-map)
-
-(bind-key "M-2" 'delete-window)
-(bind-key "M-3" 'delete-other-windows)
-(bind-key "M-4" 'split-window-vertically)
-(bind-key "M-$" 'split-window-horizontally)
-
-(bind-key "M-c" 'clipboard-kill-ring-save)
-(bind-key "M-x" 'clipboard-kill-region)
-(bind-key "M-v" 'clipboard-yank)
-(bind-key "M-z" 'undo)
-
-(bind-key "M-p" 'recenter-top-bottom)
-
-(bind-key "C-s" 'save-buffer)
-
-(bind-key "C-x y" 'bury-buffer)
-(bind-key "C-x b" 'ido-switch-buffer)
-
-(when (not window-system)
-  (bind-key "C-@" 'set-mark-command))
-
-(use-package helm :ensure t
+(use-package helm :disabled t
   :config
   (progn
     ;; http://tuhdo.github.io/helm-intro.html
@@ -1077,7 +1142,8 @@ indent yanked text (with prefix arg don't indent)."
           helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
           helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-          helm-ff-file-name-history-use-recentf t)
+          helm-ff-file-name-history-use-recentf t
+          helm-split-window-default-side        'right)
     (bind-keys :map helm-map
                ("M-i" . helm-previous-line)
                ("M-k" . helm-next-line)
@@ -1091,48 +1157,53 @@ indent yanked text (with prefix arg don't indent)."
                ("M-O" . helm-next-source)
                ("M-U" . helm-previous-source))))
 
-(use-package helm-misc :ensure helm
+(use-package helm-misc :disabled t
+  :ensure helm
   :bind ("C-x b" . helm-mini))
 
-(use-package helm-command :ensure helm
-  :bind ("M-a" . helm-M-x))
+(use-package helm-command :disabled t
+  :ensure helm
+  :init (bind-key* "M-a" 'helm-M-x))
 
-(use-package helm-files :ensure helm
+(use-package helm-files :disabled t
+  :ensure helm
   :bind ("C-o" . helm-find-files)
   :config (bind-key "M-i" 'helm-previous-line helm-find-files-map))
 
-(use-package helm-projectile :ensure t
-  :init (helm-projectile-toggle +1))
+(use-package helm-projectile :disabled t
+  :ensure t
+  :init (helm-projectile-on))
+
+(use-package helm-swoop :disabled t
+  :init
+  (bind-keys ("M-y" . helm-swoop)
+             ("M-Y" . helm-swoop))
+  :config
+  (progn (bind-keys :map helm-swoop-map
+                    ("M-i" . helm-previous-line))
+         (setq helm-swoop-split-direction 'split-window-horizontally)))
 
 (use-package zoom-frm ; vendored in the `lisp' subdirectory
-  :pre-load (use-package frame-cmds)
+  :init (use-package frame-cmds)
   :if window-system
   :bind (("M-+" . zoom-frm-in)
          ("M--" . zoom-frm-out)
          ("M-0" . zoom-frm-unzoom)))
 
-(use-package swiper :ensure t
-  :init (progn (bind-key "M-y" 'swiper)
-               (bind-key "M-Y" 'swiper)))
-
-(use-package ivy
+(use-package hydra :ensure t
   :config
-  (progn
-    (bind-key "C-m" 'ivy-done ivy-minibuffer-map)
-    (bind-key "C-j" 'ivy-alt-done ivy-minibuffer-map)
-    (bind-key "M-k" 'ivy-next-line ivy-minibuffer-map)
-    (bind-key "M-i" 'ivy-previous-line ivy-minibuffer-map)
-    (bind-key "M-d" 'ivy-backward-delete-char ivy-minibuffer-map)
-    (bind-key "M-n" 'ivy-beginning-of-buffer ivy-minibuffer-map)
-    (bind-key "M-N" 'ivy-end-of-buffer ivy-minibuffer-map)
-    (bind-key "M-K" 'ivy-scroll-up-command ivy-minibuffer-map)
-    (bind-key "M-I" 'ivy-scroll-down-command ivy-minibuffer-map)
-    ;; See `ivy-minibuffer-map' for more bindable keys.
-    ))
+  (after 'expand-region
+    (setq expand-region-fast-keys-enabled nil)
+    (defhydra hydra-expand-region ()
+      "expand region"
+      ("." er/expand-region "expand")
+      ("\," er/contract-region "contract"))
+    (bind-key "M->" 'hydra-expand-region/er/expand-region)
+    (bind-key "M-<" 'hydra-expand-region/er/contract-region)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Bell
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Bell
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defcustom echo-area-bell-string "*DING* " ;"♪"
   "Message displayed in mode-line by `echo-area-bell' function."
@@ -1168,17 +1239,3 @@ indent yanked text (with prefix arg don't indent)."
 
 (provide 'personal)
 ;;; personal.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
