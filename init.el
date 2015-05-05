@@ -1049,6 +1049,15 @@ indent yanked text (with prefix arg don't indent)."
 (use-package expand-region :ensure t
   :bind (("M->" . er/expand-region)
          ("M-<" . er/contract-region))
+  :init
+  (after 'hydra
+    (setq expand-region-fast-keys-enabled nil)
+    (defhydra hydra-expand-region ()
+      "expand region"
+      ("." er/expand-region "expand")
+      ("\," er/contract-region "contract"))
+    (bind-key "M->" 'hydra-expand-region/er/expand-region)
+    (bind-key "M-<" 'hydra-expand-region/er/contract-region))
   :config
   (setq expand-region-contract-fast-key "<"))
 
@@ -1195,16 +1204,7 @@ indent yanked text (with prefix arg don't indent)."
          ("M--" . zoom-frm-out)
          ("M-0" . zoom-frm-unzoom)))
 
-(use-package hydra :ensure t
-  :config
-  (after 'expand-region
-    (setq expand-region-fast-keys-enabled nil)
-    (defhydra hydra-expand-region ()
-      "expand region"
-      ("." er/expand-region "expand")
-      ("\," er/contract-region "contract"))
-    (bind-key "M->" 'hydra-expand-region/er/expand-region)
-    (bind-key "M-<" 'hydra-expand-region/er/contract-region)))
+(use-package hydra :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bell
