@@ -322,19 +322,6 @@
 (setq-default truncate-lines t)
 (tooltip-mode -1)
 
-(use-package smart-mode-line
-  :if window-system
-  :commands (sml/setup sml/apply-theme)
-  
-  :init
-  (progn
-    (setq sml/no-confirm-load-theme t)
-    (sml/apply-theme 'respectful)
-    (sml/setup))
-  
-  :config
-  (add-to-list 'sml/replacer-regexp-list '("^~/Projects/" ":P:")))
-
 (when window-system
   (let ((default-font (if (z:mac-p)
                           "-*-Anonymous Pro Minus-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
@@ -390,6 +377,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package powerline :ensure t
+  :config
+  (progn
+    (powerline-center-theme)
+    (setq powerline-default-separator nil)))
 
 (use-package smex :disabled t
   :bind (("M-a" . smex)
