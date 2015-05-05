@@ -206,12 +206,6 @@
   :if mac-system
   :init (exec-path-from-shell-initialize))
 
-(use-package vkill                ; proced-mode doesn't work on OS X
-  :if mac-system
-  :disabled t
-  :commands vkill
-  :bind ("C-x p" . vkill))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions and Macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
