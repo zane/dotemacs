@@ -384,6 +384,23 @@
     (powerline-center-theme)
     (setq powerline-default-separator nil)))
 
+(use-package avy :ensure t
+  :bind ("M-," . avy-goto-char-2)
+  :config
+  (progn
+    (after 'ace-window
+      (after 'hydra
+        (defhydra hydra-goto (:exit t)
+          "goto"
+          ("l" avy-goto-line "line")
+          ("i" avy-goto-l "ace line")
+          ("c" avy-goto-char-2 "ace char")
+          ("w" avy-goto-word-1 "ace word")
+          ("d" ace-window  "ace window")))
+      (bind-key "C-M-g" 'hydra-goto/body))
+    
+    (setq avy-style 'at-full)
+    (setq avy-keys '(?k ?d ?f ?a ?j ?s ?l ?g ?h))))
 (use-package smex :disabled t
   :bind (("M-a" . smex)
          ("M-A" . smex-major-mode-commands)
@@ -800,6 +817,75 @@ indent yanked text (with prefix arg don't indent)."
     (context 2)
     (match 'defun)
     (for-all 'defun)))
+
+(use-package clj-refactor :ensure t
+  :pin melpa-stable
+  :config
+  (after 'hydra
+    (defhydra hydra-clj-add (:exit t)
+      "add"
+      ("d" cljr-add-declaration "declaration")
+      ("i" cljr-add-import-to-ns "import")
+      ("l" cljr-add-missing-libspec "missing libspec")
+      ("p" cljr-add-project-dependency "project dependency")
+      ("r" cljr-add-require-to-ns "require")
+      ("s" cljr-add-stubs "stubs")
+      ("u" cljr-add-use-to-ns "use"))
+    
+    (defhydra hydra-clj-remove (:exit t)
+      "remove"
+      ("l" cljr-remove-let "let")
+      ("d" cljr-remove-debug-fns "debug functions")
+      ("u" cljr-remove-unused-requires "unused requires")
+      ("r" cljr-stop-referring "refer"))
+
+    (defhydra hydra-clj-cycle (:exit t)
+      ("c" cljr-cycle-coll "collection")
+      ("i" cljr-cycle-if "if")
+      ("p" cljr-cycle-privacy "privacy"))
+
+    (defhydra hydra-clj-destructure (:exit t)
+      "destructure"
+      ("k" cljr-destructure-keys "keys"))
+
+    (defhydra hydra-clj-extract (:exit t)
+      ("f" cljr-extract-function "function"))
+
+    (defhydra hydra-clj-let (:exit t)
+      "let"
+      ("i" cljr-introduce-let "introduce")
+      ("e" cljr-expand-let "expand")
+      ("m" cljr-move-to-let "move"))
+
+    (defhydra hydra-clj-namespace-add (:exit t)
+      "namespace add"
+      ("i" cljr-add-import-to-ns "import")
+      ("r" cljr-add-require-to-ns "require")
+      ("u" cljr-add-use-to-ns "use"))
+
+    (defhydra hydra-clj-namespace (:exit t)
+      "namespace"
+      ("a" hydra-clj-namespace-add/body "add...")
+      ("c" cljr-clean-ns "clean")
+      ("s" cljr-sort-ns "sort"))
+
+    (defhydra hydra-clj-thread (:exit t)
+      ("t" cljr-thread "thread")
+      ("f" cljr-thread-first-all "first all")
+      ("l" cljr-thread-last-all "last all"))
+    
+    (defhydra hydra-clj-refactor (:exit t)
+      "refactor"
+      ("a" hydra-clj-add/body "add")
+      ("r" hydra-clj-remove/body "remove")
+      ("c" hydra-clj-cycle/body "cycle")
+      ("d" hydra-clj-destructure/body "destructure")
+      ("e" hydra-clj-extract/body "extract")
+      ("l" hydra-clj-let/body "let")
+      ("n" hydra-clj-namespace/body "namespace")
+      ("t" hydra-clj-thread/body "thread"))
+
+    (bind-key (kbd "C-M-r") 'hydra-clj-refactor/body clojure-mode-map)))
 
 (use-package magit :ensure t
   :bind ("C-x g" . magit-status)
