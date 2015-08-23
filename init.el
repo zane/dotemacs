@@ -141,7 +141,7 @@
 (bind-key "M-U" 'backward-paragraph)
 (bind-key "M-O" 'forward-paragraph)
 
-(bind-key "M-n" 'beginning-of-buffer)
+(bind-key* "M-n" 'beginning-of-buffer)
 (bind-key "M-N" 'end-of-buffer)
 
 (bind-key "M-I" 'scroll-down)
@@ -283,19 +283,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (blink-cursor-mode -1) ;; the blinking cursor is nothing, but an annoyance
-(setq inhibit-startup-screen t) ;; disable startup screen
 
-;; nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position t)
+;; ;; nice scrolling
+;; (setq scroll-margin 0
+;;       scroll-conservatively 100000
+;;
+(setq scroll-preserve-screen-position t)
 
 ;; mode line settings
 (line-number-mode t)
 (column-number-mode t)
 (size-indication-mode t)
 
-;; make the fringe (gutter) smaller the argument is a width in pixels (the default is 8)
+;; ;; make the fringe (gutter) smaller the argument is a width in pixels (the default is 8)
 (when (fboundp 'fringe-mode) (fringe-mode 4))
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; enable y/n answers
@@ -304,19 +304,12 @@
 ;; buffer name (if the buffer isn't visiting a file)
 (setq frame-title-format
       '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
-						  (abbreviate-file-name (buffer-file-name))
-						"%b"))))
+                                                  (abbreviate-file-name (buffer-file-name))
+                                                "%b"))))
 
-(use-package ov :ensure ov)
+;; (use-package ov :ensure ov)
 (use-package volatile-highlights :ensure volatile-highlights)
-(use-package browse-kill-ring :ensure browse-kill-ring)
-
-(use-package prelude
-  :disabled t
-  :config
-  (progn
-    (setq pcache-directory (f-expand "pcache" savefile-dir))
-    (unbind-key "M-o" prelude-mode-map)))
+;; (use-package browse-kill-ring :ensure browse-kill-ring)
 
 (setq initial-scratch-message "")
 (setq-default truncate-lines t)
@@ -344,8 +337,10 @@
   (progn
     (set-face-background 'show-paren-match nil)
     (set-face-foreground 'show-paren-match nil)
-    (set-face-inverse-video-p 'show-paren-match nil)))
+    (set-face-inverse-video-p 'show-paren-match nil)
+    (setq show-paren-style 'expression)))
 
+;; http://whattheemacsd.com/init.el-04.html
 (use-package diminish
   :init
   (progn
@@ -366,19 +361,20 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-electric-indent-mode)
 (add-hook 'prog-mode-hook 'turn-on-electric-indent-mode)
 
-(bind-key "C-o"
-          (lambda () (interactive)
-            (let ((case-fold-search isearch-case-fold-search))
-              (occur (if isearch-regexp
-                         isearch-string
-                       (regexp-quote isearch-string)))))
-          isearch-mode-map)
+;; (bind-key "C-o"
+;;           (lambda () (interactive)
+;;             (let ((case-fold-search isearch-case-fold-search))
+;;               (occur (if isearch-regexp
+;;                          isearch-string
+;;                        (regexp-quote isearch-string)))))
+;;           isearch-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package powerline :ensure t
+(use-package powerline :disabled t
+  :if window-system
   :config
   (progn
     (powerline-center-theme)
@@ -394,13 +390,20 @@
           "goto"
           ("l" avy-goto-line "line")
           ("i" avy-goto-l "ace line")
-          ("c" avy-goto-char-2 "ace char")
+          ("c" avy-goto-char-1 "ace char")
           ("w" avy-goto-word-1 "ace word")
           ("d" ace-window  "ace window")))
-      (bind-key "C-M-g" 'hydra-goto/body))
+      (bind-key "C-M-g" 'hydra-goto/body)
+      (bind-key "C-'" 'hydra-goto/body))
     
     (setq avy-style 'at-full)
     (setq avy-keys '(?k ?d ?f ?a ?j ?s ?l ?g ?h))))
+
+(use-package tiny :ensure t
+  :config (bind-key (kbd "C-;") 'tiny-expand))
+
+(use-package ace-window :ensure t)
+
 (use-package smex :disabled t
   :bind (("M-a" . smex)
          ("M-A" . smex-major-mode-commands)
@@ -414,22 +417,22 @@
     (setq smex-save-file (f-join savefile-dir ".smex-items"))))
 
 (use-package swiper :ensure t
-   :init (progn (bind-key "M-y" 'swiper)
-                (bind-key "M-Y" 'swiper))
-   :config
-   (bind-key "C-o"
-             (lambda () (interactive)
-               (let ((input (ivy--input)))
-                 (top-level)
-                 (occur (regexp-quote input))))
-             swiper-map))
+  :pin melpa-stable
+  :init (progn (bind-key "M-y" 'swiper)
+               (bind-key "M-Y" 'swiper))
+  :config
+  (bind-key "C-o"
+            (lambda () (interactive)
+              (let ((input (ivy--input)))
+                (occur (regexp-quote input))))
+            swiper-map))
 
 (use-package ivy
+  :pin melpa-stable
   :init (ivy-mode)
   :config
   (progn
     ;; See `ivy-minibuffer-map' for more bindable keys.
-
     (bind-key "C-m" 'ivy-done ivy-minibuffer-map)
     (bind-key "TAB" 'ivy-alt-done ivy-minibuffer-map)
     (bind-key "M-k" 'ivy-next-line ivy-minibuffer-map)
@@ -450,6 +453,7 @@
 (use-package paradox :ensure t
   :defer 60)
 
+;; http://whattheemacsd.com/init.el-03.html
 (use-package saveplace :ensure t ; remembers your location in a file when saving files
   :defer (progn
            (require 'saveplace)
@@ -457,7 +461,7 @@
   :config (setq save-place-file (expand-file-name "saveplace" savefile-dir)))
 
 (use-package savehist                   ; keeps track of some history
-  :idle (savehist-mode +1)
+  :init (savehist-mode +1)
   :config
   (setq savehist-additional-variables
         ;; search entries
@@ -512,6 +516,7 @@ The body of the advice is in BODY."
                     ,@body))
                commands)))
 
+;; http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html
 ;; advise all window switching functions
 (advise-commands
  "auto-save"
@@ -759,6 +764,7 @@ indent yanked text (with prefix arg don't indent)."
     
     ;; https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens#random-differences
     (unbind-key "M-r" smartparens-mode-map)
+    (unbind-key "M-g" smartparens-mode-map)
     (bind-keys :map smartparens-mode-map
                (")"   . sp-up-sexp)
 
@@ -801,6 +807,14 @@ indent yanked text (with prefix arg don't indent)."
                ("s-j"           . paxedit-previous-symbol)
                ("M-<backspace>" . paxedit-kill))))
 
+(use-package lispy :ensure t
+  :config
+  (bind-keys :map lispy-mode-map
+             ("M-k"           . nil)
+             ("M-i"           . nil)
+             ("M-j"           . nil)
+             ("M-<backspace>" . lispy-kill)))
+
 (use-package clojure-mode
   :config
   (define-clojure-indent
@@ -816,10 +830,12 @@ indent yanked text (with prefix arg don't indent)."
     (ANY 2)
     (context 2)
     (match 'defun)
-    (for-all 'defun)))
+    (for-all 'defun)
+    (project 'defun)))
 
 (use-package clj-refactor :ensure t
   :pin melpa-stable
+  
   :config
   (after 'hydra
     (defhydra hydra-clj-add (:exit t)
@@ -885,7 +901,28 @@ indent yanked text (with prefix arg don't indent)."
       ("n" hydra-clj-namespace/body "namespace")
       ("t" hydra-clj-thread/body "thread"))
 
-    (bind-key (kbd "C-M-r") 'hydra-clj-refactor/body clojure-mode-map)))
+    (bind-key (kbd "C-M-r") 'hydra-clj-refactor/body clojure-mode-map)
+
+    (defun zane/transpose-sexp-backward ()
+      (interactive)
+
+      (save-excursion
+        (sp-backward-sexp)
+        (sp-transpose-sexp)))
+    
+    (defhydra hydra-transpose (:exit nil :foreign-keys nil)
+      "transpose"
+      ("i" zane/transpose-sexp-backward "backward")
+      ("j" zane/transpose-sexp-backward "backward")
+      ("k" sp-transpose-sexp "forward")
+      ("l" sp-transpose-sexp "forward")
+      ("q" nil "cancel")
+      ("RET" nil "cancel"))
+
+    (bind-key (kbd "C-M-t") 'hydra-transpose/body)))
+
+(use-package scss-mode :ensure t
+  :pin melpa-stable)
 
 (use-package magit :ensure t
   :bind ("C-x g" . magit-status)
@@ -920,13 +957,16 @@ indent yanked text (with prefix arg don't indent)."
     (bind-key "q" 'magit-quit-session magit-status-mode-map)
     (unbind-key "M-p" magit-status-mode-map)))
 
+(use-package git-timemachine :ensure t)
+
 (use-package org :ensure t
   :defer t
   :config
   (progn
     (setq org-src-fontify-natively t)
     (setq org-hide-leading-stars t)
-    (after 'prelude-mode (add-hook 'org-mode-hook 'prelude-off))))
+    (after 'prelude-mode (add-hook 'org-mode-hook 'prelude-off))
+    (unbind-key "M-a" org-mode-map)))
 
 (use-package org-capture
   :bind ("C-c c" . org-capture)
@@ -982,7 +1022,7 @@ indent yanked text (with prefix arg don't indent)."
     
     (setq cider-repl-history-file (f-join savefile-dir "cider-repl-history"))
     (setq cider-repl-use-clojure-font-lock t)
-    (setq cider-repl-use-pretty-printing t)
+    (setq cider-repl-use-pretty-printing nil)
     (setq cider-repl-popup-stacktraces t)
     (setq cider-auto-select-error-buffer nil)
     (setq nrepl-hide-special-buffers nil)
@@ -991,7 +1031,27 @@ indent yanked text (with prefix arg don't indent)."
     (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
     (add-hook 'cider-repl-mode-hook 'subword-mode)))
 
-(use-package solarized-theme
+(use-package zenburn-theme :disabled t)
+
+(use-package color-theme-sanityinc-tomorrow :disabled t
+  :if window-system
+  :init (load-theme 'sanityinc-tomorrow-night t))
+
+(use-package monokai-theme :ensure t
+  :if window-system
+  
+  :config (setq monokai-high-contrast-mode-line nil)
+  
+  :init
+  (progn (load-theme 'monokai t)
+         (set-face-background 'region "#000000")))
+
+(use-package moe-theme :disabled t
+  :if window-system
+  :init (load-theme 'moe-dark t)
+  :config (after 'powerline (powerline-moe-theme)))
+
+(use-package solarized-theme :disabled t
   :if window-system
   :init
   (progn
@@ -1007,9 +1067,12 @@ indent yanked text (with prefix arg don't indent)."
     (setq solarized-height-plus-4 1)
     
     (setq solarized-distinct-fringe-background t)
-    (setq solarized-high-contrast-mode-line nil))
-  :config
-  (load-theme 'solarized-dark t))
+    (setq solarized-high-contrast-mode-line t)
+
+    (load-theme 'solarized-dark t)))
+
+(use-package cyberpunk-theme :disabled t)
+
 (use-package whitespace
   :if window-system
   
@@ -1036,13 +1099,18 @@ indent yanked text (with prefix arg don't indent)."
   
   :init
   (progn
-    (after 'lisp-mode    (add-hook 'emacs-lisp-mode-hook  'rainbow-delimiters-mode-enable))
-    (after 'clojure-mode (add-hook 'clojure-mode-hook     'rainbow-delimiters-mode-enable))
-    (after 'cider-repl   (add-hook 'cider-repl-mode-hook  'rainbow-delimiters-mode-enable)))
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable))
   
   :config
   (progn
-    (setq-default frame-background-mode 'dark)))
+    ;; http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html
+    (setq-default frame-background-mode 'dark)
+    (setq rainbow-delimiters-max-face-count 1)
+    (set-face-attribute 'rainbow-delimiters-depth-1-face nil
+                        :foreground "#666666")
+    (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                        :foreground 'unspecified
+                        :inherit 'error)))
 
 (use-package rainbow-identifiers :ensure t
   :commands rainbow-identifiers-mode
@@ -1084,7 +1152,9 @@ indent yanked text (with prefix arg don't indent)."
     (setq company-show-numbers t)))
 
 (use-package web-mode :ensure t
-  :mode "\\.html\\'")
+  :mode "\\.html\\'"
+  :config (progn (setq web-mode-code-indent-offset 2)
+                 (setq web-mode-markup-indent-offset 2)))
 
 (use-package jsx-mode :ensure t
   :mode "\\.jsx\\'"
@@ -1323,3 +1393,54 @@ indent yanked text (with prefix arg don't indent)."
 
 (provide 'personal)
 ;;; personal.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(compilation-message-face (quote default))
+ '(custom-safe-themes
+   (quote
+    ("b06aaf5cefc4043ba018ca497a9414141341cb5a2152db84a9a80020d35644d1" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "d7088a7105aa09cc68e3d058f89917e07e0505e0f4ab522a6045ec8092d67c44" "74278d14b7d5cf691c4d846a4bbf6e62d32104986f104c1e61f718f9669ec04b" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" default)))
+ '(fci-rule-color "#49483E")
+ '(highlight-changes-colors ("#FD5FF0" "#AE81FF"))
+ '(highlight-tail-colors
+   (("#49483E" . 0)
+    ("#67930F" . 20)
+    ("#349B8D" . 30)
+    ("#21889B" . 50)
+    ("#968B26" . 60)
+    ("#A45E0A" . 70)
+    ("#A41F99" . 85)
+    ("#49483E" . 100)))
+ '(magit-diff-use-overlays nil)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#F92672")
+     (40 . "#CF4F1F")
+     (60 . "#C26C0F")
+     (80 . "#E6DB74")
+     (100 . "#AB8C00")
+     (120 . "#A18F00")
+     (140 . "#989200")
+     (160 . "#8E9500")
+     (180 . "#A6E22E")
+     (200 . "#729A1E")
+     (220 . "#609C3C")
+     (240 . "#4E9D5B")
+     (260 . "#3C9F79")
+     (280 . "#A1EFE4")
+     (300 . "#299BA6")
+     (320 . "#2896B5")
+     (340 . "#2790C3")
+     (360 . "#66D9EF"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (unspecified "#272822" "#49483E" "#A20C41" "#F92672" "#67930F" "#A6E22E" "#968B26" "#E6DB74" "#21889B" "#66D9EF" "#A41F99" "#FD5FF0" "#349B8D" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
