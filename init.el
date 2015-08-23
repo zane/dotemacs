@@ -231,14 +231,6 @@
   `(eval-after-load ,mode
      '(progn ,@body)))
 
-(defun increment-number-at-point ()
-  "Increments the number at point."
-  (interactive)
-  (skip-chars-backward "0123456789")
-  (or (looking-at "[0123456789]+")
-      (error "No number at point"))
-  (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
-
 (defun key-binding-at-point (key)
   (mapcar (lambda (keymap) (lookup-key keymap key))
           (cl-remove-if-not
@@ -282,12 +274,11 @@
 ;; UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(blink-cursor-mode -1) ;; the blinking cursor is nothing, but an annoyance
+(blink-cursor-mode -1)
 
 ;; ;; nice scrolling
-;; (setq scroll-margin 0
-;;       scroll-conservatively 100000
-;;
+(setq scroll-margin 0)
+;(setq scroll-conservatively 100000)
 (setq scroll-preserve-screen-position t)
 
 ;; mode line settings
@@ -373,13 +364,6 @@
 ;; Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package powerline :disabled t
-  :if window-system
-  :config
-  (progn
-    (powerline-center-theme)
-    (setq powerline-default-separator nil)))
-
 (use-package avy :ensure t
   :bind ("M-," . avy-goto-char-2)
   :config
@@ -399,22 +383,7 @@
     (setq avy-style 'at-full)
     (setq avy-keys '(?k ?d ?f ?a ?j ?s ?l ?g ?h))))
 
-(use-package tiny :ensure t
-  :config (bind-key (kbd "C-;") 'tiny-expand))
-
 (use-package ace-window :ensure t)
-
-(use-package smex :disabled t
-  :bind (("M-a" . smex)
-         ("M-A" . smex-major-mode-commands)
-         ("C-c C-c M-a" . execute-extended-command))
-  :init
-  (smex-initialize)
-   
-  :config
-  (progn
-    (bind-key* "M-a" 'smex)
-    (setq smex-save-file (f-join savefile-dir ".smex-items"))))
 
 (use-package swiper :ensure t
   :pin melpa-stable
@@ -450,9 +419,6 @@
 (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
-(use-package paradox :ensure t
-  :defer 60)
-
 ;; http://whattheemacsd.com/init.el-03.html
 (use-package saveplace :ensure t ; remembers your location in a file when saving files
   :defer (progn
@@ -470,7 +436,6 @@
         savehist-autosave-interval 60
         ;; keep the home clean
         savehist-file (expand-file-name "savehist" savefile-dir)))
-
 
 (use-package recentf                    ; save recent files
   :commands recentf-mode
@@ -578,12 +543,6 @@ The body of the advice is in BODY."
   (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
         bookmark-save-flag 1))
 
-(use-package anzu :disabled t ; enhances isearch & query-replace by showing total matches and current match position
-  :ensure anzu
-  :diminish anzu-mode
-  :defer t
-  :config (global-anzu-mode))
-
 ;; shorter aliases for ack-and-a-half commands
 
 (use-package ack-and-a-half
@@ -604,13 +563,12 @@ The body of the advice is in BODY."
     ;; always delete and copy recursively
     (setq dired-recursive-deletes 'always)
     (setq dired-recursive-copies 'always)
+    ;; if there is a dired buffer displayed in the next window, use its
+    ;; current subdir, instead of the current subdir of this dired buffer
+    (setq dired-dwim-target t)
 
     ;; enable some really cool extensions like C-x C-j(dired-jump)
     (use-package dired-x)))
-
-;; if there is a dired buffer displayed in the next window, use its
-;; current subdir, instead of the current subdir of this dired buffer
-(setq dired-dwim-target t)
 
 (use-package ediff
   :commands ediff
@@ -690,28 +648,6 @@ indent yanked text (with prefix arg don't indent)."
   :config (setq semanticdb-default-save-directory
                 (expand-file-name "semanticdb" savefile-dir)))
 
-;; Compilation from Emacs
-(defun zane/colorize-compilation-buffer ()
-  "Colorize a compilation mode buffer."
-  (interactive)
-  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-  (when (eq major-mode 'compilation-mode)
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max)))))
-
-(require 'compile)
-(setq compilation-ask-about-save nil  ; Just save before compiling
-      compilation-always-kill t       ; Just kill old compile processes before
-                                        ; starting the new one
-      compilation-scroll-output 'first-error ; Automatically scroll to first
-                                        ; error
-      )
-
-;; Colorize output of Compilation Mode, see
-;; http://stackoverflow.com/a/3072831/355252
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook #'zane/colorize-compilation-buffer)
-
 (use-package winner
   :ensure winner
   :defer t
@@ -787,33 +723,6 @@ indent yanked text (with prefix arg don't indent)."
 
     (bind-key "M-(" (wrap-with "(") prog-mode-map)
     (bind-key "M-\"" (wrap-with "\"") prog-mode-map)))
-
-(use-package paxedit :ensure t
-  :diminish "pax"
-  :commands paxedit-mode
-  
-  :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'paxedit-mode)
-    (add-hook 'clojure-mode-hook 'paxedit-mode))
-  
-  :config
-  (progn
-    (bind-keys :map paxedit-mode-map
-               ("M-w"           . paxedit-delete-whitespace)
-               ("s-i"           . paxedit-backward-up)
-               ("s-k"           . paxedit-backward-end)
-               ("s-l"           . paxedit-next-symbol)
-               ("s-j"           . paxedit-previous-symbol)
-               ("M-<backspace>" . paxedit-kill))))
-
-(use-package lispy :ensure t
-  :config
-  (bind-keys :map lispy-mode-map
-             ("M-k"           . nil)
-             ("M-i"           . nil)
-             ("M-j"           . nil)
-             ("M-<backspace>" . lispy-kill)))
 
 (use-package clojure-mode
   :config
@@ -957,7 +866,7 @@ indent yanked text (with prefix arg don't indent)."
     (bind-key "q" 'magit-quit-session magit-status-mode-map)
     (unbind-key "M-p" magit-status-mode-map)))
 
-(use-package git-timemachine :ensure t)
+(use-package git-timemachine)
 
 (use-package org :ensure t
   :defer t
@@ -968,33 +877,9 @@ indent yanked text (with prefix arg don't indent)."
     (after 'prelude-mode (add-hook 'org-mode-hook 'prelude-off))
     (unbind-key "M-a" org-mode-map)))
 
-(use-package org-capture
-  :bind ("C-c c" . org-capture)
-  
-  :config
-  (progn
-    (defvar user-org-capture-directory
-      (f-join user-dropbox-directory "Documents" "org")
-      "The user's org-mode capture directory.")
-    (setq org-default-notes-file (f-join user-org-capture-directory "capture.org"))
-    
-    ;; http://orgmode.org/manual/Template-elements.html
-    (setq org-capture-templates
-          '(("l" "Life Log" entry (file+datetree+prompt (f-join user-org-capture-directory "log.org"))
-             ("%?"))
-            ("m" "Music" entry (file (f-join user-org-capture-directory "music.org"))
-             "* TODO %?\n")
-            ("r" "Reading" entry (file (f-join user-org-capture-directory ".org"))
-             "* TODO %?\n")))))
-
 (use-package markdown-mode
   :mode "\\.md\\'"
   :config (when (executable-find "gfm") (setq markdown-command "gfm")))
-
-(use-package golden-ratio
-  ;; https://github.com/roman/golden-ratio.el/issues/25
-  :disabled t
-  :config (setq window-combination-resize t))
 
 (use-package js
   :bind (("," . self-insert-command)
@@ -1255,96 +1140,6 @@ indent yanked text (with prefix arg don't indent)."
             ".cfg"
             ".cnf"
             ".gz"))))
-
-(use-package anzu :ensure anzu :disabled t)
-
-(use-package ido-ubiquitous :disabled t
-  :init
-  (progn
-    (ido-mode +1)
-    (ido-ubiquitous-mode +1)))
-
-(use-package flx-ido :disabled t        ; smarter fuzzy matching for ido
-  :init (flx-ido-mode +1)
-
-  ;; disable ido faces to see flx highlights
-  :config (setq ido-use-faces nil))
-
-(use-package ido-sort-mtime :disabled t
-  :init (ido-sort-mtime-mode 1)
-  :config (setq ido-sort-mtime-tramp-files-at-end t))
-  
-(use-package ido-vertical-mode :disabled t
-  :commands ido-vertical-mode
-  :init (after 'ido (ido-vertical-mode +1))
-  
-  :config
-  (progn
-    (defun ido-vertical-define-my-keys ()
-      (define-key ido-completion-map (kbd "M-k") 'ido-next-match)
-      (define-key ido-completion-map (kbd "M-i") 'ido-prev-match))
-    (setq ido-setup-hook '(ido-vertical-define-my-keys))
-    (add-hook 'ido-minibuffer-setup-hook 'ido-vertical-define-my-keys)))
-
-(use-package helm :disabled t
-  :config
-  (progn
-    ;; http://tuhdo.github.io/helm-intro.html
-    
-    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-    (bind-key (kbd "C-c h") 'helm-command-prefix)
-    (unbind-key (kbd "C-x c"))
-    
-    (when (executable-find "ack-grep")
-      (setq helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
-            helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f"))
-
-    (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-          helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-          helm-ff-file-name-history-use-recentf t
-          helm-split-window-default-side        'right)
-    (bind-keys :map helm-map
-               ("M-i" . helm-previous-line)
-               ("M-k" . helm-next-line)
-                    
-               ("M-I" . helm-previous-line)
-               ("M-K" . helm-next-page)
-
-               ("M-n" . helm-beginning-of-buffer)
-               ("M-N" . helm-end-of-buffer)
-
-               ("M-O" . helm-next-source)
-               ("M-U" . helm-previous-source))))
-
-(use-package helm-misc :disabled t
-  :ensure helm
-  :bind ("C-x b" . helm-mini))
-
-(use-package helm-command :disabled t
-  :ensure helm
-  :init (bind-key* "M-a" 'helm-M-x))
-
-(use-package helm-files :disabled t
-  :ensure helm
-  :bind ("C-o" . helm-find-files)
-  :config (bind-key "M-i" 'helm-previous-line helm-find-files-map))
-
-(use-package helm-projectile :disabled t
-  :ensure t
-  :init (helm-projectile-on))
-
-(use-package helm-swoop :disabled t
-  :init
-  (bind-keys ("M-y" . helm-swoop)
-             ("M-Y" . helm-swoop))
-  :config
-  (progn (bind-keys :map helm-swoop-map
-                    ("M-i" . helm-previous-line))
-         (setq helm-swoop-split-direction 'split-window-horizontally)))
 
 (use-package zoom-frm ; vendored in the `lisp' subdirectory
   :init (use-package frame-cmds)
