@@ -378,7 +378,8 @@
           ("w" avy-goto-word-1 "ace word")
           ("d" ace-window  "ace window")))
       (bind-key "C-M-g" 'hydra-goto/body)
-      (bind-key "C-'" 'hydra-goto/body))
+      (bind-key "C-\"" 'hydra-goto/body))
+    (bind-key "C-'" 'avy-goto-word-1)
     
     (setq avy-style 'at-full)
     (setq avy-keys '(?k ?d ?f ?a ?j ?s ?l ?g ?h))))
