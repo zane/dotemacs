@@ -401,6 +401,8 @@
   :init (ivy-mode)
   :config
   (progn
+    (setq ivy-display-style 'fancy)
+    
     ;; See `ivy-minibuffer-map' for more bindable keys.
     (bind-key "C-m" 'ivy-done ivy-minibuffer-map)
     (bind-key "TAB" 'ivy-alt-done ivy-minibuffer-map)
