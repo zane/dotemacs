@@ -1175,6 +1175,10 @@ indent yanked text (with prefix arg don't indent)."
 
 (use-package hydra :ensure t)
 
+(use-package yasnippet :ensure t
+  :config (yas-global-mode))
+(use-package clojure-snippets :ensure t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
