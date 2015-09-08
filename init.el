@@ -412,6 +412,15 @@
     (bind-key "M-K" 'ivy-scroll-up-command ivy-minibuffer-map)
     (bind-key "M-I" 'ivy-scroll-down-command ivy-minibuffer-map)))
 
+(use-package counsel :ensure t
+  :pin melpa-stable
+  :init (progn
+          (bind-key "M-a" 'counsel-M-x)
+          (bind-key "C-h f" 'counsel-describe-function)
+          (bind-key "C-h v" 'counsel-describe-variable)))
+
+(use-package smex :ensure t)
+
 ;; meaningful names for buffers with the same name
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
