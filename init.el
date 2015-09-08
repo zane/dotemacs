@@ -308,7 +308,8 @@
 
 (when window-system
   (let ((default-font (if (z:mac-p)
-                          "-*-Anonymous Pro Minus-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
+                          "Hack-10"
+                        ;;"-*-Anonymous Pro Minus-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
                         ;; "DejaVu Sans Mono 11"
                         ;; "Source Code Pro 12"
                         ;; "Inconsolata-13"
