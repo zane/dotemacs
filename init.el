@@ -847,6 +847,11 @@ indent yanked text (with prefix arg don't indent)."
     (after 'ido (setq magit-completing-read-function 'ido-completing-read))
     (after 'ivy (setq magit-completing-read-function 'ivy-completing-read))
 
+    ;; http://irreal.org/blog/?p=4279
+    (add-to-list 'magit-no-confirm 'stage-all-changes)
+    (setq magit-push-always-verify nil)
+    (setq magit-last-seen-setup-instructions "2.1.0")
+
     ;; Make magit restore the original window configuration when you leave the
     ;; magit buffer.
     ;;
