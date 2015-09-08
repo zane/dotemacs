@@ -1114,6 +1114,17 @@ indent yanked text (with prefix arg don't indent)."
   (after 'ivy (setq projectile-completion-system 'ivy))
   (projectile-global-mode t))
 
+(use-package perspective :ensure t
+  :init
+  (persp-mode))
+
+(use-package persp-projectile :ensure t
+  :config
+  (require 'persp-projectile)
+  
+  :init
+  (bind-key (kbd "C-c p p") 'projectile-persp-switch-project projectile-mode-map))
+
 (use-package ido :disabled t
   :init (ido-mode +1)
   :config
